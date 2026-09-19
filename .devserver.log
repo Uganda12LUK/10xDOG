@@ -1,0 +1,10 @@
+
+> 10x-astro-starter@0.0.1 dev
+> astro dev
+
+[34m▶ Astro collects anonymous usage data.[39m
+  This information helps us improve Astro.
+  Run "astro telemetry disable" to opt-out.
+  [36m[4mhttps://astro.build/telemetry[24m[39m
+
+{"message":"Dev server failed to start within 30s.","label":"SKIP_FORMAT","level":"error"}
