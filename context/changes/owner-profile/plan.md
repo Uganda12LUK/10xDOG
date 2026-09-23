@@ -241,7 +241,7 @@ Add the protected `/profile` page with a create-or-edit React island form (inclu
 
 - [ ] 1.1 Migrations apply cleanly against local Supabase (`npx supabase migration up`)
 - [ ] 1.2 Lint passes (`npm run lint`)
-- [x] 1.3 Build passes / type-check (`npm run build`)
+- [x] 1.3 Build passes / type-check (`npm run build`) — 7ecce02
 
 #### Manual
 
@@ -254,7 +254,7 @@ Add the protected `/profile` page with a create-or-edit React island form (inclu
 #### Automated
 
 - [ ] 2.1 Lint passes (`npm run lint`)
-- [ ] 2.2 Build passes / type-check (`npm run build`)
+- [x] 2.2 Build passes / type-check (`npm run build`)
 - [ ] 2.3 Smoke test passes (`npm run smoke`)
 
 #### Manual
