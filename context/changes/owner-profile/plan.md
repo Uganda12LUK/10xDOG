@@ -254,7 +254,7 @@ Add the protected `/profile` page with a create-or-edit React island form (inclu
 #### Automated
 
 - [ ] 2.1 Lint passes (`npm run lint`)
-- [x] 2.2 Build passes / type-check (`npm run build`)
+- [x] 2.2 Build passes / type-check (`npm run build`) — e3d8085
 - [ ] 2.3 Smoke test passes (`npm run smoke`)
 
 #### Manual
@@ -268,7 +268,7 @@ Add the protected `/profile` page with a create-or-edit React island form (inclu
 #### Automated
 
 - [ ] 3.1 Lint passes (`npm run lint`)
-- [ ] 3.2 Build passes / type-check (`npm run build`)
+- [x] 3.2 Build passes / type-check (`npm run build`)
 - [ ] 3.3 Smoke test passes (`npm run smoke`)
 
 #### Manual
