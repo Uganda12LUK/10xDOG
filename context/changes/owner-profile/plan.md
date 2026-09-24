@@ -239,15 +239,15 @@ Add the protected `/profile` page with a create-or-edit React island form (inclu
 
 #### Automated
 
-- [ ] 1.1 Migrations apply cleanly against local Supabase (`npx supabase migration up`)
+- [x] 1.1 Migrations apply cleanly against local Supabase (`npx supabase migration up`)
 - [ ] 1.2 Lint passes (`npm run lint`)
 - [x] 1.3 Build passes / type-check (`npm run build`) — 7ecce02
 
 #### Manual
 
-- [ ] 1.4 RLS: anonymous select refused; authenticated user cannot insert a row with a foreign `id`
+- [x] 1.4 RLS: anonymous select refused; authenticated user cannot insert a row with a foreign `id`
 - [ ] 1.5 `avatars` bucket exists; authenticated upload restricted to own `<uid>/` prefix
-- [ ] 1.6 `/profile` while logged out redirects to `/auth/signin`
+- [x] 1.6 `/profile` while logged out redirects to `/auth/signin`
 
 ### Phase 2: Profile Backend & Types
 
