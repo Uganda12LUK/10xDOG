@@ -235,14 +235,14 @@ Add the `/dogs` section: a list of the user's dogs plus add/edit forms, gate `/d
 
 #### Automated
 
-- [ ] 1.1 Dogs migration applies cleanly (SQL editor / `npx supabase migration up`)
+- [x] 1.1 Dogs migration applies cleanly (SQL editor / `npx supabase migration up`)
 - [ ] 1.2 Lint passes on app source (`npm run lint`)
 - [x] 1.3 Build passes (`npm run build`) — 0c4c454
 
 #### Manual
 
-- [ ] 1.4 RLS: anonymous read refused; user cannot insert a dog with a foreign `owner_id`
-- [ ] 1.5 Owner can insert own dog; cannot delete another user's dog
+- [x] 1.4 RLS: anonymous read refused; user cannot insert a dog with a foreign `owner_id`
+- [x] 1.5 Owner can insert own dog; cannot delete another user's dog
 
 ### Phase 2: Dog Backend & Types
 
@@ -253,20 +253,20 @@ Add the `/dogs` section: a list of the user's dogs plus add/edit forms, gate `/d
 
 #### Manual
 
-- [ ] 2.3 Create persists row with breed + birthdate + photo at `avatars/<uid>/dogs/<dogId>.<ext>`
-- [ ] 2.4 Edit updates same row (no duplicate); text-only edit preserves photo
-- [ ] 2.5 Delete removes row; off-list breed / future birthdate rejected with `?error=`
+- [x] 2.3 Create persists row with breed + birthdate + photo at `avatars/<uid>/dogs/<dogId>.<ext>`
+- [x] 2.4 Edit updates same row (no duplicate); text-only edit preserves photo
+- [x] 2.5 Delete removes row; off-list breed / future birthdate rejected with `?error=`
 
 ### Phase 3: Dogs UI & Navigation
 
 #### Automated
 
 - [ ] 3.1 Lint passes on app source (`npm run lint`)
-- [x] 3.2 Build passes (`npm run build`)
+- [x] 3.2 Build passes (`npm run build`) — a86cab8
 
 #### Manual
 
-- [ ] 3.3 `/dogs` logged out → redirect to `/auth/signin`; logged in → list or empty state
-- [ ] 3.4 Add shows dog with correct breed + derived age + photo; edit reflects; delete removes
-- [ ] 3.5 Breed field offers only list values; birth date cannot be future
-- [ ] 3.6 `/dogs` pages usable at mobile width
+- [x] 3.3 `/dogs` logged out → redirect to `/auth/signin`; logged in → list or empty state
+- [x] 3.4 Add shows dog with correct breed + derived age + photo; edit reflects; delete removes
+- [x] 3.5 Breed field offers only list values; birth date cannot be future
+- [x] 3.6 `/dogs` pages usable at mobile width
