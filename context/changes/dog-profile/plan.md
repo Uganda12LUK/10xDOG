@@ -237,7 +237,7 @@ Add the `/dogs` section: a list of the user's dogs plus add/edit forms, gate `/d
 
 - [ ] 1.1 Dogs migration applies cleanly (SQL editor / `npx supabase migration up`)
 - [ ] 1.2 Lint passes on app source (`npm run lint`)
-- [x] 1.3 Build passes (`npm run build`)
+- [x] 1.3 Build passes (`npm run build`) — 0c4c454
 
 #### Manual
 
@@ -249,7 +249,7 @@ Add the `/dogs` section: a list of the user's dogs plus add/edit forms, gate `/d
 #### Automated
 
 - [ ] 2.1 Lint passes on app source (`npm run lint`)
-- [ ] 2.2 Build passes (`npm run build`)
+- [x] 2.2 Build passes (`npm run build`)
 
 #### Manual
 

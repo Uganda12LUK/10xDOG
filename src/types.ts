@@ -15,3 +15,22 @@ export interface ProfileInput {
   city?: string | null;
   photo?: File | null;
 }
+
+export interface Dog {
+  id: string;
+  ownerId: string;
+  name: string;
+  breed: string;
+  birthdate: string | null;
+  photoPath: string | null;
+  photoUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DogInput {
+  name: string;
+  breed: string;
+  birthdate?: string | null;
+  photo?: File | null;
+}
