@@ -1,10 +1,10 @@
 ---
 change_id: owner-profile
 title: Owner profile (create + edit) — S-01
-status: implemented
+status: archived
 created: 2026-09-23
-updated: 2026-09-23
-archived_at: null
+updated: 2026-09-24
+archived_at: 2026-09-24T17:24:44Z
 ---
 
 ## Notes
