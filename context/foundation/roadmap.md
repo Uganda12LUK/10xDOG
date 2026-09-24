@@ -43,7 +43,7 @@ Nowy właściciel psa w krytycznym oknie socjalizacji nie ma dedykowanego narzę
 | ---- | ------------------------- | ------------------------------------------------------------- | ------------- | --------------------- | -------- |
 | F-01 | data-privacy-baseline     | (foundation) migracje + wzorzec RLS + gating tras za loginem  | —             | FR-001, NFR-prywatność, Access Control | ready    |
 | S-01 | owner-profile             | tworzy i edytuje profil właściciela (imię, foto, dzielnica)   | F-01          | FR-002, US-01         | done |
-| S-02 | dog-profile               | tworzy i edytuje profil psa (imię, rasa, wiek, foto)          | F-01          | FR-003, US-01         | proposed |
+| S-02 | dog-profile               | tworzy i edytuje profil psa (imię, rasa, wiek, foto)          | F-01          | FR-003, US-01         | done |
 | S-03 | owner-discovery-list      | przegląda listę właścicieli w swojej dzielnicy/mieście        | S-01, S-02    | FR-004, US-01         | proposed |
 | S-04 | walk-invitation-loop      | wysyła zaproszenie na spacer; odbiorca potwierdza/odrzuca      | S-03          | FR-005, FR-006, US-01 | proposed |
 | S-05 | scheduled-meetings-view   | widzi swoje potwierdzone spotkania w zakładce spotkań         | S-04          | FR-007, US-01         | proposed |
@@ -112,7 +112,7 @@ Co jest już w kodzie na dzień `2026-09-22` (auto-researched + potwierdzone prz
 - **Unknowns:**
   - Czy pies należy do użytkownika (auth id) czy do rekordu profilu właściciela? — Owner: TBD. Block: no (nie blokuje planowania; do rozstrzygnięcia w /10x-plan).
 - **Risk:** Rdzeń dopasowania (rasa/wiek zasilają listy i filtry). Niezależny od S-01 na poziomie danych → równoległy.
-- **Status:** proposed
+- **Status:** done
 
 ### S-03: Lista właścicieli w okolicy
 
@@ -224,3 +224,4 @@ Co jest już w kodzie na dzień `2026-09-22` (auto-researched + potwierdzone prz
 ## Done
 
 - **S-01: użytkownik może utworzyć i edytować swój profil właściciela (imię, zdjęcie, dzielnica/miasto).** — Archived 2026-09-24 → `context/archive/2026-09-23-owner-profile/`. Lesson: —.
+- **S-02: użytkownik może utworzyć i edytować profil psa (imię, rasa, wiek, zdjęcie).** — Archived 2026-09-24 → `context/archive/2026-09-24-dog-profile/`. Lesson: —.

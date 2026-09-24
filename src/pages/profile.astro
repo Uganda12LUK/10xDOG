@@ -31,6 +31,12 @@ const onboarding = Astro.url.searchParams.get("onboarding");
         onboarding={onboarding === "1"}
         client:load
       />
+      <a
+        href="/dogs"
+        class="mt-4 block text-center text-sm text-purple-300 transition-colors hover:text-purple-100 hover:underline"
+      >
+        Your dogs →
+      </a>
     </div>
   </div>
 </Layout>
