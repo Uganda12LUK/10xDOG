@@ -1,10 +1,10 @@
 ---
 change_id: dog-profile
 title: Dog profile (create + edit) — S-02
-status: implemented
+status: archived
 created: 2026-09-24
 updated: 2026-09-24
-archived_at: null
+archived_at: 2026-09-24T19:18:12Z
 ---
 
 ## Notes
