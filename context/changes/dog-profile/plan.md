@@ -249,7 +249,7 @@ Add the `/dogs` section: a list of the user's dogs plus add/edit forms, gate `/d
 #### Automated
 
 - [ ] 2.1 Lint passes on app source (`npm run lint`)
-- [x] 2.2 Build passes (`npm run build`)
+- [x] 2.2 Build passes (`npm run build`) — 31098e5
 
 #### Manual
 
@@ -262,7 +262,7 @@ Add the `/dogs` section: a list of the user's dogs plus add/edit forms, gate `/d
 #### Automated
 
 - [ ] 3.1 Lint passes on app source (`npm run lint`)
-- [ ] 3.2 Build passes (`npm run build`)
+- [x] 3.2 Build passes (`npm run build`)
 
 #### Manual
 
