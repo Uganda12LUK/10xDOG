@@ -273,7 +273,7 @@ Add the protected `/profile` page with a create-or-edit React island form (inclu
 
 #### Manual
 
-- [ ] 3.4 No-profile user redirected to `/profile?onboarding=1` but can still navigate away
-- [ ] 3.5 Create shows saved state; reopen shows pre-filled form + photo preview
+- [x] 3.4 No-profile user redirected to `/profile?onboarding=1` but can still navigate away
+- [x] 3.5 Create shows saved state; reopen shows pre-filled form + photo preview
 - [ ] 3.6 Page usable at mobile width
-- [ ] 3.7 After profile exists, onboarding redirect no longer fires
+- [x] 3.7 After profile exists, onboarding redirect no longer fires
