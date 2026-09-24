@@ -246,7 +246,7 @@ Add the protected `/profile` page with a create-or-edit React island form (inclu
 #### Manual
 
 - [x] 1.4 RLS: anonymous select refused; authenticated user cannot insert a row with a foreign `id`
-- [ ] 1.5 `avatars` bucket exists; authenticated upload restricted to own `<uid>/` prefix
+- [x] 1.5 `avatars` bucket exists; authenticated upload restricted to own `<uid>/` prefix
 - [x] 1.6 `/profile` while logged out redirects to `/auth/signin`
 
 ### Phase 2: Profile Backend & Types
@@ -259,9 +259,9 @@ Add the protected `/profile` page with a create-or-edit React island form (inclu
 
 #### Manual
 
-- [ ] 2.4 Valid POST creates then updates the same row (no duplicate)
-- [ ] 2.5 Invalid input redirects with readable `?error=` and persists nothing
-- [ ] 2.6 Uploaded photo lands at `avatars/<uid>/avatar.<ext>` and path stored on row
+- [x] 2.4 Valid POST creates then updates the same row (no duplicate)
+- [x] 2.5 Invalid input redirects with readable `?error=` and persists nothing
+- [x] 2.6 Uploaded photo lands at `avatars/<uid>/avatar.<ext>` and path stored on row
 
 ### Phase 3: Profile UI & Onboarding
 
@@ -275,5 +275,5 @@ Add the protected `/profile` page with a create-or-edit React island form (inclu
 
 - [x] 3.4 No-profile user redirected to `/profile?onboarding=1` but can still navigate away
 - [x] 3.5 Create shows saved state; reopen shows pre-filled form + photo preview
-- [ ] 3.6 Page usable at mobile width
+- [x] 3.6 Page usable at mobile width
 - [x] 3.7 After profile exists, onboarding redirect no longer fires
