@@ -33,9 +33,7 @@ const saved = Astro.url.searchParams.get("saved");
       </div>
 
       {error ? (
-        <p class="mb-4 rounded-lg border border-red-500/30 bg-red-900/30 px-3 py-2 text-sm text-red-300">
-          {error}
-        </p>
+        <p class="mb-4 rounded-lg border border-red-500/30 bg-red-900/30 px-3 py-2 text-sm text-red-300">{error}</p>
       ) : null}
 
       {saved === "1" ? (
@@ -72,9 +70,7 @@ const saved = Astro.url.searchParams.get("saved");
                   <div class="min-w-0">
                     <p class="truncate font-medium text-white">{dog.name}</p>
                     <p class="truncate text-sm text-blue-100/70">{dog.breed}</p>
-                    {age !== null ? (
-                      <p class="text-xs text-blue-100/60">{age} yrs</p>
-                    ) : null}
+                    {age !== null ? <p class="text-xs text-blue-100/60">{age} yrs</p> : null}
                   </div>
                 </a>
               </li>

@@ -14,10 +14,6 @@ if (supabase && user && id) {
   dog = await getDog(supabase, id);
 }
 
-if (!dog) {
-  return Astro.redirect("/dogs");
-}
-
 const error = Astro.url.searchParams.get("error");
 ---
 
@@ -27,17 +23,25 @@ const error = Astro.url.searchParams.get("error");
       <h1 class="mb-6 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-center text-2xl font-bold text-transparent">
         Edit dog
       </h1>
-      <DogForm dog={dog} serverError={error} client:load />
+      {dog ? (
+        <Fragment>
+          <DogForm dog={dog} serverError={error} client:load />
 
-      <form method="POST" action={`/api/dogs/${dog.id}`} class="mt-4 text-center">
-        <input type="hidden" name="_action" value="delete" />
-        <button
-          type="submit"
-          class="text-sm text-red-300 transition-colors hover:text-red-200 hover:underline"
-        >
-          Delete dog
-        </button>
-      </form>
+          <form method="POST" action={`/api/dogs/${dog.id}`} class="mt-4 text-center">
+            <input type="hidden" name="_action" value="delete" />
+            <button type="submit" class="text-sm text-red-300 transition-colors hover:text-red-200 hover:underline">
+              Delete dog
+            </button>
+          </form>
+        </Fragment>
+      ) : (
+        <p class="text-center text-blue-100/70">
+          Dog not found.{" "}
+          <a href="/dogs" class="text-purple-300 hover:underline">
+            Back to your dogs
+          </a>
+        </p>
+      )}
     </div>
   </div>
 </Layout>

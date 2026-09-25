@@ -42,11 +42,7 @@ function extensionFor(file: File): string {
 }
 
 export async function listDogs(client: SupabaseClient, ownerId: string): Promise<Dog[]> {
-  const result = await client
-    .from("dogs")
-    .select("*")
-    .eq("owner_id", ownerId)
-    .order("created_at", { ascending: true });
+  const result = await client.from("dogs").select("*").eq("owner_id", ownerId).order("created_at", { ascending: true });
 
   if (result.error) {
     throw new Error(result.error.message);
@@ -121,12 +117,7 @@ export async function createDog(client: SupabaseClient, ownerId: string, input: 
   return mapRow(client, created);
 }
 
-export async function updateDog(
-  client: SupabaseClient,
-  ownerId: string,
-  id: string,
-  input: DogInput,
-): Promise<Dog> {
+export async function updateDog(client: SupabaseClient, ownerId: string, id: string, input: DogInput): Promise<Dog> {
   const row: {
     name: string;
     breed: string;

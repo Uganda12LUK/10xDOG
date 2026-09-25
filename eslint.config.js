@@ -79,6 +79,9 @@ const scriptsConfig = defineConfig({
 
 export default defineConfig(
   includeIgnoreFile(gitignorePath),
+  // Course tooling: the /10x-* skill scripts live outside tsconfig and break the
+  // type-aware projectService parser; they are not part of the app, so skip them.
+  { ignores: [".claude/**"] },
   baseConfig,
   reactConfig,
   eslintPluginAstro.configs["flat/recommended"],
