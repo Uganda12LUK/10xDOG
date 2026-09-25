@@ -25,6 +25,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
     }
   }
 
+  // Redirect logged-in users away from the landing page to the dashboard.
+  if (context.locals.user && pathname === "/") {
+    return context.redirect("/dashboard");
+  }
+
   // Soft onboarding: nudge logged-in users with no profile toward /profile,
   // without trapping them (skip /profile itself, plus API and auth paths).
   if (

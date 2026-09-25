@@ -1,13 +1,14 @@
 ---
 import "../styles/global.css";
 import Banner from "@/components/Banner.astro";
+import Topbar from "@/components/Topbar.astro";
 import { missingConfigs } from "@/lib/config-status";
 
 interface Props {
   title?: string;
 }
 
-const { title = "10x Astro Starter" } = Astro.props;
+const { title = "PawMeet" } = Astro.props;
 ---
 
 <!doctype html>
@@ -33,7 +34,12 @@ const { title = "10x Astro Starter" } = Astro.props;
         )}
       </Banner>
     ))}
-    <slot />
+    <div class="bg-cosmic min-h-screen">
+      <div class="p-4">
+        <Topbar />
+      </div>
+      <slot />
+    </div>
   </body>
 </html>
 
