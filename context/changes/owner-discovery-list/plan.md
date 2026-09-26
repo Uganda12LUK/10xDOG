@@ -270,34 +270,34 @@ reachable from every page.
 
 #### Automated
 
-- [x] 1.1 npm run lint passes
-- [x] 1.2 npm run build passes
+- [x] 1.1 npm run lint passes — f36c5aa
+- [x] 1.2 npm run build passes — f36c5aa
 
 #### Manual
 
-- [x] 1.3 listOwners importable with no TypeScript errors at call sites
+- [x] 1.3 listOwners importable with no TypeScript errors at call sites — f36c5aa
 
 ### Phase 2: Pages
 
 #### Automated
 
-- [ ] 2.1 npm run lint passes
-- [ ] 2.2 npm run build passes
+- [x] 2.1 npm run lint passes
+- [x] 2.2 npm run build passes
 
 #### Manual
 
-- [ ] 2.3 /owners renders owner cards when logged in
+- [x] 2.3 /owners renders owner cards when logged in
 - [ ] 2.4 District fallback banner appears when district yields 0 results
-- [ ] 2.5 Clicking a card navigates to /owners/[id] with owner profile and dogs
-- [ ] 2.6 Send walk invitation button visible but disabled on /owners/[id]
+- [x] 2.5 Clicking a card navigates to /owners/[id] with owner profile and dogs
+- [x] 2.6 Send walk invitation button visible but disabled on /owners/[id]
 - [ ] 2.7 Visiting /owners/own-user-id redirects to /profile
 
 ### Phase 3: Navigation
 
 #### Automated
 
-- [ ] 3.1 npm run lint passes
-- [ ] 3.2 npm run build passes
+- [x] 3.1 npm run lint passes
+- [x] 3.2 npm run build passes
 
 #### Manual
 
