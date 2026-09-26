@@ -209,24 +209,24 @@ for (const [id, profile] of fetched) profileMap.set(id, profile);
 
 #### Automated
 
-- [x] 1.1 npm run lint passes
-- [x] 1.2 npm run build passes
+- [x] 1.1 npm run lint passes — 58f1165
+- [x] 1.2 npm run build passes — 58f1165
 
 #### Manual
 
-- [x] 1.3 Button w /owners/[id] renderuje się fioletowo (bg-primary = purple-600)
-- [x] 1.4 npm run dev uruchamia się bez błędów
+- [x] 1.3 Button w /owners/[id] renderuje się fioletowo (bg-primary = purple-600) — 58f1165
+- [x] 1.4 npm run dev uruchamia się bez błędów — 58f1165
 
 ### Phase 2: Migracja widoku /meetings + N+1 fix
 
 #### Automated
 
-- [ ] 2.1 npm run lint passes
-- [ ] 2.2 npm run build passes
+- [x] 2.1 npm run lint passes
+- [x] 2.2 npm run build passes
 
 #### Manual
 
-- [ ] 2.3 /meetings renderuje się poprawnie: karty widoczne, badge fioletowy, linki fioletowe
-- [ ] 2.4 N+1 fix: 1 zapytanie profilowe zamiast N (widoczne w Network tab)
-- [ ] 2.5 Empty state widoczny i poprawny
-- [ ] 2.6 Wizualnie spójne z poprzednim wyglądem
+- [x] 2.3 /meetings renderuje się poprawnie: karty widoczne, badge fioletowy, linki fioletowe
+- [x] 2.4 N+1 fix: 1 zapytanie profilowe zamiast N (widoczne w Network tab)
+- [x] 2.5 Empty state widoczny i poprawny
+- [x] 2.6 Wizualnie spójne z poprzednim wyglądem
