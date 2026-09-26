@@ -371,19 +371,19 @@ Insert the link between "Owners" and "Profile" in nav order:
 
 #### Automated
 
-- [x] 2.1 npm run lint passes
-- [x] 2.2 npm run build passes
+- [x] 2.1 npm run lint passes — fa0864b
+- [x] 2.2 npm run build passes — fa0864b
 
 #### Manual
 
-- [x] 2.3 All six service functions importable with no TypeScript errors
+- [x] 2.3 All six service functions importable with no TypeScript errors — fa0864b
 
 ### Phase 3: API Routes
 
 #### Automated
 
-- [ ] 3.1 npm run lint passes
-- [ ] 3.2 npm run build passes
+- [x] 3.1 npm run lint passes
+- [x] 3.2 npm run build passes
 
 #### Manual
 
