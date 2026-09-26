@@ -246,22 +246,22 @@ established in F-01 so they don't diverge silently.
 
 #### Manual
 
-- [ ] 1.3 Sign out → /profile redirects to /auth/signin
-- [ ] 1.4 Sign out → /dogs redirects to /auth/signin
-- [ ] 1.5 Supabase dashboard shows RLS enabled on profiles table
-- [ ] 1.6 Supabase dashboard shows RLS enabled on dogs table
+- [x] 1.3 Sign out → /profile redirects to /auth/signin
+- [x] 1.4 Sign out → /dogs redirects to /auth/signin
+- [x] 1.5 Supabase dashboard shows RLS enabled on profiles table
+- [x] 1.6 Supabase dashboard shows RLS enabled on dogs table
 
 ### Phase 2: Seed File
 
 #### Automated
 
-- [ ] 2.1 npx supabase db reset completes without errors
+- [x] 2.1 npx supabase db reset completes without errors
 
 #### Manual
 
-- [ ] 2.2 Profiles table shows 2 seed rows after reset
-- [ ] 2.3 Dogs table shows 2 seed rows after reset
-- [ ] 2.4 Sign in as alice@example.com / devpassword reaches /dashboard
+- [x] 2.2 Profiles table shows 2 seed rows after reset
+- [x] 2.3 Dogs table shows 2 seed rows after reset
+- [x] 2.4 Sign in as alice@example.com / devpassword reaches /dashboard
 
 > `supabase/seed.sql` created — 2 users (alice/bob), 2 profiles, 2 Labrador dogs.
 
