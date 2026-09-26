@@ -33,6 +33,16 @@ export interface OwnerWithDogs {
   dogs: Dog[];
 }
 
+export interface Invitation {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  type: "walk" | "breeding";
+  status: "pending" | "accepted" | "declined";
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface DogInput {
   name: string;
   breed: string;

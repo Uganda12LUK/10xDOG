@@ -359,24 +359,24 @@ Insert the link between "Owners" and "Profile" in nav order:
 
 #### Automated
 
-- [x] 1.1 npm run lint passes
-- [x] 1.2 npm run build passes
+- [x] 1.1 npm run lint passes — d6e6262
+- [x] 1.2 npm run build passes — d6e6262
 
 #### Manual
 
-- [x] 1.3 Migration applied without errors in Supabase
-- [x] 1.4 invitations table visible with correct columns and RLS policies
+- [x] 1.3 Migration applied without errors in Supabase — d6e6262
+- [x] 1.4 invitations table visible with correct columns and RLS policies — d6e6262
 
 ### Phase 2: Types and Service Layer
 
 #### Automated
 
-- [ ] 2.1 npm run lint passes
-- [ ] 2.2 npm run build passes
+- [x] 2.1 npm run lint passes
+- [x] 2.2 npm run build passes
 
 #### Manual
 
-- [ ] 2.3 All six service functions importable with no TypeScript errors
+- [x] 2.3 All six service functions importable with no TypeScript errors
 
 ### Phase 3: API Routes
 
