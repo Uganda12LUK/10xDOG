@@ -168,24 +168,24 @@ card identifies the counterparty and distinguishes walk from breeding meetings.
 
 #### Automated
 
-- [x] 1.1 npm run lint passes
-- [x] 1.2 npm run build passes
+- [x] 1.1 npm run lint passes — f46ca16
+- [x] 1.2 npm run build passes — f46ca16
 
 #### Manual
 
-- [x] 1.3 listAcceptedMeetings importable with no TypeScript errors
+- [x] 1.3 listAcceptedMeetings importable with no TypeScript errors — f46ca16
 
 ### Phase 2: /meetings Page, Nav Link, Protected Route
 
 #### Automated
 
-- [ ] 2.1 npm run lint passes
-- [ ] 2.2 npm run build passes
+- [x] 2.1 npm run lint passes
+- [x] 2.2 npm run build passes
 
 #### Manual
 
-- [ ] 2.3 /meetings shows confirmed meeting cards with name, type badge, and date
-- [ ] 2.4 Empty state shown when no accepted meetings
-- [ ] 2.5 Type badge shows Walk or Breeding correctly
-- [ ] 2.6 /meetings while logged out redirects to /auth/signin
-- [ ] 2.7 Topbar shows Meetings between Invitations and Profile
+- [x] 2.3 /meetings shows confirmed meeting cards with name, type badge, and date
+- [x] 2.4 Empty state shown when no accepted meetings
+- [x] 2.5 Type badge shows Walk or Breeding correctly
+- [x] 2.6 /meetings while logged out redirects to /auth/signin
+- [x] 2.7 Topbar shows Meetings between Invitations and Profile

@@ -1,0 +1,73 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { createClient } from "@/lib/supabase";
+import { listAcceptedMeetings } from "@/lib/services/invitation";
+import { getProfile } from "@/lib/services/profile";
+import type { Invitation, Profile } from "@/types";
+
+const { user } = Astro.locals;
+
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+
+let meetings: Invitation[] = [];
+const profileMap = new Map<string, Profile | null>();
+
+if (supabase && user) {
+  meetings = await listAcceptedMeetings(supabase, user.id);
+
+  // Collect unique counterparty IDs
+  const counterpartyIds = new Set<string>();
+  for (const inv of meetings) {
+    const counterpartyId = inv.senderId === user.id ? inv.receiverId : inv.senderId;
+    counterpartyIds.add(counterpartyId);
+  }
+
+  // Fetch profiles for all counterparties
+  await Promise.all(
+    Array.from(counterpartyIds).map(async (id) => {
+      const profile = await getProfile(supabase, id);
+      profileMap.set(id, profile);
+    }),
+  );
+}
+---
+
+<Layout title="Meetings">
+  <div class="flex justify-center p-4">
+    <div class="w-full max-w-lg text-white">
+      <div class="mb-6 flex items-center justify-between">
+        <h1 class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-2xl font-bold text-transparent">
+          Meetings
+        </h1>
+      </div>
+
+      {meetings.length === 0 ? (
+        <div class="rounded-2xl border border-white/10 bg-white/10 p-8 text-center text-blue-100/80 backdrop-blur-xl">
+          No confirmed meetings yet.{" "}
+          <a href="/owners" class="text-purple-300 hover:underline">
+            Browse owners →
+          </a>
+        </div>
+      ) : (
+        <ul class="space-y-3">
+          {meetings.map((inv) => {
+            const counterpartyId = inv.senderId === user?.id ? inv.receiverId : inv.senderId;
+            const counterparty = profileMap.get(counterpartyId);
+            const counterpartyName = counterparty?.name ?? "Unknown";
+            const typeBadge = inv.type === "walk" ? "Walk" : "Breeding";
+            const acceptedDate = new Date(inv.updatedAt).toLocaleDateString();
+            return (
+              <li class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
+                <div class="flex items-center justify-between">
+                  <span class="font-medium text-white">{counterpartyName}</span>
+                  <span class="rounded-full bg-purple-600/60 px-2 py-0.5 text-xs text-purple-100">{typeBadge}</span>
+                </div>
+                <p class="mt-1 text-sm text-blue-100/60">{acceptedDate}</p>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  </div>
+</Layout>
