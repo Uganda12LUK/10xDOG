@@ -30,13 +30,13 @@ if (supabase && user) {
 
 <Layout title="Meetings">
   <div class="flex justify-center p-4">
-    <div class="w-full max-w-lg text-white">
+    <div class="w-full max-w-lg">
       <div class="mb-6 flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-primary">Meetings</h1>
+        <h1 class="text-2xl font-bold text-foreground">Meetings</h1>
       </div>
 
       {meetings.length === 0 ? (
-        <div class="rounded-2xl border border-border bg-white/10 p-8 text-center text-blue-100/80 backdrop-blur-xl">
+        <div class="rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground">
           No confirmed meetings yet.{" "}
           <a href="/owners" class="text-primary hover:underline">
             Browse owners →
@@ -51,12 +51,10 @@ if (supabase && user) {
             const typeBadge = inv.type === "walk" ? "Walk" : "Breeding";
             const acceptedDate = new Date(inv.updatedAt).toLocaleDateString();
             return (
-              <li class="rounded-2xl border border-border bg-white/10 p-4 backdrop-blur-xl">
+              <li class="rounded-2xl border border-border bg-card p-4">
                 <div class="flex items-center justify-between">
-                  <span class="font-medium text-primary">{counterpartyName}</span>
-                  <span class="rounded-full bg-primary/60 px-2 py-0.5 text-xs text-primary-foreground">
-                    {typeBadge}
-                  </span>
+                  <span class="font-medium text-foreground">{counterpartyName}</span>
+                  <span class="rounded-full bg-accent px-2 py-0.5 text-xs text-accent-foreground">{typeBadge}</span>
                 </div>
                 <p class="mt-1 text-sm text-muted-foreground">{acceptedDate}</p>
               </li>
