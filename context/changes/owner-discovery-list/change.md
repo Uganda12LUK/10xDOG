@@ -2,7 +2,7 @@
 id: owner-discovery-list
 roadmap_id: S-03
 title: "Owner discovery list"
-status: implementing
+status: done
 created: 2026-09-26
 updated: 2026-09-26
 ---

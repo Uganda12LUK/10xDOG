@@ -3,7 +3,7 @@ project: PawMeet
 version: 1
 status: draft
 created: 2026-09-22
-updated: 2026-09-24
+updated: 2026-09-26
 prd_version: 1
 main_goal: market-feedback
 top_blocker: decisions
@@ -41,10 +41,10 @@ Nowy właściciel psa w krytycznym oknie socjalizacji nie ma dedykowanego narzę
 
 | ID   | Change ID                 | Outcome (użytkownik może …)                                   | Prerequisites | PRD refs              | Status   |
 | ---- | ------------------------- | ------------------------------------------------------------- | ------------- | --------------------- | -------- |
-| F-01 | data-privacy-baseline     | (foundation) migracje + wzorzec RLS + gating tras za loginem  | —             | FR-001, NFR-prywatność, Access Control | ready    |
+| F-01 | data-privacy-baseline     | (foundation) migracje + wzorzec RLS + gating tras za loginem  | —             | FR-001, NFR-prywatność, Access Control | in-progress |
 | S-01 | owner-profile             | tworzy i edytuje profil właściciela (imię, foto, dzielnica)   | F-01          | FR-002, US-01         | done |
 | S-02 | dog-profile               | tworzy i edytuje profil psa (imię, rasa, wiek, foto)          | F-01          | FR-003, US-01         | done |
-| S-03 | owner-discovery-list      | przegląda listę właścicieli w swojej dzielnicy/mieście        | S-01, S-02    | FR-004, US-01         | proposed |
+| S-03 | owner-discovery-list      | przegląda listę właścicieli w swojej dzielnicy/mieście        | S-01, S-02    | FR-004, US-01         | done |
 | S-04 | walk-invitation-loop      | wysyła zaproszenie na spacer; odbiorca potwierdza/odrzuca      | S-03          | FR-005, FR-006, US-01 | proposed |
 | S-05 | scheduled-meetings-view   | widzi swoje potwierdzone spotkania w zakładce spotkań         | S-04          | FR-007, US-01         | proposed |
 | S-06 | breeding-availability-flag| oznacza psa jako dostępnego do hodowli (przełącznik)          | S-02          | FR-009, US-02         | proposed |
@@ -85,7 +85,7 @@ Co jest już w kodzie na dzień `2026-09-22` (auto-researched + potwierdzone prz
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Sekwencjonowany pierwszy, bo bez wzorca RLS każdy kolejny slice ryzykuje wyciek danych (guardrail PRD). Trzymać go minimalnym — sam wzorzec + gating tras; konkretne tabele powstają w slice'ach, które ich używają (progresywne odsłanianie). Ryzyko: przeciążenie foundationu w „całą warstwę danych" — świadomie unikane.
-- **Status:** ready
+- **Status:** in-progress
 
 ## Slices
 
@@ -125,7 +125,7 @@ Co jest już w kodzie na dzień `2026-09-22` (auto-researched + potwierdzone prz
 - **Unknowns:**
   - Cold-start: co pokazać, gdy lista jest pusta (empty state / seed / szerszy obszar)? — Owner: user. Block: no (przepływ działa, UX słaby przy pustej liście — OQ-001).
 - **Risk:** Wymaga istniejących profili właściciela i psa, stąd po S-01/S-02. NFR responsywności (<2s) do pilnowania w /10x-plan. Równoległy z torem hodowlanym.
-- **Status:** proposed
+- **Status:** done
 
 ### S-04: Pętla zaproszenia na spacer
 

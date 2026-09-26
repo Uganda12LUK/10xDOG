@@ -301,6 +301,6 @@ reachable from every page.
 
 #### Manual
 
-- [ ] 3.3 Owners link appears in top nav on every page when logged in
-- [ ] 3.4 /owners while logged out redirects to /auth/signin
-- [ ] 3.5 /owners/some-id while logged out redirects to /auth/signin
+- [x] 3.3 Owners link appears in top nav on every page when logged in — deca4b2
+- [x] 3.4 /owners while logged out redirects to /auth/signin — deca4b2
+- [x] 3.5 /owners/some-id while logged out redirects to /auth/signin — deca4b2
