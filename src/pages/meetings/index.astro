@@ -11,20 +11,23 @@ const supabase = createClient(Astro.request.headers, Astro.cookies);
 
 let meetings: Invitation[] = [];
 const profileMap = new Map<string, Profile | null>();
+let errorMsg: string | null = null;
 
 if (supabase && user) {
-  meetings = await listAcceptedMeetings(supabase, user.id);
+  try {
+    meetings = await listAcceptedMeetings(supabase, user.id);
 
-  // Collect unique counterparty IDs
-  const counterpartyIds = new Set<string>();
-  for (const inv of meetings) {
-    const counterpartyId = inv.senderId === user.id ? inv.receiverId : inv.senderId;
-    counterpartyIds.add(counterpartyId);
+    const counterpartyIds = new Set<string>();
+    for (const inv of meetings) {
+      const counterpartyId = inv.senderId === user.id ? inv.receiverId : inv.senderId;
+      counterpartyIds.add(counterpartyId);
+    }
+
+    const fetched = await listProfilesByIds(supabase, Array.from(counterpartyIds));
+    for (const [id, profile] of fetched) profileMap.set(id, profile);
+  } catch {
+    errorMsg = "Could not load meetings. Please try again.";
   }
-
-  // Fetch profiles for all counterparties in one batch
-  const fetched = await listProfilesByIds(supabase, Array.from(counterpartyIds));
-  for (const [id, profile] of fetched) profileMap.set(id, profile);
 }
 ---
 
@@ -35,7 +38,11 @@ if (supabase && user) {
         <h1 class="text-2xl font-bold text-foreground">Meetings</h1>
       </div>
 
-      {meetings.length === 0 ? (
+      {errorMsg ? (
+        <div class="rounded-2xl border border-destructive/40 bg-destructive/5 p-8 text-center text-destructive">
+          {errorMsg}
+        </div>
+      ) : meetings.length === 0 ? (
         <div class="rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground">
           No confirmed meetings yet.{" "}
           <a href="/owners" class="text-primary hover:underline">
