@@ -179,13 +179,13 @@ card identifies the counterparty and distinguishes walk from breeding meetings.
 
 #### Automated
 
-- [x] 2.1 npm run lint passes
-- [x] 2.2 npm run build passes
+- [x] 2.1 npm run lint passes — 42abfbc
+- [x] 2.2 npm run build passes — 42abfbc
 
 #### Manual
 
-- [x] 2.3 /meetings shows confirmed meeting cards with name, type badge, and date
-- [x] 2.4 Empty state shown when no accepted meetings
-- [x] 2.5 Type badge shows Walk or Breeding correctly
-- [x] 2.6 /meetings while logged out redirects to /auth/signin
-- [x] 2.7 Topbar shows Meetings between Invitations and Profile
+- [x] 2.3 /meetings shows confirmed meeting cards with name, type badge, and date — 42abfbc
+- [x] 2.4 Empty state shown when no accepted meetings — 42abfbc
+- [x] 2.5 Type badge shows Walk or Breeding correctly — 42abfbc
+- [x] 2.6 /meetings while logged out redirects to /auth/signin — 42abfbc
+- [x] 2.7 Topbar shows Meetings between Invitations and Profile — 42abfbc

@@ -2,7 +2,7 @@
 id: scheduled-meetings-view
 roadmap_id: S-05
 title: "Scheduled meetings view"
-status: implementing
+status: implemented
 created: 2026-09-26
 updated: 2026-09-26
 ---
