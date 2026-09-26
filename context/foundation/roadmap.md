@@ -45,7 +45,7 @@ Nowy właściciel psa w krytycznym oknie socjalizacji nie ma dedykowanego narzę
 | S-01 | owner-profile             | tworzy i edytuje profil właściciela (imię, foto, dzielnica)   | F-01          | FR-002, US-01         | done |
 | S-02 | dog-profile               | tworzy i edytuje profil psa (imię, rasa, wiek, foto)          | F-01          | FR-003, US-01         | done |
 | S-03 | owner-discovery-list      | przegląda listę właścicieli w swojej dzielnicy/mieście        | S-01, S-02    | FR-004, US-01         | done |
-| S-04 | walk-invitation-loop      | wysyła zaproszenie na spacer; odbiorca potwierdza/odrzuca      | S-03          | FR-005, FR-006, US-01 | proposed |
+| S-04 | walk-invitation-loop      | wysyła zaproszenie na spacer; odbiorca potwierdza/odrzuca      | S-03          | FR-005, FR-006, US-01 | done |
 | S-05 | scheduled-meetings-view   | widzi swoje potwierdzone spotkania w zakładce spotkań         | S-04          | FR-007, US-01         | proposed |
 | S-06 | breeding-availability-flag| oznacza psa jako dostępnego do hodowli (przełącznik)          | S-02          | FR-009, US-02         | proposed |
 | S-07 | breeding-discovery-list   | przegląda psy tej samej rasy oznaczone do hodowli             | S-06          | FR-010, US-02         | proposed |
@@ -138,7 +138,7 @@ Co jest już w kodzie na dzień `2026-09-22` (auto-researched + potwierdzone prz
 - **Unknowns:**
   - Czy sama para zaproszenie/potwierdzenie wystarcza do koordynacji szczegółów (czas, miejsce), czy potrzebny czat in-app? — Owner: user. Block: no (pętla jest w pełni wyspecyfikowana i działa bez czatu; czat to potencjalne rozszerzenie — OQ-002).
 - **Risk:** GWIAZDA PRZEWODNIA — najbardziej ryzykowne założenie (dwustronne skojarzenie). Integralność przepływu zaproszenie→potwierdzenie to guardrail PRD (zaproszenie trafia wyłącznie do wybranego użytkownika). Cykl stanów tu zbudowany jest reużywany przez S-08.
-- **Status:** proposed
+- **Status:** in-progress
 
 ### S-05: Widok zaplanowanych spotkań
 
