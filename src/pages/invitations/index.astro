@@ -2,7 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
 import { listReceivedPending, listSentPending } from "@/lib/services/invitation";
-import { getProfile } from "@/lib/services/profile";
+import { listProfilesByIds } from "@/lib/services/profile";
 import type { Invitation, Profile } from "@/types";
 
 const { user } = Astro.locals;
@@ -19,22 +19,12 @@ if (supabase && user) {
     listSentPending(supabase, user.id),
   ]);
 
-  // Collect all unique counterparty IDs
   const counterpartyIds = new Set<string>();
-  for (const inv of receivedInvitations) {
-    counterpartyIds.add(inv.senderId);
-  }
-  for (const inv of sentInvitations) {
-    counterpartyIds.add(inv.receiverId);
-  }
+  for (const inv of receivedInvitations) counterpartyIds.add(inv.senderId);
+  for (const inv of sentInvitations) counterpartyIds.add(inv.receiverId);
 
-  // Fetch profiles for all counterparties
-  await Promise.all(
-    Array.from(counterpartyIds).map(async (id) => {
-      const profile = await getProfile(supabase, id);
-      profileMap.set(id, profile);
-    }),
-  );
+  const fetched = await listProfilesByIds(supabase, Array.from(counterpartyIds));
+  for (const [id, profile] of fetched) profileMap.set(id, profile);
 }
 
 const saved = Astro.url.searchParams.get("saved");

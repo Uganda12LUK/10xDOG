@@ -11,6 +11,7 @@ const invitationSchema = z.object({
 });
 
 export const POST: APIRoute = async (context) => {
+  // formData before supabase check: need rawReceiverId for redirect URLs on all error paths
   const form = await context.request.formData();
   const rawReceiverId = (form.get("receiver_id") as string | null) ?? "";
 
@@ -43,9 +44,10 @@ export const POST: APIRoute = async (context) => {
 
   try {
     await sendInvitation(supabase, user.id, receiver_id, type);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to send invitation";
-    return context.redirect(`/owners/${receiver_id}?error=${encodeURIComponent(message)}`);
+  } catch {
+    return context.redirect(
+      `/owners/${receiver_id}?error=${encodeURIComponent("Something went wrong. Please try again.")}`,
+    );
   }
 
   return context.redirect(`/owners/${receiver_id}?sent=1`);

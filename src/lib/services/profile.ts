@@ -151,6 +151,19 @@ export async function listOwners(
     .sort((a, b) => a.profile.name.localeCompare(b.profile.name));
 }
 
+export async function listProfilesByIds(client: SupabaseClient, ids: string[]): Promise<Map<string, Profile>> {
+  if (ids.length === 0) return new Map();
+  const result = await client.from("profiles").select("*").in("id", ids);
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+  const map = new Map<string, Profile>();
+  for (const row of result.data as ProfileRow[]) {
+    map.set(row.id, mapRow(client, row));
+  }
+  return map;
+}
+
 export async function upsertProfile(client: SupabaseClient, userId: string, input: ProfileUpsert): Promise<Profile> {
   const row: {
     id: string;

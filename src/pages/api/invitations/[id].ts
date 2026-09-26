@@ -11,7 +11,7 @@ const actionSchema = z.object({
 
 export const POST: APIRoute = async (context) => {
   const id = context.params.id;
-  if (!id) {
+  if (!id || !z.uuid().safeParse(id).success) {
     return context.redirect("/invitations");
   }
 
@@ -41,9 +41,8 @@ export const POST: APIRoute = async (context) => {
 
   try {
     await respondToInvitation(supabase, user.id, id, response);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to respond to invitation";
-    return context.redirect(`/invitations?error=${encodeURIComponent(message)}`);
+  } catch {
+    return context.redirect(`/invitations?error=${encodeURIComponent("Something went wrong. Please try again.")}`);
   }
 
   return context.redirect("/invitations?saved=1");

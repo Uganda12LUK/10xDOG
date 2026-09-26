@@ -308,6 +308,11 @@ call `countReceivedPending`. Render: `Invitations{count > 0 ? ` (${count})` : ''
 Insert the link between "Owners" and "Profile" in nav order:
 `Dashboard | Owners | Invitations (N) | Profile | Dogs | Sign out`.
 
+> **FORWARD (S-05)**: A "Meetings" nav link pointing to `/meetings` was also
+> added to Topbar in this phase as forward-scaffolding for S-05
+> (scheduled-meetings-view). The route and page for `/meetings` are implemented
+> in S-05, not here.
+
 ### Success Criteria
 
 #### Automated Verification

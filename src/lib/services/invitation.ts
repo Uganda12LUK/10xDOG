@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { z } from "zod";
 import type { Invitation } from "@/types";
 
 interface InvitationRow {
@@ -101,16 +102,34 @@ export async function countReceivedPending(client: SupabaseClient, userId: strin
   return result.count ?? 0;
 }
 
+export async function listAcceptedMeetings(client: SupabaseClient, userId: string): Promise<Invitation[]> {
+  z.uuid().parse(userId);
+  const result = await client
+    .from("invitations")
+    .select("*")
+    .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`)
+    .eq("status", "accepted")
+    .order("updated_at", { ascending: false });
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+  return (result.data as InvitationRow[]).map(mapRow);
+}
+
 export async function respondToInvitation(
   client: SupabaseClient,
   userId: string,
   invitationId: string,
   response: "accepted" | "declined",
 ): Promise<Invitation> {
-  // userId is accepted for call-site clarity; RLS enforces receiver_id = auth.uid().
-  const _ = userId;
-
-  const result = await client.from("invitations").update({ status: response }).eq("id", invitationId).select().single();
+  const result = await client
+    .from("invitations")
+    .update({ status: response })
+    .eq("id", invitationId)
+    .eq("receiver_id", userId)
+    .select()
+    .single();
 
   if (result.error) {
     throw new Error(result.error.message);
