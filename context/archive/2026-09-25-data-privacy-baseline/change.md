@@ -2,9 +2,10 @@
 id: data-privacy-baseline
 roadmap_id: F-01
 title: "Data-privacy baseline"
-status: implemented
+status: archived
+archived_at: 2026-09-26T13:14:20Z
 created: 2026-09-25
-updated: 2026-09-25
+updated: 2026-09-26
 ---
 
 ## Summary
