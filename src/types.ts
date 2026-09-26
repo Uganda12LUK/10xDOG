@@ -28,6 +28,11 @@ export interface Dog {
   updatedAt: string;
 }
 
+export interface OwnerWithDogs {
+  profile: Profile;
+  dogs: Dog[];
+}
+
 export interface DogInput {
   name: string;
   breed: string;

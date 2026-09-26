@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Profile } from "@/types";
+import type { Dog, OwnerWithDogs, Profile } from "@/types";
 
 const AVATAR_BUCKET = "avatars";
 
@@ -75,6 +75,80 @@ export async function uploadAvatar(client: SupabaseClient, userId: string, file:
     throw new Error(error.message);
   }
   return path;
+}
+
+interface DogRow {
+  id: string;
+  owner_id: string;
+  name: string;
+  breed: string;
+  birthdate: string | null;
+  photo_path: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+function mapDogRow(client: SupabaseClient, row: DogRow): Dog {
+  const photoUrl = row.photo_path
+    ? client.storage.from(AVATAR_BUCKET).getPublicUrl(row.photo_path).data.publicUrl
+    : null;
+
+  return {
+    id: row.id,
+    ownerId: row.owner_id,
+    name: row.name,
+    breed: row.breed,
+    birthdate: row.birthdate,
+    photoPath: row.photo_path,
+    photoUrl,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+export async function listOwners(
+  client: SupabaseClient,
+  userId: string,
+  city: string,
+  district?: string | null,
+): Promise<OwnerWithDogs[]> {
+  let profileQuery = client.from("profiles").select("*").eq("city", city).neq("id", userId);
+  if (district != null) {
+    profileQuery = profileQuery.eq("district", district);
+  }
+
+  const profileResult = await profileQuery;
+  if (profileResult.error) {
+    throw new Error(profileResult.error.message);
+  }
+
+  const profiles = (profileResult.data as ProfileRow[]).map((row) => mapRow(client, row));
+
+  if (profiles.length === 0) {
+    return [];
+  }
+
+  const profileIds = profiles.map((p) => p.id);
+
+  const dogResult = await client.from("dogs").select("*").in("owner_id", profileIds);
+  if (dogResult.error) {
+    throw new Error(dogResult.error.message);
+  }
+
+  const dogsByOwner = new Map<string, Dog[]>();
+  for (const row of dogResult.data as DogRow[]) {
+    const dog = mapDogRow(client, row);
+    const existing = dogsByOwner.get(dog.ownerId);
+    if (existing) {
+      existing.push(dog);
+    } else {
+      dogsByOwner.set(dog.ownerId, [dog]);
+    }
+  }
+
+  return profiles
+    .map((profile) => ({ profile, dogs: dogsByOwner.get(profile.id) ?? [] }))
+    .sort((a, b) => a.profile.name.localeCompare(b.profile.name));
 }
 
 export async function upsertProfile(client: SupabaseClient, userId: string, input: ProfileUpsert): Promise<Profile> {
