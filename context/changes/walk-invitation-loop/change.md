@@ -2,7 +2,7 @@
 id: walk-invitation-loop
 roadmap_id: S-04
 title: "Walk invitation loop"
-status: implementing
+status: implemented
 created: 2026-09-26
 updated: 2026-09-26
 ---

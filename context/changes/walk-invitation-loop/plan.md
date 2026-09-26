@@ -387,24 +387,24 @@ Insert the link between "Owners" and "Profile" in nav order:
 
 #### Manual
 
-- [ ] 3.3 POST /api/invitations creates row in invitations table
-- [ ] 3.4 POST /api/invitations/[id] with _action=accept updates status to accepted
-- [ ] 3.5 POST /api/invitations/[id] with _action=decline updates status to declined
-- [ ] 3.6 Invalid receiver_id returns redirect with ?error=
+- [x] 3.3 POST /api/invitations creates row in invitations table — 0cd3d5c
+- [x] 3.4 POST /api/invitations/[id] with _action=accept updates status to accepted — 0cd3d5c
+- [x] 3.5 POST /api/invitations/[id] with _action=decline updates status to declined — 0cd3d5c
+- [x] 3.6 Invalid receiver_id returns redirect with ?error= — 0cd3d5c
 
 ### Phase 4: UI and Navigation
 
 #### Automated
 
-- [x] 4.1 npm run lint passes
-- [x] 4.2 npm run build passes
+- [x] 4.1 npm run lint passes — fc8d9bc
+- [x] 4.2 npm run build passes — fc8d9bc
 
 #### Manual
 
-- [ ] 4.3 Active Send button on /owners/[id] when no pending invitation
-- [ ] 4.4 Button becomes disabled after sending; ?sent=1 banner shown
-- [ ] 4.5 /invitations inbox shows incoming pending with Accept/Decline buttons
-- [ ] 4.6 Accept removes invitation from inbox
-- [ ] 4.7 Decline removes invitation from inbox
-- [ ] 4.8 Topbar badge shows count when pending received; absent when 0
-- [ ] 4.9 /invitations while logged out redirects to /auth/signin
+- [x] 4.3 Active Send button on /owners/[id] when no pending invitation — fc8d9bc
+- [x] 4.4 Button becomes disabled after sending; ?sent=1 banner shown — fc8d9bc
+- [x] 4.5 /invitations inbox shows incoming pending with Accept/Decline buttons — fc8d9bc
+- [x] 4.6 Accept removes invitation from inbox — fc8d9bc
+- [x] 4.7 Decline removes invitation from inbox — fc8d9bc
+- [x] 4.8 Topbar badge shows count when pending received; absent when 0 — fc8d9bc
+- [x] 4.9 /invitations while logged out redirects to /auth/signin — fc8d9bc
