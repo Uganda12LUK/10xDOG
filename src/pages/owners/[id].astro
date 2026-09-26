@@ -3,6 +3,7 @@ import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
 import { getProfile } from "@/lib/services/profile";
 import { listDogs } from "@/lib/services/dog";
+import { hasPendingInvitation } from "@/lib/services/invitation";
 import type { Dog, Profile } from "@/types";
 
 const { user } = Astro.locals;
@@ -12,14 +13,22 @@ const supabase = createClient(Astro.request.headers, Astro.cookies);
 
 let profile: Profile | null = null;
 let dogs: Dog[] = [];
+let pendingInvitation = false;
 const isOwnProfile = user && id ? id === user.id : false;
+const ownerId = id ?? "";
 
 if (supabase && id && !isOwnProfile) {
   profile = await getProfile(supabase, id);
   if (profile) {
     dogs = await listDogs(supabase, id);
+    if (user) {
+      pendingInvitation = await hasPendingInvitation(supabase, user.id, id);
+    }
   }
 }
+
+const sent = Astro.url.searchParams.get("sent");
+const error = Astro.url.searchParams.get("error");
 ---
 
 <Layout title={profile?.name ?? "Owner"}>
@@ -84,13 +93,36 @@ if (supabase && id && !isOwnProfile) {
           </div>
         ) : null}
 
-        {/* S-04: wire invitation API here */}
-        <button
-          disabled
-          class="mt-6 w-full cursor-not-allowed rounded-lg bg-purple-600/50 px-4 py-2 text-sm font-medium text-white/50"
-        >
-          Send walk invitation
-        </button>
+        {sent === "1" ? (
+          <div class="mt-4 rounded-lg border border-green-500/30 bg-green-900/30 px-3 py-2 text-sm text-green-200">
+            Walk invitation sent!
+          </div>
+        ) : null}
+        {error ? (
+          <div class="mt-4 rounded-lg border border-red-500/30 bg-red-900/30 px-3 py-2 text-sm text-red-200">
+            {error}
+          </div>
+        ) : null}
+
+        {pendingInvitation ? (
+          <button
+            disabled
+            class="mt-6 w-full cursor-not-allowed rounded-lg bg-purple-600/50 px-4 py-2 text-sm font-medium text-white/50"
+          >
+            Invitation sent — awaiting response
+          </button>
+        ) : (
+          <form method="POST" action="/api/invitations" class="mt-6">
+            <input type="hidden" name="receiver_id" value={ownerId} />
+            <input type="hidden" name="type" value="walk" />
+            <button
+              type="submit"
+              class="w-full rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+            >
+              Send walk invitation
+            </button>
+          </form>
+        )}
 
         <div class="mt-4 text-center">
           <a href="/owners" class="text-sm text-purple-300 hover:underline">

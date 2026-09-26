@@ -382,8 +382,8 @@ Insert the link between "Owners" and "Profile" in nav order:
 
 #### Automated
 
-- [x] 3.1 npm run lint passes
-- [x] 3.2 npm run build passes
+- [x] 3.1 npm run lint passes — 0cd3d5c
+- [x] 3.2 npm run build passes — 0cd3d5c
 
 #### Manual
 
@@ -396,8 +396,8 @@ Insert the link between "Owners" and "Profile" in nav order:
 
 #### Automated
 
-- [ ] 4.1 npm run lint passes
-- [ ] 4.2 npm run build passes
+- [x] 4.1 npm run lint passes
+- [x] 4.2 npm run build passes
 
 #### Manual
 
