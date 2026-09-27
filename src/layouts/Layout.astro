@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Banner from "@/components/Banner.astro";
+import BottomNav from "@/components/BottomNav.astro";
 import Topbar from "@/components/Topbar.astro";
 import { missingConfigs } from "@/lib/config-status";
 
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const { title = "PawMeet" } = Astro.props;
+const { user } = Astro.locals;
 ---
 
 <!doctype html>
@@ -40,12 +42,13 @@ const { title = "PawMeet" } = Astro.props;
         )}
       </Banner>
     ))}
-    <div class="bg-background min-h-screen">
+    <div class:list={["bg-background min-h-screen", { "pb-[70px]": !!user }]}>
       <div class="p-4">
         <Topbar />
       </div>
       <slot />
     </div>
+    {user && <BottomNav currentPath={Astro.url.pathname} />}
   </body>
 </html>
 

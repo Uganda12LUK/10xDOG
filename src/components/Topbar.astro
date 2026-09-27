@@ -13,31 +13,31 @@ if (user) {
 }
 ---
 
-<div class="mb-4 flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80">
+<div class="mb-4 hidden items-center justify-between rounded-xl border border-border bg-card px-4 py-2 text-sm text-card-foreground md:flex">
   {user ? (
     <>
-      <span class="text-blue-100/70">{user.email}</span>
+      <span class="text-muted-foreground">{user.email}</span>
       <div class="flex items-center gap-3">
-        <a href="/dashboard" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
+        <a href="/dashboard" class="text-primary transition-colors hover:text-primary/80 hover:underline">
           Dashboard
         </a>
-        <a href="/owners" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
+        <a href="/owners" class="text-primary transition-colors hover:text-primary/80 hover:underline">
           Owners
         </a>
-        <a href="/invitations" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
+        <a href="/invitations" class="text-primary transition-colors hover:text-primary/80 hover:underline">
           Invitations{pendingCount > 0 ? ` (${pendingCount})` : ""}
         </a>
-        <a href="/meetings" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
+        <a href="/meetings" class="text-primary transition-colors hover:text-primary/80 hover:underline">
           Meetings
         </a>
-        <a href="/profile" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
+        <a href="/profile" class="text-primary transition-colors hover:text-primary/80 hover:underline">
           Profile
         </a>
-        <a href="/dogs" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
+        <a href="/dogs" class="text-primary transition-colors hover:text-primary/80 hover:underline">
           Dogs
         </a>
         <form method="POST" action="/api/auth/signout">
-          <button type="submit" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
+          <button type="submit" class="text-primary transition-colors hover:text-primary/80 hover:underline">
             Sign out
           </button>
         </form>
@@ -45,12 +45,12 @@ if (user) {
     </>
   ) : (
     <>
-      <span class="text-blue-100/70">Not signed in</span>
+      <span class="text-muted-foreground">Not signed in</span>
       <div class="flex gap-3">
-        <a href="/auth/signin" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
+        <a href="/auth/signin" class="text-primary transition-colors hover:text-primary/80 hover:underline">
           Sign in
         </a>
-        <a href="/auth/signup" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
+        <a href="/auth/signup" class="text-primary transition-colors hover:text-primary/80 hover:underline">
           Sign up
         </a>
       </div>

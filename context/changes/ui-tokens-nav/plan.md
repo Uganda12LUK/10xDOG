@@ -219,20 +219,20 @@ Ikony jako inline SVG (stroke-based, 24x24 viewBox). Wzorzec z `Welcome.astro`.
 
 #### Automated
 
-- [ ] 1.1 npm run lint — 0 błędów
+- [x] 1.1 npm run lint — 0 błędów — 750f639
 
 #### Manual
 
-- [ ] 1.2 DevTools :root ma --shadow-card i --radius: 1rem
-- [ ] 1.3 DevTools body font-family zaczyna się od Inter
-- [ ] 1.4 Istniejące karty mają większe zaokrąglenie
+- [x] 1.2 DevTools :root ma --shadow-card i --radius: 1rem — 750f639
+- [x] 1.3 DevTools body font-family zaczyna się od Inter — 750f639
+- [x] 1.4 Istniejące karty mają większe zaokrąglenie — 750f639
 
 ### Phase 2: BottomNav
 
 #### Automated
 
-- [ ] 2.1 npm run lint — 0 błędów
-- [ ] 2.2 npm run build — brak błędów TypeScript/Astro
+- [x] 2.1 npm run lint — 0 błędów
+- [x] 2.2 npm run build — brak błędów TypeScript/Astro
 
 #### Manual
 
