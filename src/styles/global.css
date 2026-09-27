@@ -178,4 +178,16 @@
   .card-interactive {
     @apply active:scale-[0.98] transition-transform duration-75;
   }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pb-safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+  }
 }
