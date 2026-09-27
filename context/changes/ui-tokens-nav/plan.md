@@ -231,13 +231,13 @@ Ikony jako inline SVG (stroke-based, 24x24 viewBox). Wzorzec z `Welcome.astro`.
 
 #### Automated
 
-- [x] 2.1 npm run lint — 0 błędów
-- [x] 2.2 npm run build — brak błędów TypeScript/Astro
+- [x] 2.1 npm run lint — 0 błędów — c1a2f24
+- [x] 2.2 npm run build — brak błędów TypeScript/Astro — c1a2f24
 
 #### Manual
 
-- [ ] 2.3 @ 390px: BottomNav widoczny, aktywny tab w koralu
-- [ ] 2.4 @ 1024px: Topbar widoczny, BottomNav niewidoczny
-- [ ] 2.5 Niezalogowany: BottomNav niewidoczny
-- [ ] 2.6 /owners/some-id: tab Mapa aktywny
-- [ ] 2.7 Safe area iPhone: brak nachodzenia
+- [x] 2.3 @ 390px: BottomNav widoczny, aktywny tab w koralu — c1a2f24
+- [x] 2.4 @ 1024px: Topbar widoczny, BottomNav niewidoczny — c1a2f24
+- [x] 2.5 Niezalogowany: BottomNav niewidoczny — c1a2f24
+- [x] 2.6 /owners/some-id: tab Mapa aktywny — c1a2f24
+- [x] 2.7 Safe area iPhone: brak nachodzenia — c1a2f24
