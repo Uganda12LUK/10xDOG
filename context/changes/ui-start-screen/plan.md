@@ -175,24 +175,24 @@ Ikony kafelków i chevron: inline SVG 24×24, stroke-based (wzorzec z `BottomNav
 
 #### Automated
 
-- [x] 1.1 npm run lint — 0 błędów
+- [x] 1.1 npm run lint — 0 błędów — cabd5df
 
 #### Manual
 
-- [x] 1.2 ageStringFromBirthdate zwraca poprawny format
-- [x] 1.3 ageStringFromBirthdate(null) zwraca null
+- [x] 1.2 ageStringFromBirthdate zwraca poprawny format — cabd5df
+- [x] 1.3 ageStringFromBirthdate(null) zwraca null — cabd5df
 
 ### Phase 2: Dashboard rebuild
 
 #### Automated
 
-- [ ] 2.1 npm run lint — 0 błędów
-- [ ] 2.2 npm run build — brak błędów TypeScript
+- [x] 2.1 npm run lint — 0 błędów
+- [x] 2.2 npm run build — brak błędów TypeScript
 
 #### Manual
 
-- [ ] 2.3 Header z imieniem widoczny @ 390px
-- [ ] 2.4 Karta psa z wiekiem (zalogowany z psem)
-- [ ] 2.5 Fallback CTA gdy brak psa
-- [ ] 2.6 Kafelki Wkrótce: nieaktywne, chip widoczny
-- [ ] 2.7 Nawigacja: klik karty psa i kafelków działa
+- [x] 2.3 Header z imieniem widoczny @ 390px
+- [x] 2.4 Karta psa z wiekiem (zalogowany z psem)
+- [x] 2.5 Fallback CTA gdy brak psa
+- [x] 2.6 Kafelki Wkrótce: nieaktywne, chip widoczny
+- [x] 2.7 Nawigacja: klik karty psa i kafelków działa
