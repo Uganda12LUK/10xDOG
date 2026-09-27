@@ -59,7 +59,7 @@ export default function OwnersMapView({ owners, city }: Props) {
     <div className="relative">
       <FilterChips breeds={breeds} selectedBreed={selectedBreed} onBreedChange={setSelectedBreed} />
       <div className="px-0 md:px-4">
-        <div className="h-[260px] overflow-hidden md:h-[380px] md:rounded-2xl">
+        <div className="isolate h-[260px] overflow-hidden md:h-[380px] md:rounded-2xl">
           <DogMap owners={filtered} center={center} onOwnerSelect={setSelectedOwner} />
         </div>
       </div>
