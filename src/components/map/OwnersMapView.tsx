@@ -15,20 +15,28 @@ interface Props {
 function OwnerCard({ owner, onClick }: { owner: OwnerWithDogs; onClick: (o: OwnerWithDogs) => void }) {
   const dogNames = owner.dogs.map((d) => d.name).join(", ");
   return (
-    <button
-      onClick={() => {
-        onClick(owner);
-      }}
-      className="card-interactive flex w-full items-center gap-3 px-4 py-3 text-left"
-    >
-      <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-full font-semibold">
-        {owner.profile.name.charAt(0).toUpperCase()}
-      </div>
-      <div className="min-w-0">
-        <p className="truncate text-sm font-medium">{owner.profile.name}</p>
-        {dogNames && <p className="text-muted-foreground truncate text-xs">{dogNames}</p>}
-      </div>
-    </button>
+    <div className="flex items-center gap-3 px-4 py-3">
+      <button
+        onClick={() => {
+          onClick(owner);
+        }}
+        className="card-interactive flex min-w-0 flex-1 items-center gap-3 text-left"
+      >
+        <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-full font-semibold">
+          {owner.profile.name.charAt(0).toUpperCase()}
+        </div>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium">{owner.profile.name}</p>
+          {dogNames && <p className="text-muted-foreground truncate text-xs">{dogNames}</p>}
+        </div>
+      </button>
+      <a
+        href={`/owners/${owner.profile.id}`}
+        className="bg-primary text-primary-foreground hover:bg-primary/90 shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors"
+      >
+        Zaproponuj spacer
+      </a>
+    </div>
   );
 }
 
@@ -50,7 +58,7 @@ export default function OwnersMapView({ owners, city }: Props) {
   return (
     <div className="relative">
       <FilterChips breeds={breeds} selectedBreed={selectedBreed} onBreedChange={setSelectedBreed} />
-      <div className="h-[calc(100dvh-200px)]">
+      <div className="h-[260px] md:h-[380px]">
         <DogMap owners={filtered} center={center} onOwnerSelect={setSelectedOwner} />
       </div>
       <div className="divide-border divide-y">
