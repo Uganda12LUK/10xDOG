@@ -186,13 +186,13 @@ Ikony kafelków i chevron: inline SVG 24×24, stroke-based (wzorzec z `BottomNav
 
 #### Automated
 
-- [x] 2.1 npm run lint — 0 błędów
-- [x] 2.2 npm run build — brak błędów TypeScript
+- [x] 2.1 npm run lint — 0 błędów — af48e34
+- [x] 2.2 npm run build — brak błędów TypeScript — af48e34
 
 #### Manual
 
-- [x] 2.3 Header z imieniem widoczny @ 390px
-- [x] 2.4 Karta psa z wiekiem (zalogowany z psem)
-- [x] 2.5 Fallback CTA gdy brak psa
-- [x] 2.6 Kafelki Wkrótce: nieaktywne, chip widoczny
-- [x] 2.7 Nawigacja: klik karty psa i kafelków działa
+- [x] 2.3 Header z imieniem widoczny @ 390px — af48e34
+- [x] 2.4 Karta psa z wiekiem (zalogowany z psem) — af48e34
+- [x] 2.5 Fallback CTA gdy brak psa — af48e34
+- [x] 2.6 Kafelki Wkrótce: nieaktywne, chip widoczny — af48e34
+- [x] 2.7 Nawigacja: klik karty psa i kafelków działa — af48e34
