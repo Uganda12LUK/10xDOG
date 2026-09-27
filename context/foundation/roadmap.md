@@ -3,7 +3,7 @@ project: PawMeet
 version: 1
 status: draft
 created: 2026-09-22
-updated: 2026-09-26
+updated: 2026-09-27
 prd_version: 1
 main_goal: market-feedback
 top_blocker: decisions
@@ -41,12 +41,12 @@ Nowy właściciel psa w krytycznym oknie socjalizacji nie ma dedykowanego narzę
 
 | ID   | Change ID                 | Outcome (użytkownik może …)                                   | Prerequisites | PRD refs              | Status   |
 | ---- | ------------------------- | ------------------------------------------------------------- | ------------- | --------------------- | -------- |
-| F-01 | data-privacy-baseline     | (foundation) migracje + wzorzec RLS + gating tras za loginem  | —             | FR-001, NFR-prywatność, Access Control | in-progress |
+| F-01 | data-privacy-baseline     | (foundation) migracje + wzorzec RLS + gating tras za loginem  | —             | FR-001, NFR-prywatność, Access Control | done |
 | S-01 | owner-profile             | tworzy i edytuje profil właściciela (imię, foto, dzielnica)   | F-01          | FR-002, US-01         | done |
 | S-02 | dog-profile               | tworzy i edytuje profil psa (imię, rasa, wiek, foto)          | F-01          | FR-003, US-01         | done |
 | S-03 | owner-discovery-list      | przegląda listę właścicieli w swojej dzielnicy/mieście        | S-01, S-02    | FR-004, US-01         | done |
 | S-04 | walk-invitation-loop      | wysyła zaproszenie na spacer; odbiorca potwierdza/odrzuca      | S-03          | FR-005, FR-006, US-01 | done |
-| S-05 | scheduled-meetings-view   | widzi swoje potwierdzone spotkania w zakładce spotkań         | S-04          | FR-007, US-01         | proposed |
+| S-05 | scheduled-meetings-view   | widzi swoje potwierdzone spotkania w zakładce spotkań         | S-04          | FR-007, US-01         | done |
 | S-06 | breeding-availability-flag| oznacza psa jako dostępnego do hodowli (przełącznik)          | S-02          | FR-009, US-02         | proposed |
 | S-07 | breeding-discovery-list   | przegląda psy tej samej rasy oznaczone do hodowli             | S-06          | FR-010, US-02         | proposed |
 | S-08 | breeding-inquiry-loop     | wysyła zapytanie hodowlane; właściciel potwierdza/odrzuca      | S-07, S-04    | FR-011, US-02         | proposed |
@@ -85,7 +85,7 @@ Co jest już w kodzie na dzień `2026-09-22` (auto-researched + potwierdzone prz
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Sekwencjonowany pierwszy, bo bez wzorca RLS każdy kolejny slice ryzykuje wyciek danych (guardrail PRD). Trzymać go minimalnym — sam wzorzec + gating tras; konkretne tabele powstają w slice'ach, które ich używają (progresywne odsłanianie). Ryzyko: przeciążenie foundationu w „całą warstwę danych" — świadomie unikane.
-- **Status:** in-progress
+- **Status:** done
 
 ## Slices
 
@@ -138,7 +138,7 @@ Co jest już w kodzie na dzień `2026-09-22` (auto-researched + potwierdzone prz
 - **Unknowns:**
   - Czy sama para zaproszenie/potwierdzenie wystarcza do koordynacji szczegółów (czas, miejsce), czy potrzebny czat in-app? — Owner: user. Block: no (pętla jest w pełni wyspecyfikowana i działa bez czatu; czat to potencjalne rozszerzenie — OQ-002).
 - **Risk:** GWIAZDA PRZEWODNIA — najbardziej ryzykowne założenie (dwustronne skojarzenie). Integralność przepływu zaproszenie→potwierdzenie to guardrail PRD (zaproszenie trafia wyłącznie do wybranego użytkownika). Cykl stanów tu zbudowany jest reużywany przez S-08.
-- **Status:** in-progress
+- **Status:** done
 
 ### S-05: Widok zaplanowanych spotkań
 
@@ -150,7 +150,7 @@ Co jest już w kodzie na dzień `2026-09-22` (auto-researched + potwierdzone prz
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Cienkie domknięcie pętli — spotkanie pojawia się wyłącznie po obustronnym potwierdzeniu (Business Logic). Zależny od cyklu stanów z S-04.
-- **Status:** proposed
+- **Status:** done
 
 ### S-06: Flaga dostępności hodowlanej
 
@@ -225,3 +225,6 @@ Co jest już w kodzie na dzień `2026-09-22` (auto-researched + potwierdzone prz
 
 - **S-01: użytkownik może utworzyć i edytować swój profil właściciela (imię, zdjęcie, dzielnica/miasto).** — Archived 2026-09-24 → `context/archive/2026-09-23-owner-profile/`. Lesson: —.
 - **S-02: użytkownik może utworzyć i edytować profil psa (imię, rasa, wiek, zdjęcie).** — Archived 2026-09-24 → `context/archive/2026-09-24-dog-profile/`. Lesson: —.
+- **F-01: (foundation) migracje + wzorzec RLS + gating tras za loginem** — Archived 2026-09-26 → `context/archive/2026-09-25-data-privacy-baseline/`. Lesson: —.
+- **S-04: użytkownik wysyła zaproszenie na spacer, a drugi właściciel je potwierdza (i oboje widzą spotkanie).** — Archived 2026-09-27 → `context/archive/2026-09-26-walk-invitation-loop/`. Lesson: —.
+- **S-05: użytkownik widzi swoje potwierdzone spotkania w zakładce spotkań (typ: spacer).** — Archived 2026-09-26 → `context/archive/2026-09-26-scheduled-meetings-view/`. Lesson: —.
