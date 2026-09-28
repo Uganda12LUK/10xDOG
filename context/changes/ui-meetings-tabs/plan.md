@@ -275,6 +275,6 @@ Zachowaj tytuł `<h1>Spotkania</h1>` (zmień z "Meetings" na "Spotkania" dla sp�
 
 #### Manual
 
-- [ ] 3.3 Strona `/meetings` ładuje się bez błędów w przeglądarce
-- [ ] 3.4 Zakładki działają poprawnie (przełączanie treści)
-- [ ] 3.5 Dane spotkań i propozycji pojawiają się w odpowiednich zakładkach
+- [x] 3.3 Strona `/meetings` ładuje się bez błędów w przeglądarce — 9877e4e
+- [x] 3.4 Zakładki działają poprawnie (przełączanie treści) — 9877e4e
+- [x] 3.5 Dane spotkań i propozycji pojawiają się w odpowiednich zakładkach — 9877e4e

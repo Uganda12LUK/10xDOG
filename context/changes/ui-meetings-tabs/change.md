@@ -1,7 +1,7 @@
 ---
 change_id: ui-meetings-tabs
 title: Meetings screen with tabs, meeting cards and FAB
-status: implementing
+status: implemented
 created: 2026-09-27
 updated: 2026-09-28
 archived_at: null
