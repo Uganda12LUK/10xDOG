@@ -1,7 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
-import { listAcceptedMeetings, listSentPending } from "@/lib/services/invitation";
+import { listAcceptedMeetings, listSentPending, listReceivedPending } from "@/lib/services/invitation";
 import { listProfilesByIds } from "@/lib/services/profile";
 import MeetingsView from "@/components/meetings/MeetingsView";
 import type { Invitation, Profile } from "@/types";
@@ -12,14 +12,16 @@ const supabase = createClient(Astro.request.headers, Astro.cookies);
 
 let meetings: Invitation[] = [];
 let sentPending: Invitation[] = [];
+let receivedPending: Invitation[] = [];
 const profileMap = new Map<string, Profile | null>();
 let errorMsg: string | null = null;
 
 if (supabase && user) {
   try {
-    [meetings, sentPending] = await Promise.all([
+    [meetings, sentPending, receivedPending] = await Promise.all([
       listAcceptedMeetings(supabase, user.id),
       listSentPending(supabase, user.id),
+      listReceivedPending(supabase, user.id),
     ]);
 
     const counterpartyIds = new Set<string>();
@@ -29,6 +31,9 @@ if (supabase && user) {
     }
     for (const inv of sentPending) {
       counterpartyIds.add(inv.receiverId);
+    }
+    for (const inv of receivedPending) {
+      counterpartyIds.add(inv.senderId);
     }
 
     const fetched = await listProfilesByIds(supabase, Array.from(counterpartyIds));
@@ -59,6 +64,7 @@ for (const [id, p] of profileMap) {
         <MeetingsView
           accepted={meetings}
           sentPending={sentPending}
+          receivedPending={receivedPending}
           profiles={profilesObj}
           userId={user?.id ?? ""}
           client:load
