@@ -3,7 +3,7 @@ project: PawMeet
 version: 1
 status: draft
 created: 2026-09-22
-updated: 2026-09-27
+updated: 2026-09-28
 prd_version: 1
 main_goal: market-feedback
 top_blocker: decisions
@@ -228,3 +228,33 @@ Co jest już w kodzie na dzień `2026-09-22` (auto-researched + potwierdzone prz
 - **F-01: (foundation) migracje + wzorzec RLS + gating tras za loginem** — Archived 2026-09-26 → `context/archive/2026-09-25-data-privacy-baseline/`. Lesson: —.
 - **S-04: użytkownik wysyła zaproszenie na spacer, a drugi właściciel je potwierdza (i oboje widzą spotkanie).** — Archived 2026-09-27 → `context/archive/2026-09-26-walk-invitation-loop/`. Lesson: —.
 - **S-05: użytkownik widzi swoje potwierdzone spotkania w zakładce spotkań (typ: spacer).** — Archived 2026-09-26 → `context/archive/2026-09-26-scheduled-meetings-view/`. Lesson: —.
+
+---
+
+## Milestone M-2
+
+**M-2: Ekrany MVP** — Status: open
+
+- **Intent:** Doprowadzić wszystkie ekrany aplikacji do standardu systemu designu przed pierwszym testem z użytkownikami — spójne tokeny, mobilna nawigacja, kluczowe widoki przebudowane.
+- **Source materials:** `context/changes/ui-*/change.md`
+- **Done when:** każdy U-NN poniżej jest `done`.
+- **Scope anchors:** ekrany zidentyfikowane w `context/changes/ui-*`
+
+## At a glance (M-2)
+
+| ID   | Change ID(s)                                                                                                         | Outcome (ekran …)                                                           | Prerequisites | Status   |
+| ---- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------- | -------- |
+| U-01 | ui-tokens-coral, ui-tokens-nav, meetings-ui-tokens                                                                   | Design system: tokeny Koralowa smycz, Inter, BottomNav, migracja /meetings  | —             | done     |
+| U-02 | ui-start-screen                                                                                                      | Dashboard: nagłówek z powitaniem, karta psa, siatka kafelków                | U-01          | done     |
+| U-03 | ui-owners-map                                                                                                        | Mapa: Leaflet z pinezkami właścicieli, chipy filtrowania, BottomSheet       | U-01          | done     |
+| U-04 | ui-meetings-tabs                                                                                                     | Spotkania: zakładki nadchodzące/historia, lista kart                        | U-01, S-05    | proposed |
+| U-05 | ui-meeting-form                                                                                                      | Formularz propozycji spotkania z mini-mapą                                  | U-01, S-04    | proposed |
+| U-06 | ui-dog-profile                                                                                                       | Profil psa: hero image, sekcje detali, odznaki                              | U-01, S-02    | proposed |
+| U-07 | ui-dashboard, ui-profile, ui-dogs, ui-dogs-new, ui-dog-detail, ui-owners, ui-owner-detail, ui-invitations, ui-signin, ui-signup, ui-confirm-email, ui-landing | Audyt UI wszystkich ekranów: tokeny, stany, dostępność | U-01 | proposed |
+| U-08 | ui-events-placeholder, ui-places-placeholder                                                                         | Placeholder ekranów Wydarzenia i Miejsca (pusty stan + CTA)                | U-01          | proposed |
+
+## Done (M-2)
+
+- **U-01: design system — tokeny, BottomNav, migracja spotkań.** — ui-tokens-coral: `context/archive/`; ui-tokens-nav + meetings-ui-tokens: `context/changes/` (implemented/impl_reviewed).
+- **U-02: dashboard rebuild — nagłówek, karta psa, kafelki.** — ui-start-screen: `context/changes/` (implemented).
+- **U-03: ekran Mapa — Leaflet, chipy, BottomSheet.** — ui-owners-map: `context/changes/` (implemented).
