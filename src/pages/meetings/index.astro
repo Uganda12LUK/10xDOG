@@ -1,8 +1,9 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
-import { listAcceptedMeetings } from "@/lib/services/invitation";
+import { listAcceptedMeetings, listSentPending } from "@/lib/services/invitation";
 import { listProfilesByIds } from "@/lib/services/profile";
+import MeetingsView from "@/components/meetings/MeetingsView";
 import type { Invitation, Profile } from "@/types";
 
 const { user } = Astro.locals;
@@ -10,64 +11,58 @@ const { user } = Astro.locals;
 const supabase = createClient(Astro.request.headers, Astro.cookies);
 
 let meetings: Invitation[] = [];
+let sentPending: Invitation[] = [];
 const profileMap = new Map<string, Profile | null>();
 let errorMsg: string | null = null;
 
 if (supabase && user) {
   try {
-    meetings = await listAcceptedMeetings(supabase, user.id);
+    [meetings, sentPending] = await Promise.all([
+      listAcceptedMeetings(supabase, user.id),
+      listSentPending(supabase, user.id),
+    ]);
 
     const counterpartyIds = new Set<string>();
     for (const inv of meetings) {
       const counterpartyId = inv.senderId === user.id ? inv.receiverId : inv.senderId;
       counterpartyIds.add(counterpartyId);
     }
+    for (const inv of sentPending) {
+      counterpartyIds.add(inv.receiverId);
+    }
 
     const fetched = await listProfilesByIds(supabase, Array.from(counterpartyIds));
     for (const [id, profile] of fetched) profileMap.set(id, profile);
   } catch {
-    errorMsg = "Could not load meetings. Please try again.";
+    errorMsg = "Nie udało się załadować spotkań. Spróbuj ponownie.";
   }
+}
+
+const profilesObj: Record<string, { name: string }> = {};
+for (const [id, p] of profileMap) {
+  if (p) profilesObj[id] = { name: p.name };
 }
 ---
 
-<Layout title="Meetings">
+<Layout title="Spotkania">
   <div class="flex justify-center p-4">
     <div class="w-full max-w-lg">
       <div class="mb-6 flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-foreground">Meetings</h1>
+        <h1 class="text-2xl font-bold text-foreground">Spotkania</h1>
       </div>
 
       {errorMsg ? (
         <div class="rounded-2xl border border-destructive/40 bg-destructive/5 p-8 text-center text-destructive">
           {errorMsg}
         </div>
-      ) : meetings.length === 0 ? (
-        <div class="rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground">
-          No confirmed meetings yet.{" "}
-          <a href="/owners" class="text-primary hover:underline">
-            Browse owners →
-          </a>
-        </div>
       ) : (
-        <ul class="space-y-3">
-          {meetings.map((inv) => {
-            const counterpartyId = inv.senderId === user?.id ? inv.receiverId : inv.senderId;
-            const counterparty = profileMap.get(counterpartyId);
-            const counterpartyName = counterparty?.name ?? "Unknown";
-            const typeBadge = inv.type === "walk" ? "Walk" : "Breeding";
-            const acceptedDate = new Date(inv.updatedAt).toLocaleDateString();
-            return (
-              <li class="rounded-2xl border border-border bg-card p-4">
-                <div class="flex items-center justify-between">
-                  <span class="font-medium text-foreground">{counterpartyName}</span>
-                  <span class="rounded-full bg-accent px-2 py-0.5 text-xs text-accent-foreground">{typeBadge}</span>
-                </div>
-                <p class="mt-1 text-sm text-muted-foreground">{acceptedDate}</p>
-              </li>
-            );
-          })}
-        </ul>
+        <MeetingsView
+          accepted={meetings}
+          sentPending={sentPending}
+          profiles={profilesObj}
+          userId={user?.id ?? ""}
+          client:load
+        />
       )}
     </div>
   </div>

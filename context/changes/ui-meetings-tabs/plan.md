@@ -244,34 +244,34 @@ Zachowaj tytuł `<h1>Spotkania</h1>` (zmień z "Meetings" na "Spotkania" dla sp�
 
 #### Automated
 
-- [x] 1.1 `src/components/ui/tabs.tsx` istnieje po instalacji
-- [x] 1.2 `src/components/ui/badge.tsx` istnieje po instalacji
-- [x] 1.3 `npm run lint` przechodzi bez błędów
-- [x] 1.4 `npm run build` kończy się bez błędów
+- [x] 1.1 `src/components/ui/tabs.tsx` istnieje po instalacji — d48024a
+- [x] 1.2 `src/components/ui/badge.tsx` istnieje po instalacji — d48024a
+- [x] 1.3 `npm run lint` przechodzi bez błędów — d48024a
+- [x] 1.4 `npm run build` kończy się bez błędów — d48024a
 
 #### Manual
 
-- [x] 1.5 Oba pliki widoczne w `src/components/ui/`
+- [x] 1.5 Oba pliki widoczne w `src/components/ui/` — d48024a
 
 ### Phase 2: MeetingsView Component
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` przechodzi bez błędów na MeetingsView.tsx
-- [ ] 2.2 `npm run build` kończy się bez błędów
+- [x] 2.1 `npm run lint` przechodzi bez błędów na MeetingsView.tsx
+- [x] 2.2 `npm run build` kończy się bez błędów
 
 #### Manual
 
-- [ ] 2.3 Komponent renderuje trzy zakładki
-- [ ] 2.4 Zakładka Historia pokazuje pusty stan
-- [ ] 2.5 FAB widoczny, nie nakłada się na BottomNav na mobile
+- [x] 2.3 Komponent renderuje trzy zakładki
+- [x] 2.4 Zakładka Historia pokazuje pusty stan
+- [x] 2.5 FAB widoczny, nie nakłada się na BottomNav na mobile
 
 ### Phase 3: Page Wiring
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` przechodzi bez błędów
-- [ ] 3.2 `npm run build` kończy się bez błędów
+- [x] 3.1 `npm run lint` przechodzi bez błędów
+- [x] 3.2 `npm run build` kończy się bez błędów
 
 #### Manual
 
