@@ -321,26 +321,26 @@ No DB schema changes in this phase. All new tables/columns were created in prior
 
 #### Automated
 
-- [x] 1.1 npm install completes with no unresolved peer dependency warnings
-- [x] 1.2 npm run test exits 0 (vitest finds 0 test files, does not error)
-- [x] 1.3 npm run lint passes — no TypeScript errors in vitest.config.ts, playwright.config.ts, tests/helpers/supabase.ts
-- [x] 1.4 npx playwright install --with-deps chromium exits 0
+- [x] 1.1 npm install completes with no unresolved peer dependency warnings — 03060f1
+- [x] 1.2 npm run test exits 0 (vitest finds 0 test files, does not error) — 03060f1
+- [x] 1.3 npm run lint passes — no TypeScript errors in vitest.config.ts, playwright.config.ts, tests/helpers/supabase.ts — 03060f1
+- [x] 1.4 npx playwright install --with-deps chromium exits 0 — 03060f1
 
 #### Manual
 
-- [x] 1.5 package.json dependencies no longer contains playwright; devDependencies has vitest, @vitest/coverage-v8, @playwright/test, and playwright
+- [x] 1.5 package.json dependencies no longer contains playwright; devDependencies has vitest, @vitest/coverage-v8, @playwright/test, and playwright — 03060f1
 
 ### Phase 2: Risk #2 — Auth-gating integration tests
 
 #### Automated
 
-- [ ] 2.1 npm run test — auth-gating.test.ts: 7 tests pass (6 redirect + 1 /events public)
-- [ ] 2.2 npm run lint passes
+- [x] 2.1 npm run test — auth-gating.test.ts: 7 tests pass (6 redirect + 1 /events public)
+- [x] 2.2 npm run lint passes
 
 #### Manual
 
-- [ ] 2.3 Test output message names the route being asserted for each of the 6 protected routes
-- [ ] 2.4 /events test comment explains it is intentionally public
+- [x] 2.3 Test output message names the route being asserted for each of the 6 protected routes
+- [x] 2.4 /events test comment explains it is intentionally public
 
 ### Phase 3: Risks #1 + #3 — Invitation state machine
 
