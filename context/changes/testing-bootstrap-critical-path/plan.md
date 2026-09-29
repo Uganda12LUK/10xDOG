@@ -340,7 +340,7 @@ No DB schema changes in this phase. All new tables/columns were created in prior
 #### Manual
 
 - [x] 2.3 Test output message names the route being asserted for each of the 6 protected routes
-- [x] 2.4 /events test comment explains it is intentionally public
+- [x] 2.4 /events test comment explains it is intentionally public — 4f25c2d
 
 ### Phase 3: Risks #1 + #3 — Invitation state machine
 
