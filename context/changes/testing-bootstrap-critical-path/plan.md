@@ -348,7 +348,7 @@ No DB schema changes in this phase. All new tables/columns were created in prior
 
 - [ ] 3.1 npm run test — invitation-state-machine.test.ts: 4 tests pass
 - [ ] 3.2 All 4 tests pass after npx supabase db reset (no hidden dependency on prior state)
-- [ ] 3.3 npm run lint passes
+- [x] 3.3 npm run lint passes
 
 #### Manual
 
