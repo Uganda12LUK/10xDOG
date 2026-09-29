@@ -41,6 +41,8 @@ export interface Invitation {
   status: "pending" | "accepted" | "declined";
   createdAt: string;
   updatedAt: string;
+  dogId: string | null;
+  scheduledAt: string | null;
 }
 
 export interface DogInput {

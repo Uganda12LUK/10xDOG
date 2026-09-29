@@ -10,6 +10,8 @@ interface InvitationRow {
   status: string;
   created_at: string;
   updated_at: string;
+  dog_id: string | null;
+  scheduled_at: string | null;
 }
 
 function mapRow(row: InvitationRow): Invitation {
@@ -21,6 +23,8 @@ function mapRow(row: InvitationRow): Invitation {
     status: row.status as Invitation["status"],
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    dogId: row.dog_id,
+    scheduledAt: row.scheduled_at,
   };
 }
 
@@ -29,10 +33,18 @@ export async function sendInvitation(
   senderId: string,
   receiverId: string,
   type: "walk" | "breeding",
+  dogId?: string | null,
+  scheduledAt?: string | null,
 ): Promise<Invitation> {
   const result = await client
     .from("invitations")
-    .insert({ sender_id: senderId, receiver_id: receiverId, type })
+    .insert({
+      sender_id: senderId,
+      receiver_id: receiverId,
+      type,
+      dog_id: dogId ?? null,
+      scheduled_at: scheduledAt ?? null,
+    })
     .select()
     .single();
 
