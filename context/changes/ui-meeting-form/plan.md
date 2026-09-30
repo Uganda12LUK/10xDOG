@@ -301,8 +301,8 @@ Nowa strona `/meetings/new.astro`, aktualizacja `/owners/[id].astro` — zastąp
 
 #### Automated
 
-- [x] 4.1 `npm run lint` przechodzi bez błędów
-- [x] 4.2 `npm run build` kończy się bez błędów
+- [x] 4.1 `npm run lint` przechodzi bez błędów — be167a3
+- [x] 4.2 `npm run build` kończy się bez błędów — be167a3
 
 #### Manual
 
