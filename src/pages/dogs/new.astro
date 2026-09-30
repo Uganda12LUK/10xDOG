@@ -2,16 +2,15 @@
 import Layout from "@/layouts/Layout.astro";
 import DogForm from "@/components/dogs/DogForm";
 
+const { locale } = Astro.locals;
 const error = Astro.url.searchParams.get("error");
 ---
 
 <Layout title="Add a dog">
   <div class="flex min-h-[80vh] items-center justify-center p-4">
-    <div class="w-full max-w-sm rounded-2xl border border-white/10 bg-white/10 p-8 text-white backdrop-blur-xl">
-      <h1 class="mb-6 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-center text-2xl font-bold text-transparent">
-        Add a dog
-      </h1>
-      <DogForm serverError={error} client:load />
+    <div class="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-card-foreground">
+      <h1 class="mb-6 text-center text-2xl font-bold text-foreground">Add a dog</h1>
+      <DogForm serverError={error} locale={locale} client:load />
     </div>
   </div>
 </Layout>

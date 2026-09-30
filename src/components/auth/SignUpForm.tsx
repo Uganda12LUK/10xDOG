@@ -4,14 +4,16 @@ import { FormField } from "@/components/auth/FormField";
 import { PasswordToggle } from "@/components/auth/PasswordToggle";
 import { SubmitButton } from "@/components/auth/SubmitButton";
 import { ServerError } from "@/components/auth/ServerError";
+import { t, type Locale } from "@/lib/i18n";
 
 const MIN_PASSWORD_LENGTH = 6;
 
 interface Props {
   serverError?: string | null;
+  locale: Locale;
 }
 
-export default function SignUpForm({ serverError }: Props) {
+export default function SignUpForm({ serverError, locale }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -56,7 +58,7 @@ export default function SignUpForm({ serverError }: Props) {
 
   const passwordHint =
     !errors.password && password.length > 0 && password.length < MIN_PASSWORD_LENGTH ? (
-      <p className="mt-1 text-xs text-blue-100/50">
+      <p className="text-muted-foreground mt-1 text-xs">
         {MIN_PASSWORD_LENGTH - password.length} more character
         {MIN_PASSWORD_LENGTH - password.length !== 1 ? "s" : ""} needed
       </p>
@@ -67,7 +69,7 @@ export default function SignUpForm({ serverError }: Props) {
       <FormField
         id="email"
         type="email"
-        label="Email"
+        label={t(locale, "auth.email")}
         value={email}
         onChange={(v) => {
           setEmail(v);
@@ -80,7 +82,7 @@ export default function SignUpForm({ serverError }: Props) {
 
       <FormField
         id="password"
-        label="Password"
+        label={t(locale, "auth.password")}
         type={showPassword ? "text" : "password"}
         value={password}
         onChange={(v) => {
@@ -104,7 +106,7 @@ export default function SignUpForm({ serverError }: Props) {
       <FormField
         id="confirmPassword"
         name="confirmPassword"
-        label="Confirm password"
+        label={t(locale, "auth.confirmPassword")}
         type={showConfirmPassword ? "text" : "password"}
         value={confirmPassword}
         onChange={(v) => {
@@ -127,7 +129,7 @@ export default function SignUpForm({ serverError }: Props) {
       <ServerError message={serverError} />
 
       <SubmitButton pendingText="Creating account..." icon={<UserPlus className="size-4" />}>
-        Create account
+        {t(locale, "auth.signUp")}
       </SubmitButton>
     </form>
   );

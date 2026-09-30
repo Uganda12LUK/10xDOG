@@ -4,9 +4,10 @@ import { createClient } from "@/lib/supabase";
 import { listAcceptedMeetings, listSentPending, listReceivedPending } from "@/lib/services/invitation";
 import { listProfilesByIds } from "@/lib/services/profile";
 import MeetingsView from "@/components/meetings/MeetingsView";
+import { t } from "@/lib/i18n";
 import type { Invitation, Profile } from "@/types";
 
-const { user } = Astro.locals;
+const { user, locale } = Astro.locals;
 
 const supabase = createClient(Astro.request.headers, Astro.cookies);
 
@@ -49,11 +50,11 @@ for (const [id, p] of profileMap) {
 }
 ---
 
-<Layout title="Spotkania">
+<Layout title={t(locale, "meetings.title")}>
   <div class="flex justify-center p-4">
     <div class="w-full max-w-lg">
       <div class="mb-6 flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-foreground">Spotkania</h1>
+        <h1 class="text-2xl font-bold text-foreground">{t(locale, "meetings.title")}</h1>
       </div>
 
       {errorMsg ? (
@@ -67,6 +68,7 @@ for (const [id, p] of profileMap) {
           receivedPending={receivedPending}
           profiles={profilesObj}
           userId={user?.id ?? ""}
+          locale={locale}
           client:load
         />
       )}

@@ -3,6 +3,7 @@ import { User, MapPin, Building2, Save } from "lucide-react";
 import { FormField } from "@/components/auth/FormField";
 import { SubmitButton } from "@/components/auth/SubmitButton";
 import { ServerError } from "@/components/auth/ServerError";
+import { t, type Locale } from "@/lib/i18n";
 import type { Profile } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -11,9 +12,10 @@ interface Props {
   serverError?: string | null;
   saved?: boolean;
   onboarding?: boolean;
+  locale: Locale;
 }
 
-export default function ProfileForm({ profile, serverError, saved, onboarding }: Props) {
+export default function ProfileForm({ profile, serverError, saved, onboarding, locale }: Props) {
   const [name, setName] = useState(profile?.name ?? "");
   const [district, setDistrict] = useState(profile?.district ?? "");
   const [city, setCity] = useState(profile?.city ?? "");
@@ -50,14 +52,14 @@ export default function ProfileForm({ profile, serverError, saved, onboarding }:
       noValidate
     >
       {onboarding && !profile ? (
-        <p className="rounded-lg border border-blue-400/30 bg-blue-900/30 px-3 py-2 text-sm text-blue-200">
+        <p className="border-border bg-accent text-accent-foreground rounded-lg border px-3 py-2 text-sm">
           Complete your profile to get started.
         </p>
       ) : null}
 
       <FormField
         id="name"
-        label="Name"
+        label={t(locale, "form.profile.name")}
         value={name}
         onChange={(v) => {
           setName(v);
@@ -70,7 +72,7 @@ export default function ProfileForm({ profile, serverError, saved, onboarding }:
 
       <FormField
         id="district"
-        label="District"
+        label={t(locale, "form.profile.district")}
         value={district}
         onChange={(v) => {
           setDistrict(v);
@@ -81,7 +83,7 @@ export default function ProfileForm({ profile, serverError, saved, onboarding }:
 
       <FormField
         id="city"
-        label="City"
+        label={t(locale, "form.profile.city")}
         value={city}
         onChange={(v) => {
           setCity(v);
@@ -91,14 +93,14 @@ export default function ProfileForm({ profile, serverError, saved, onboarding }:
       />
 
       <div>
-        <label htmlFor="photo" className="mb-1 block text-sm text-blue-100/80">
-          Photo
+        <label htmlFor="photo" className="text-muted-foreground mb-1 block text-sm">
+          {t(locale, "form.profile.photo")}
         </label>
         {profile?.avatarUrl ? (
           <img
             src={profile.avatarUrl}
             alt="Current avatar"
-            className="mb-2 size-16 rounded-full border border-white/20 object-cover"
+            className="border-border mb-2 size-16 rounded-full border object-cover"
           />
         ) : null}
         <input
@@ -107,19 +109,19 @@ export default function ProfileForm({ profile, serverError, saved, onboarding }:
           type="file"
           accept="image/png,image/jpeg,image/webp"
           className={cn(
-            "w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white",
-            "file:mr-3 file:rounded-md file:border-0 file:bg-purple-600 file:px-3 file:py-1 file:text-white",
-            "hover:file:bg-purple-500",
+            "border-input bg-background text-foreground w-full rounded-lg border px-3 py-2 text-sm",
+            "file:bg-primary file:text-primary-foreground file:mr-3 file:rounded-md file:border-0 file:px-3 file:py-1",
+            "hover:file:bg-primary/90",
           )}
         />
       </div>
 
       <ServerError message={serverError} />
 
-      {saved ? <p className="text-sm text-green-300">Profile saved.</p> : null}
+      {saved ? <p className="text-success text-sm">Profile saved.</p> : null}
 
       <SubmitButton pendingText="Saving..." icon={<Save className="size-4" />}>
-        Save profile
+        {t(locale, "form.profile.submit")}
       </SubmitButton>
     </form>
   );

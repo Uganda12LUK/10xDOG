@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { t, type Locale } from "@/lib/i18n";
 import type { Invitation } from "@/types";
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
   receivedPending: Invitation[];
   profiles: Record<string, { name: string }>;
   userId: string;
+  locale: Locale;
 }
 
 function profileName(profiles: Record<string, { name: string }>, id: string): string {
@@ -51,10 +53,12 @@ function InboxCard({
   inv,
   profiles,
   onRespond,
+  locale,
 }: {
   inv: Invitation;
   profiles: Record<string, { name: string }>;
   onRespond: (id: string, action: "accepted" | "declined") => void;
+  locale: Locale;
 }) {
   const [loading, setLoading] = useState<"accepted" | "declined" | null>(null);
   const typeLabel = inv.type === "walk" ? "Walk" : "Breeding";
@@ -93,44 +97,45 @@ function InboxCard({
           disabled={loading !== null}
           className="bg-primary text-primary-foreground hover:bg-primary/90 flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-50"
         >
-          {loading === "accepted" ? "…" : "Akceptuj"}
+          {loading === "accepted" ? "…" : t(locale, "meetings.accept")}
         </button>
         <button
           onClick={() => handle("declined")}
           disabled={loading !== null}
           className="border-border text-muted-foreground hover:bg-muted flex-1 rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-50"
         >
-          {loading === "declined" ? "…" : "Odrzuć"}
+          {loading === "declined" ? "…" : t(locale, "meetings.decline")}
         </button>
       </div>
     </div>
   );
 }
 
-export default function MeetingsView({ accepted, sentPending, receivedPending, profiles, userId }: Props) {
+export default function MeetingsView({ accepted, sentPending, receivedPending, profiles, userId, locale }: Props) {
   const [inbox, setInbox] = useState(receivedPending);
 
   function handleRespond(id: string) {
     setInbox((prev) => prev.filter((inv) => inv.id !== id));
   }
 
-  const inboxLabel = inbox.length > 0 ? `Zaproszenia (${inbox.length})` : "Zaproszenia";
+  const invitationsLabel = t(locale, "meetings.tabs.invitations");
+  const inboxLabel = inbox.length > 0 ? `${invitationsLabel} (${inbox.length})` : invitationsLabel;
 
   return (
     <div className="relative">
       <Tabs defaultValue="nadchodzace">
         <TabsList className="w-full">
           <TabsTrigger value="nadchodzace" className="flex-1">
-            Nadchodzące
+            {t(locale, "meetings.tabs.upcoming")}
           </TabsTrigger>
           <TabsTrigger value="propozycje" className="flex-1">
-            Propozycje
+            {t(locale, "meetings.tabs.proposals")}
           </TabsTrigger>
           <TabsTrigger value="zaproszenia" className="flex-1 text-xs">
             {inboxLabel}
           </TabsTrigger>
           <TabsTrigger value="historia" className="flex-1">
-            Historia
+            {t(locale, "meetings.tabs.history")}
           </TabsTrigger>
         </TabsList>
 
@@ -184,7 +189,7 @@ export default function MeetingsView({ accepted, sentPending, receivedPending, p
           ) : (
             <div>
               {inbox.map((inv) => (
-                <InboxCard key={inv.id} inv={inv} profiles={profiles} onRespond={handleRespond} />
+                <InboxCard key={inv.id} inv={inv} profiles={profiles} onRespond={handleRespond} locale={locale} />
               ))}
             </div>
           )}

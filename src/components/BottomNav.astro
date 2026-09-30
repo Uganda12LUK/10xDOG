@@ -3,38 +3,40 @@
 // FORWARD: /places tab (Mapa) added for ui-places-placeholder (future slice) — using /owners as placeholder href
 
 import LangSwitcher from "@/components/LangSwitcher.astro";
+import { t } from "@/lib/i18n";
 
 interface Props {
   currentPath: string;
 }
 
 const { currentPath } = Astro.props;
+const { locale } = Astro.locals;
 
 const tabs = [
   {
     href: "/dashboard",
-    label: "Start",
+    label: t(locale, "nav.start"),
     exact: true,
   },
   {
     href: "/owners",
-    label: "Mapa",
+    label: t(locale, "nav.map"),
     exact: false,
   },
   {
     href: "/meetings",
-    label: "Spotkania",
+    label: t(locale, "nav.meetings"),
     exact: false,
   },
   {
     href: "/events",
-    label: "Wydarzenia",
+    label: t(locale, "nav.events"),
     exact: false,
     // FORWARD: /events does not exist yet — added for ui-events-placeholder
   },
   {
     href: "/profile",
-    label: "Profil",
+    label: t(locale, "nav.profile"),
     exact: false,
   },
 ] as const;

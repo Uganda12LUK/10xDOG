@@ -3,9 +3,10 @@ import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
 import { listOwners, getProfile } from "@/lib/services/profile";
 import OwnersMapView from "@/components/map/OwnersMapView";
+import { t } from "@/lib/i18n";
 import type { OwnerWithDogs } from "@/types";
 
-const { user } = Astro.locals;
+const { user, locale } = Astro.locals;
 
 const supabase = createClient(Astro.request.headers, Astro.cookies);
 
@@ -33,16 +34,16 @@ if (supabase && user) {
 }
 ---
 
-<Layout title="Mapa spacerów">
+<Layout title={t(locale, "owners.title")}>
   {!hasCity ? (
     <div class="flex justify-center p-4">
       <div class="w-full max-w-lg">
         <div class="rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground">
-          Set your city in{" "}
+          {t(locale, "owners.setCityPrompt")}{" "}
           <a href="/profile" class="text-primary hover:underline">
-            Profile
+            {t(locale, "owners.profileLink")}
           </a>{" "}
-          to see local owners.
+          {t(locale, "owners.setCityPromptSuffix")}
         </div>
       </div>
     </div>

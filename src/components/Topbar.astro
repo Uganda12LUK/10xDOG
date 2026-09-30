@@ -2,8 +2,9 @@
 import { createClient } from "@/lib/supabase";
 import { countReceivedPending } from "@/lib/services/invitation";
 import LangSwitcher from "@/components/LangSwitcher.astro";
+import { t } from "@/lib/i18n";
 
-const { user } = Astro.locals;
+const { user, locale } = Astro.locals;
 
 let pendingCount = 0;
 if (user) {
@@ -20,23 +21,24 @@ if (user) {
       <span class="text-muted-foreground">{user.email}</span>
       <div class="flex items-center gap-3">
         <a href="/dashboard" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          Dashboard
+          {t(locale, "nav.start")}
         </a>
         <a href="/owners" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          Owners
+          {t(locale, "nav.map")}
         </a>
         <a href="/meetings" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          Meetings{pendingCount > 0 ? ` (${pendingCount})` : ""}
+          {t(locale, "nav.meetings")}
+          {pendingCount > 0 ? ` (${pendingCount})` : ""}
         </a>
         <a href="/profile" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          Profile
+          {t(locale, "nav.profile")}
         </a>
         <a href="/dogs" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          Dogs
+          {t(locale, "nav.dogs")}
         </a>
         <form method="POST" action="/api/auth/signout">
           <button type="submit" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-            Sign out
+            {t(locale, "nav.signout")}
           </button>
         </form>
         <LangSwitcher />
@@ -47,10 +49,10 @@ if (user) {
       <span class="text-muted-foreground">Not signed in</span>
       <div class="flex gap-3">
         <a href="/auth/signin" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          Sign in
+          {t(locale, "auth.signIn")}
         </a>
         <a href="/auth/signup" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          Sign up
+          {t(locale, "auth.signUp")}
         </a>
         <LangSwitcher />
       </div>

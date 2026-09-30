@@ -4,12 +4,14 @@ import { FormField } from "@/components/auth/FormField";
 import { PasswordToggle } from "@/components/auth/PasswordToggle";
 import { SubmitButton } from "@/components/auth/SubmitButton";
 import { ServerError } from "@/components/auth/ServerError";
+import { t, type Locale } from "@/lib/i18n";
 
 interface Props {
   serverError?: string | null;
+  locale: Locale;
 }
 
-export default function SignInForm({ serverError }: Props) {
+export default function SignInForm({ serverError, locale }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -44,7 +46,7 @@ export default function SignInForm({ serverError }: Props) {
       <FormField
         id="email"
         type="email"
-        label="Email"
+        label={t(locale, "auth.email")}
         value={email}
         onChange={(v) => {
           setEmail(v);
@@ -57,7 +59,7 @@ export default function SignInForm({ serverError }: Props) {
 
       <FormField
         id="password"
-        label="Password"
+        label={t(locale, "auth.password")}
         type={showPassword ? "text" : "password"}
         value={password}
         onChange={(v) => {
@@ -80,7 +82,7 @@ export default function SignInForm({ serverError }: Props) {
       <ServerError message={serverError} />
 
       <SubmitButton pendingText="Signing in..." icon={<LogIn className="size-4" />}>
-        Sign in
+        {t(locale, "auth.signIn")}
       </SubmitButton>
     </form>
   );

@@ -243,9 +243,9 @@ Manual, via `npm run build && npx wrangler dev` (port 8787) with the Rzeszów te
 ### Phase 1: i18n foundation
 
 #### Automated
-- [x] 1.1 `npm run lint` passes
-- [x] 1.2 `npm run build` passes
-- [x] 1.3 `src/lib/i18n/{index,pl,en}.ts` exist
+- [x] 1.1 `npm run lint` passes — 8013020
+- [x] 1.2 `npm run build` passes — 8013020
+- [x] 1.3 `src/lib/i18n/{index,pl,en}.ts` exist — 8013020
 
 #### Manual
 - [ ] 1.4 `?lang=en` sets cookie + redirects without `lang`; choice persists on reload
@@ -254,8 +254,8 @@ Manual, via `npm run build && npx wrangler dev` (port 8787) with the Rzeszów te
 ### Phase 2: Apply i18n to nav, tabs, forms, buttons
 
 #### Automated
-- [ ] 2.1 `npm run lint` passes
-- [ ] 2.2 `npm run build` passes
+- [x] 2.1 `npm run lint` passes
+- [x] 2.2 `npm run build` passes
 
 #### Manual
 - [ ] 2.3 Toggling PL↔EN switches nav + topbar labels

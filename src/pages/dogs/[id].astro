@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase";
 import { getDog } from "@/lib/services/dog";
 import type { Dog } from "@/types";
 
-const { user } = Astro.locals;
+const { user, locale } = Astro.locals;
 const { id } = Astro.params;
 
 const supabase = createClient(Astro.request.headers, Astro.cookies);
@@ -19,25 +19,26 @@ const error = Astro.url.searchParams.get("error");
 
 <Layout title="Edit dog">
   <div class="flex min-h-[80vh] items-center justify-center p-4">
-    <div class="w-full max-w-sm rounded-2xl border border-white/10 bg-white/10 p-8 text-white backdrop-blur-xl">
-      <h1 class="mb-6 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-center text-2xl font-bold text-transparent">
-        Edit dog
-      </h1>
+    <div class="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-card-foreground">
+      <h1 class="mb-6 text-center text-2xl font-bold text-foreground">Edit dog</h1>
       {dog ? (
         <Fragment>
-          <DogForm dog={dog} serverError={error} client:load />
+          <DogForm dog={dog} serverError={error} locale={locale} client:load />
 
           <form method="POST" action={`/api/dogs/${dog.id}`} class="mt-4 text-center">
             <input type="hidden" name="_action" value="delete" />
-            <button type="submit" class="text-sm text-red-300 transition-colors hover:text-red-200 hover:underline">
+            <button
+              type="submit"
+              class="text-sm text-destructive transition-colors hover:text-destructive/80 hover:underline"
+            >
               Delete dog
             </button>
           </form>
         </Fragment>
       ) : (
-        <p class="text-center text-blue-100/70">
+        <p class="text-center text-muted-foreground">
           Dog not found.{" "}
-          <a href="/dogs" class="text-purple-300 hover:underline">
+          <a href="/dogs" class="text-primary hover:underline">
             Back to your dogs
           </a>
         </p>
