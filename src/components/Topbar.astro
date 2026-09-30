@@ -1,6 +1,7 @@
 ---
 import { createClient } from "@/lib/supabase";
 import { countReceivedPending } from "@/lib/services/invitation";
+import LangSwitcher from "@/components/LangSwitcher.astro";
 
 const { user } = Astro.locals;
 
@@ -38,6 +39,7 @@ if (user) {
             Sign out
           </button>
         </form>
+        <LangSwitcher />
       </div>
     </>
   ) : (
@@ -50,6 +52,7 @@ if (user) {
         <a href="/auth/signup" class="text-primary transition-colors hover:text-primary/80 hover:underline">
           Sign up
         </a>
+        <LangSwitcher />
       </div>
     </>
   )}

@@ -2,6 +2,8 @@
 // FORWARD: /events tab added for ui-events-placeholder (future slice)
 // FORWARD: /places tab (Mapa) added for ui-places-placeholder (future slice) — using /owners as placeholder href
 
+import LangSwitcher from "@/components/LangSwitcher.astro";
+
 interface Props {
   currentPath: string;
 }
@@ -43,6 +45,9 @@ function isActive(href: string, exact: boolean): boolean {
 }
 ---
 
+<div class="fixed bottom-[70px] right-2 z-50 rounded-t-md border border-b-0 border-border bg-card px-2 py-1 md:hidden">
+  <LangSwitcher />
+</div>
 <nav class="fixed bottom-0 left-0 right-0 z-50 flex h-[70px] items-center justify-around border-t border-border bg-card pb-[env(safe-area-inset-bottom,0px)] md:hidden">
   {tabs.map((tab) => {
     const active = isActive(tab.href, tab.exact);
