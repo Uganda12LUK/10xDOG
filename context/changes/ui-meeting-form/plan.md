@@ -264,24 +264,24 @@ Nowa strona `/meetings/new.astro`, aktualizacja `/owners/[id].astro` — zastąp
 
 #### Automated
 
-- [x] 1.1 Plik migracji `20260928090001_add_dog_scheduled_to_invitations.sql` istnieje
-- [x] 1.2 `npm run build` kończy się bez błędów TypeScript
-- [x] 1.3 `npm run lint` przechodzi bez błędów
+- [x] 1.1 Plik migracji `20260928090001_add_dog_scheduled_to_invitations.sql` istnieje — abbb143
+- [x] 1.2 `npm run build` kończy się bez błędów TypeScript — abbb143
+- [x] 1.3 `npm run lint` przechodzi bez błędów — abbb143
 
 #### Manual
 
-- [x] 1.4 `Invitation` w types.ts ma pola `dogId` i `scheduledAt`
+- [x] 1.4 `Invitation` w types.ts ma pola `dogId` i `scheduledAt` — abbb143
 
 ### Phase 2: API Extension
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` przechodzi bez błędów
-- [ ] 2.2 `npm run build` kończy się bez błędów
+- [x] 2.1 `npm run lint` przechodzi bez błędów
+- [x] 2.2 `npm run build` kończy się bez błędów
 
 #### Manual
 
-- [ ] 2.3 Formularz bez `dog_id`/`scheduled_at` poprawnie wysyła zaproszenie i trafia na `/meetings`
+- [x] 2.3 Formularz bez `dog_id`/`scheduled_at` poprawnie wysyła zaproszenie i trafia na `/meetings`
 
 ### Phase 3: MeetingForm Component
 

@@ -8,6 +8,8 @@ export const prerender = false;
 const invitationSchema = z.object({
   receiver_id: z.uuid("Invalid receiver"),
   type: z.enum(["walk", "breeding"]),
+  dog_id: z.uuid().nullish(),
+  scheduled_at: z.string().nullish(),
 });
 
 export const POST: APIRoute = async (context) => {
@@ -28,9 +30,14 @@ export const POST: APIRoute = async (context) => {
     return context.redirect("/auth/signin");
   }
 
+  const rawDogId = form.get("dog_id") as string | null;
+  const rawScheduledAt = form.get("scheduled_at") as string | null;
+
   const parsed = invitationSchema.safeParse({
     receiver_id: rawReceiverId,
     type: form.get("type"),
+    dog_id: rawDogId ?? undefined,
+    scheduled_at: rawScheduledAt ?? undefined,
   });
   if (!parsed.success) {
     const message = parsed.error.issues[0]?.message ?? "Invalid invitation data";
@@ -40,15 +47,15 @@ export const POST: APIRoute = async (context) => {
     return context.redirect(`/owners/${rawReceiverId}?error=${encodeURIComponent(message)}`);
   }
 
-  const { receiver_id, type } = parsed.data;
+  const { receiver_id, type, dog_id, scheduled_at } = parsed.data;
 
   try {
-    await sendInvitation(supabase, user.id, receiver_id, type);
+    await sendInvitation(supabase, user.id, receiver_id, type, dog_id, scheduled_at);
   } catch {
     return context.redirect(
       `/owners/${receiver_id}?error=${encodeURIComponent("Something went wrong. Please try again.")}`,
     );
   }
 
-  return context.redirect(`/owners/${receiver_id}?sent=1`);
+  return context.redirect("/meetings");
 };
