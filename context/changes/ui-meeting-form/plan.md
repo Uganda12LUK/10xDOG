@@ -276,19 +276,19 @@ Nowa strona `/meetings/new.astro`, aktualizacja `/owners/[id].astro` — zastąp
 
 #### Automated
 
-- [x] 2.1 `npm run lint` przechodzi bez błędów
-- [x] 2.2 `npm run build` kończy się bez błędów
+- [x] 2.1 `npm run lint` przechodzi bez błędów — 0410b20
+- [x] 2.2 `npm run build` kończy się bez błędów — 0410b20
 
 #### Manual
 
-- [x] 2.3 Formularz bez `dog_id`/`scheduled_at` poprawnie wysyła zaproszenie i trafia na `/meetings`
+- [x] 2.3 Formularz bez `dog_id`/`scheduled_at` poprawnie wysyła zaproszenie i trafia na `/meetings` — 0410b20
 
 ### Phase 3: MeetingForm Component
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` przechodzi bez błędów
-- [ ] 3.2 `npm run build` kończy się bez błędów
+- [x] 3.1 `npm run lint` przechodzi bez błędów
+- [x] 3.2 `npm run build` kończy się bez błędów
 
 #### Manual
 
