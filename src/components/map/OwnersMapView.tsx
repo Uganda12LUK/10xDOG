@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { DogWithOwner } from "@/types";
-import FilterChips from "./FilterChips";
+import type { Locale } from "@/lib/i18n";
+import BreedSelect from "./BreedSelect";
 import BottomSheet from "./BottomSheet";
 import { CITY_CENTERS } from "./DogMap";
 
@@ -10,6 +11,7 @@ import DogMap from "./DogMap";
 interface Props {
   dogs: DogWithOwner[];
   city: string;
+  locale: Locale;
 }
 
 function DogCard({ dog, onClick }: { dog: DogWithOwner; onClick: (d: DogWithOwner) => void }) {
@@ -44,7 +46,7 @@ function DogCard({ dog, onClick }: { dog: DogWithOwner; onClick: (d: DogWithOwne
   );
 }
 
-export default function OwnersMapView({ dogs, city }: Props) {
+export default function OwnersMapView({ dogs, city, locale }: Props) {
   const defaultCenter: [number, number] = CITY_CENTERS[city] ?? [52.2297, 21.0122];
   const [center, setCenter] = useState<[number, number]>(defaultCenter);
   const [selectedDog, setSelectedDog] = useState<DogWithOwner | null>(null);
@@ -61,7 +63,7 @@ export default function OwnersMapView({ dogs, city }: Props) {
 
   return (
     <div className="relative">
-      <FilterChips breeds={breeds} selectedBreed={selectedBreed} onBreedChange={setSelectedBreed} />
+      <BreedSelect breeds={breeds} selectedBreed={selectedBreed} onBreedChange={setSelectedBreed} locale={locale} />
       <div className="px-0 md:px-4">
         <div className="isolate h-[260px] overflow-hidden md:h-[380px] md:rounded-2xl">
           <DogMap dogs={filtered} center={center} onDogSelect={setSelectedDog} />

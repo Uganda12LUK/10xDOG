@@ -267,8 +267,8 @@ Manual, via `npm run build && npx wrangler dev` (port 8787) with the Rzeszów te
 ### Phase 3: Dog-first map
 
 #### Automated
-- [x] 3.1 `npm run lint` passes
-- [x] 3.2 `npm run build` passes
+- [x] 3.1 `npm run lint` passes — 6068ae8
+- [x] 3.2 `npm run build` passes — 6068ae8
 
 #### Manual
 - [ ] 3.3 One pin per dog (owner with 2 dogs → 2 pins)
@@ -278,8 +278,8 @@ Manual, via `npm run build && npx wrangler dev` (port 8787) with the Rzeszów te
 ### Phase 4: Breed dropdown
 
 #### Automated
-- [ ] 4.1 `npm run lint` passes
-- [ ] 4.2 `npm run build` passes
+- [x] 4.1 `npm run lint` passes
+- [x] 4.2 `npm run build` passes
 
 #### Manual
 - [ ] 4.3 Breed filter is a dropdown; selecting narrows pins + list; reset works

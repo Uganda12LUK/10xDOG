@@ -48,6 +48,6 @@ if (supabase && user) {
       </div>
     </div>
   ) : (
-    <OwnersMapView dogs={dogs} city={myCity ?? ""} client:only="react" />
+    <OwnersMapView dogs={dogs} city={myCity ?? ""} locale={locale} client:only="react" />
   )}
 </Layout>
