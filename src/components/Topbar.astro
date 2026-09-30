@@ -24,11 +24,8 @@ if (user) {
         <a href="/owners" class="text-primary transition-colors hover:text-primary/80 hover:underline">
           Owners
         </a>
-        <a href="/invitations" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          Invitations{pendingCount > 0 ? ` (${pendingCount})` : ""}
-        </a>
         <a href="/meetings" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          Meetings
+          Meetings{pendingCount > 0 ? ` (${pendingCount})` : ""}
         </a>
         <a href="/profile" class="text-primary transition-colors hover:text-primary/80 hover:underline">
           Profile
