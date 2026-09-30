@@ -1,7 +1,7 @@
 ---
 change_id: i18n-and-dog-map
 title: PL/EN language switcher, dog-first map, breed dropdown, dashboard width
-status: new
+status: planned
 created: 2026-09-30
 updated: 2026-09-30
 archived_at: null
