@@ -7,7 +7,7 @@ import { CITY_CENTERS } from "@/components/map/DogMap";
 import { cn } from "@/lib/utils";
 
 interface Props {
-  receiver: { id: string; name: string; city: string | null };
+  receiver: { id: string; city: string | null };
   dogs: Dog[];
   error?: string;
 }

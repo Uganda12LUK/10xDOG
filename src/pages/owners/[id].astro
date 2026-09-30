@@ -27,7 +27,6 @@ if (supabase && id && !isOwnProfile) {
   }
 }
 
-const sent = Astro.url.searchParams.get("sent");
 const error = Astro.url.searchParams.get("error");
 ---
 
@@ -91,11 +90,6 @@ const error = Astro.url.searchParams.get("error");
           </div>
         ) : null}
 
-        {sent === "1" ? (
-          <div class="mt-4 rounded-lg border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
-            Walk invitation sent!
-          </div>
-        ) : null}
         {error ? (
           <div class="mt-4 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
             {error}

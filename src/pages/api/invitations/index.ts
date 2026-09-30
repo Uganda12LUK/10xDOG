@@ -9,7 +9,17 @@ const invitationSchema = z.object({
   receiver_id: z.uuid("Invalid receiver"),
   type: z.enum(["walk", "breeding"]),
   dog_id: z.uuid().nullish(),
-  scheduled_at: z.string().nullish(),
+  scheduled_at: z
+    .string()
+    .trim()
+    .min(1, "Wybierz datę i godzinę spotkania")
+    .refine((value) => {
+      const parsed = new Date(value);
+      if (Number.isNaN(parsed.getTime())) {
+        return false;
+      }
+      return parsed.getTime() >= Date.now();
+    }, "Data spotkania musi być poprawna i nie może być w przeszłości"),
 });
 
 export const POST: APIRoute = async (context) => {
@@ -37,14 +47,14 @@ export const POST: APIRoute = async (context) => {
     receiver_id: rawReceiverId,
     type: form.get("type"),
     dog_id: rawDogId ?? undefined,
-    scheduled_at: rawScheduledAt ?? undefined,
+    scheduled_at: rawScheduledAt ?? "",
   });
   if (!parsed.success) {
     const message = parsed.error.issues[0]?.message ?? "Invalid invitation data";
     if (!rawReceiverId) {
       return context.redirect(`/owners?error=${encodeURIComponent(message)}`);
     }
-    return context.redirect(`/owners/${rawReceiverId}?error=${encodeURIComponent(message)}`);
+    return context.redirect(`/meetings/new?receiver_id=${rawReceiverId}&error=${encodeURIComponent(message)}`);
   }
 
   const { receiver_id, type, dog_id, scheduled_at } = parsed.data;
@@ -53,7 +63,7 @@ export const POST: APIRoute = async (context) => {
     await sendInvitation(supabase, user.id, receiver_id, type, dog_id, scheduled_at);
   } catch {
     return context.redirect(
-      `/owners/${receiver_id}?error=${encodeURIComponent("Something went wrong. Please try again.")}`,
+      `/meetings/new?receiver_id=${receiver_id}&error=${encodeURIComponent("Something went wrong. Please try again.")}`,
     );
   }
 

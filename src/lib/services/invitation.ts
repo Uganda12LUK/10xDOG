@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { Invitation } from "@/types";
+import { getDog } from "./dog";
 
 interface InvitationRow {
   id: string;
@@ -36,6 +37,15 @@ export async function sendInvitation(
   dogId?: string | null,
   scheduledAt?: string | null,
 ): Promise<Invitation> {
+  // Ownership guard: the endpoint is the trust boundary. The FK only proves the
+  // dog exists, not that the sender owns it — verify before attaching.
+  if (dogId) {
+    const dog = await getDog(client, dogId);
+    if (dog?.ownerId !== senderId) {
+      throw new Error("Invalid dog selection");
+    }
+  }
+
   const result = await client
     .from("invitations")
     .insert({
