@@ -33,6 +33,12 @@ export interface OwnerWithDogs {
   dogs: Dog[];
 }
 
+export type DogWithOwner = Dog & {
+  ownerId: string;
+  ownerName: string;
+  ownerCity: string | null;
+};
+
 export interface Invitation {
   id: string;
   senderId: string;

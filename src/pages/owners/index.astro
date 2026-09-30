@@ -1,16 +1,16 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
-import { listOwners, getProfile } from "@/lib/services/profile";
+import { listDogsForMap, getProfile } from "@/lib/services/profile";
 import OwnersMapView from "@/components/map/OwnersMapView";
 import { t } from "@/lib/i18n";
-import type { OwnerWithDogs } from "@/types";
+import type { DogWithOwner } from "@/types";
 
 const { user, locale } = Astro.locals;
 
 const supabase = createClient(Astro.request.headers, Astro.cookies);
 
-let owners: OwnerWithDogs[] = [];
+let dogs: DogWithOwner[] = [];
 let myCity: string | null = null;
 let hasCity = false;
 
@@ -23,12 +23,12 @@ if (supabase && user) {
     const myDistrict = profile?.district ?? null;
 
     if (myDistrict) {
-      owners = await listOwners(supabase, user.id, myCity, myDistrict);
-      if (owners.length === 0) {
-        owners = await listOwners(supabase, user.id, myCity);
+      dogs = await listDogsForMap(supabase, user.id, myCity, myDistrict);
+      if (dogs.length === 0) {
+        dogs = await listDogsForMap(supabase, user.id, myCity);
       }
     } else {
-      owners = await listOwners(supabase, user.id, myCity);
+      dogs = await listDogsForMap(supabase, user.id, myCity);
     }
   }
 }
@@ -48,6 +48,6 @@ if (supabase && user) {
       </div>
     </div>
   ) : (
-    <OwnersMapView owners={owners} city={myCity ?? ""} client:only="react" />
+    <OwnersMapView dogs={dogs} city={myCity ?? ""} client:only="react" />
   )}
 </Layout>

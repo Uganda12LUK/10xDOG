@@ -1,15 +1,15 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ageStringFromBirthdate } from "@/lib/age";
-import type { OwnerWithDogs } from "@/types";
+import type { DogWithOwner } from "@/types";
 
 interface Props {
-  owner: OwnerWithDogs | null;
+  dog: DogWithOwner | null;
   open: boolean;
   onClose: () => void;
 }
 
-export default function BottomSheet({ owner, open, onClose }: Props) {
+export default function BottomSheet({ dog, open, onClose }: Props) {
   return (
     <Sheet
       open={open}
@@ -18,31 +18,29 @@ export default function BottomSheet({ owner, open, onClose }: Props) {
       }}
     >
       <SheetContent side="bottom" className="pb-safe-area-inset-bottom rounded-t-2xl px-4">
-        {owner && (
+        {dog && (
           <>
             <SheetHeader className="mb-4">
-              <SheetTitle className="text-left">{owner.profile.name}</SheetTitle>
+              <SheetTitle className="text-left">{dog.name}</SheetTitle>
             </SheetHeader>
-            <div className="flex gap-3 overflow-x-auto pb-4">
-              {owner.dogs.map((dog) => (
-                <div key={dog.id} className="flex w-24 shrink-0 flex-col items-center gap-1">
-                  {dog.photoUrl ? (
-                    <img src={dog.photoUrl} alt={dog.name} className="aspect-square w-16 rounded-xl object-cover" />
-                  ) : (
-                    <div className="bg-muted flex aspect-square w-16 items-center justify-center rounded-xl text-2xl">
-                      🐾
-                    </div>
-                  )}
-                  <span className="text-center text-sm leading-tight font-medium">{dog.name}</span>
-                  <span className="text-muted-foreground text-center text-xs">{dog.breed}</span>
-                  {dog.birthdate && (
-                    <span className="text-muted-foreground text-xs">{ageStringFromBirthdate(dog.birthdate)}</span>
-                  )}
+            <div className="mb-4 flex items-center gap-3">
+              {dog.photoUrl ? (
+                <img src={dog.photoUrl} alt={dog.name} className="aspect-square w-16 rounded-xl object-cover" />
+              ) : (
+                <div className="bg-muted flex aspect-square w-16 items-center justify-center rounded-xl text-2xl">
+                  🐾
                 </div>
-              ))}
+              )}
+              <div className="min-w-0">
+                <p className="text-sm font-medium">{dog.breed}</p>
+                {dog.birthdate && (
+                  <p className="text-muted-foreground text-xs">{ageStringFromBirthdate(dog.birthdate)}</p>
+                )}
+                <p className="text-muted-foreground truncate text-xs">właściciel: {dog.ownerName}</p>
+              </div>
             </div>
             <Button asChild className="w-full">
-              <a href={`/owners/${owner.profile.id}`}>Zaproponuj spacer</a>
+              <a href={`/meetings/new?receiver_id=${dog.ownerId}`}>Zaproponuj spacer</a>
             </Button>
           </>
         )}

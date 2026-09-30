@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Dog, OwnerWithDogs, Profile } from "@/types";
+import type { Dog, DogWithOwner, OwnerWithDogs, Profile } from "@/types";
 
 const AVATAR_BUCKET = "avatars";
 
@@ -149,6 +149,24 @@ export async function listOwners(
   return profiles
     .map((profile) => ({ profile, dogs: dogsByOwner.get(profile.id) ?? [] }))
     .sort((a, b) => a.profile.name.localeCompare(b.profile.name));
+}
+
+export async function listDogsForMap(
+  client: SupabaseClient,
+  userId: string,
+  city: string,
+  district?: string | null,
+): Promise<DogWithOwner[]> {
+  const owners = await listOwners(client, userId, city, district);
+
+  return owners.flatMap((owner) =>
+    owner.dogs.map((dog) => ({
+      ...dog,
+      ownerId: owner.profile.id,
+      ownerName: owner.profile.name,
+      ownerCity: owner.profile.city,
+    })),
+  );
 }
 
 export async function listProfilesByIds(client: SupabaseClient, ids: string[]): Promise<Map<string, Profile>> {

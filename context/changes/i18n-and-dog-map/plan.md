@@ -254,8 +254,8 @@ Manual, via `npm run build && npx wrangler dev` (port 8787) with the Rzeszów te
 ### Phase 2: Apply i18n to nav, tabs, forms, buttons
 
 #### Automated
-- [x] 2.1 `npm run lint` passes
-- [x] 2.2 `npm run build` passes
+- [x] 2.1 `npm run lint` passes — dc09152
+- [x] 2.2 `npm run build` passes — dc09152
 
 #### Manual
 - [ ] 2.3 Toggling PL↔EN switches nav + topbar labels
@@ -267,8 +267,8 @@ Manual, via `npm run build && npx wrangler dev` (port 8787) with the Rzeszów te
 ### Phase 3: Dog-first map
 
 #### Automated
-- [ ] 3.1 `npm run lint` passes
-- [ ] 3.2 `npm run build` passes
+- [x] 3.1 `npm run lint` passes
+- [x] 3.2 `npm run build` passes
 
 #### Manual
 - [ ] 3.3 One pin per dog (owner with 2 dogs → 2 pins)
