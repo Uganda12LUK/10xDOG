@@ -15,6 +15,7 @@ const CITY_CENTERS: Record<string, [number, number]> = {
   Lublin: [51.2465, 22.5684],
   Białystok: [53.1325, 23.1688],
   Szczecin: [53.4285, 14.5528],
+  Rzeszów: [50.0413, 21.999],
 };
 
 function deterministicOffset(id: string): [number, number] {
