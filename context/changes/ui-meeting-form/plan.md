@@ -287,8 +287,8 @@ Nowa strona `/meetings/new.astro`, aktualizacja `/owners/[id].astro` — zastąp
 
 #### Automated
 
-- [x] 3.1 `npm run lint` przechodzi bez błędów
-- [x] 3.2 `npm run build` kończy się bez błędów
+- [x] 3.1 `npm run lint` przechodzi bez błędów — 9395a47
+- [x] 3.2 `npm run build` kończy się bez błędów — 9395a47
 
 #### Manual
 
@@ -301,8 +301,8 @@ Nowa strona `/meetings/new.astro`, aktualizacja `/owners/[id].astro` — zastąp
 
 #### Automated
 
-- [ ] 4.1 `npm run lint` przechodzi bez błędów
-- [ ] 4.2 `npm run build` kończy się bez błędów
+- [x] 4.1 `npm run lint` przechodzi bez błędów
+- [x] 4.2 `npm run build` kończy się bez błędów
 
 #### Manual
 

@@ -1,0 +1,73 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { createClient } from "@/lib/supabase";
+import { getProfile } from "@/lib/services/profile";
+import { listDogs } from "@/lib/services/dog";
+import MeetingForm from "@/components/meetings/MeetingForm";
+import type { Dog, Profile } from "@/types";
+
+// /meetings is a protected route — middleware guarantees an authenticated user here.
+const { user } = Astro.locals;
+const receiverId = Astro.url.searchParams.get("receiver_id");
+const error = Astro.url.searchParams.get("error");
+
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+
+let receiverProfile: Profile | null = null;
+let myDogs: Dog[] = [];
+if (supabase && user && receiverId) {
+  const [fetchedProfile, fetchedDogs] = await Promise.all([
+    getProfile(supabase, receiverId),
+    listDogs(supabase, user.id),
+  ]);
+  receiverProfile = fetchedProfile;
+  myDogs = fetchedDogs;
+}
+---
+
+<Layout title="Zaproponuj spotkanie">
+  <div class="mx-auto max-w-sm p-4">
+    {!receiverId ? (
+      <div class="rounded-2xl border border-border bg-card p-8 text-center text-card-foreground">
+        <p class="text-muted-foreground">
+          Nie wybrano właściciela.{" "}
+          <a href="/owners" class="text-primary hover:underline">
+            ← Wróć do listy
+          </a>
+        </p>
+      </div>
+    ) : receiverProfile === null ? (
+      <div class="rounded-2xl border border-border bg-card p-8 text-center text-card-foreground">
+        <p class="text-muted-foreground">
+          Nie znaleziono właściciela.{" "}
+          <a href="/owners" class="text-primary hover:underline">
+            ← Wróć do listy
+          </a>
+        </p>
+      </div>
+    ) : (
+      <>
+        <div class="mb-6">
+          <a href={`/owners/${receiverId}`} class="text-sm text-primary hover:underline">
+            ← Wróć do profilu
+          </a>
+          <h1 class="mt-3 text-2xl font-bold text-foreground">Zaproponuj spotkanie: {receiverProfile.name}</h1>
+        </div>
+        <MeetingForm
+          receiver={{
+            id: receiverProfile.id,
+            name: receiverProfile.name,
+            city: receiverProfile.city,
+          }}
+          dogs={myDogs}
+          error={error ?? undefined}
+          client:only="react"
+        >
+          <div slot="fallback" class="text-muted-foreground text-sm">
+            Ładowanie formularza…
+          </div>
+        </MeetingForm>
+      </>
+    )}
+  </div>
+</Layout>
