@@ -10,11 +10,11 @@ interface Props {
 }
 
 const { title = "PawMeet" } = Astro.props;
-const { user } = Astro.locals;
+const { user, locale } = Astro.locals;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />

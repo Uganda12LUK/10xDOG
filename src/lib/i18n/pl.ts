@@ -75,6 +75,21 @@ const pl: Record<string, string> = {
   "auth.confirmPassword": "Potwierdź hasło",
   "auth.signIn": "Zaloguj się",
   "auth.signUp": "Utwórz konto",
+  "auth.noAccount": "Nie masz konta?",
+  "auth.haveAccount": "Masz już konto?",
+
+  // landing (public hero + feature cards)
+  "landing.tagline":
+    "Znajdź właścicieli psów w okolicy, umawiaj wspólne spacery i pozwól swojemu psu poznawać nowych przyjaciół.",
+  "landing.getStarted": "Rozpocznij",
+  "landing.feature1.title": "Znajdź właścicieli w pobliżu",
+  "landing.feature1.desc":
+    "Odkrywaj właścicieli psów w swojej dzielnicy i mieście. Filtruj po lokalizacji, aby poznać sąsiadów.",
+  "landing.feature2.title": "Umawiaj wspólne spacery",
+  "landing.feature2.desc":
+    "Wysyłaj zaproszenia na spacery i koordynuj wyjścia. Twój pies zasługuje na dobre towarzystwo.",
+  "landing.feature3.title": "Profile psów",
+  "landing.feature3.desc": "Dodaj swoje psy z rasą i zdjęciem. Przeglądaj inne psy przed zaproponowaniem spotkania.",
 };
 
 export default pl;

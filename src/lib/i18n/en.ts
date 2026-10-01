@@ -75,6 +75,18 @@ const en: Record<string, string> = {
   "auth.confirmPassword": "Confirm password",
   "auth.signIn": "Sign in",
   "auth.signUp": "Create account",
+  "auth.noAccount": "Don't have an account?",
+  "auth.haveAccount": "Already have an account?",
+
+  // landing (public hero + feature cards)
+  "landing.tagline": "Find dog owners near you, arrange walks together, and let your dogs make new friends.",
+  "landing.getStarted": "Get started",
+  "landing.feature1.title": "Find Owners Nearby",
+  "landing.feature1.desc": "Discover dog owners in your district and city. Filter by location to meet your neighbours.",
+  "landing.feature2.title": "Arrange Walk Meetups",
+  "landing.feature2.desc": "Send walk invitations and coordinate outings. Your dogs deserve good company.",
+  "landing.feature3.title": "Dog Profiles",
+  "landing.feature3.desc": "Add your dogs with breed and photo. Browse other dogs before suggesting a meetup.",
 };
 
 export default en;
