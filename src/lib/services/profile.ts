@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Dog, DogWithOwner, OwnerWithDogs, Profile } from "@/types";
+import { citiesNear } from "@/lib/geo";
 
 const AVATAR_BUCKET = "avatars";
 
@@ -112,7 +113,9 @@ export async function listOwners(
   city: string,
   district?: string | null,
 ): Promise<OwnerWithDogs[]> {
-  let profileQuery = client.from("profiles").select("*").eq("city", city).neq("id", userId);
+  // Match the whole region around the user's town (e.g. Rzeszów + satellite
+  // towns), not just an exact city string, so nearby owners show on the map.
+  let profileQuery = client.from("profiles").select("*").in("city", citiesNear(city)).neq("id", userId);
   if (district != null) {
     profileQuery = profileQuery.eq("district", district);
   }

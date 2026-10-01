@@ -38,16 +38,18 @@ values
 on conflict (id) do nothing;
 
 -- ─────────────────────────────────────────────────────────────
--- 2. Owner profiles — all in Rzeszów so they show on your map.
+-- 2. Owner profiles — spread across Rzeszów + nearby towns (same discovery
+--    region as Rzeszów, see src/lib/geo.ts) so the map shows distinct pins
+--    rather than one cluster. DO UPDATE so re-running fixes existing rows.
 -- ─────────────────────────────────────────────────────────────
 insert into profiles (id, name, district, city)
 values
-  ('aaaaaaaa-0000-0000-0000-000000000001', 'Kasia', 'Śródmieście',  'Rzeszów'),
-  ('aaaaaaaa-0000-0000-0000-000000000002', 'Marek', 'Nowe Miasto',  'Rzeszów'),
-  ('aaaaaaaa-0000-0000-0000-000000000003', 'Ola',   'Baranówka',    'Rzeszów'),
-  ('aaaaaaaa-0000-0000-0000-000000000004', 'Piotr', 'Śródmieście',  'Rzeszów'),
-  ('aaaaaaaa-0000-0000-0000-000000000005', 'Zosia', 'Pobitno',      'Rzeszów')
-on conflict (id) do nothing;
+  ('aaaaaaaa-0000-0000-0000-000000000001', 'Kasia', null, 'Tyczyn'),
+  ('aaaaaaaa-0000-0000-0000-000000000002', 'Marek', null, 'Chmielnik'),
+  ('aaaaaaaa-0000-0000-0000-000000000003', 'Ola',   null, 'Borek Stary'),
+  ('aaaaaaaa-0000-0000-0000-000000000004', 'Piotr', 'Śródmieście', 'Rzeszów'),
+  ('aaaaaaaa-0000-0000-0000-000000000005', 'Zosia', null, 'Kielanówka')
+on conflict (id) do update set city = excluded.city, district = excluded.district;
 
 -- ─────────────────────────────────────────────────────────────
 -- 3. One dog per owner. Kasia + Piotr share a breed (Border Collie)

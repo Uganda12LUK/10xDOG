@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { DogWithOwner } from "@/types";
 import type { Locale } from "@/lib/i18n";
 import BreedSelect from "./BreedSelect";
 import BottomSheet from "./BottomSheet";
-import { CITY_CENTERS } from "./DogMap";
+import { CITY_CENTERS } from "@/lib/geo";
 
 // DogMap is only rendered client-side (parent uses client:only="react")
 import DogMap from "./DogMap";
@@ -47,16 +47,12 @@ function DogCard({ dog, onClick }: { dog: DogWithOwner; onClick: (d: DogWithOwne
 }
 
 export default function OwnersMapView({ dogs, city, locale }: Props) {
-  const defaultCenter: [number, number] = CITY_CENTERS[city] ?? [52.2297, 21.0122];
-  const [center, setCenter] = useState<[number, number]>(defaultCenter);
+  // Anchor the map on the user's town. Pins are placed per-owner-town by DogMap,
+  // which also fits the viewport to them — so we deliberately do NOT override this
+  // with browser geolocation (that would drag every pin back onto the user).
+  const center: [number, number] = CITY_CENTERS[city] ?? [52.2297, 21.0122];
   const [selectedDog, setSelectedDog] = useState<DogWithOwner | null>(null);
   const [selectedBreed, setSelectedBreed] = useState<string | null>(null);
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition((pos) => {
-      setCenter([pos.coords.latitude, pos.coords.longitude]);
-    });
-  }, []);
 
   const breeds = [...new Set(dogs.map((d) => d.breed))].sort();
   const filtered = selectedBreed ? dogs.filter((d) => d.breed === selectedBreed) : dogs;

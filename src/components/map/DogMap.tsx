@@ -3,20 +3,7 @@ import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { DogWithOwner } from "@/types";
-
-const CITY_CENTERS: Record<string, [number, number]> = {
-  Warszawa: [52.2297, 21.0122],
-  Kraków: [50.0647, 19.945],
-  Wrocław: [51.1079, 17.0385],
-  Poznań: [52.4064, 16.9252],
-  Gdańsk: [54.352, 18.6466],
-  Łódź: [51.7592, 19.456],
-  Katowice: [50.2649, 19.0238],
-  Lublin: [51.2465, 22.5684],
-  Białystok: [53.1325, 23.1688],
-  Szczecin: [53.4285, 14.5528],
-  Rzeszów: [50.0413, 21.999],
-};
+import { CITY_CENTERS } from "@/lib/geo";
 
 function deterministicOffset(id: string): [number, number] {
   let h = 0;
@@ -35,11 +22,28 @@ function makeDogIcon(name: string) {
   });
 }
 
-function RecenterMap({ center }: { center: [number, number] }) {
+// Each dog is anchored to its owner's town (CITY_CENTERS), with a small
+// deterministic offset so dogs in the same town don't overlap. Falls back to the
+// map's default center when the owner's city is unknown.
+function dogPosition(dog: DogWithOwner, fallback: [number, number]): [number, number] {
+  const base = (dog.ownerCity != null ? CITY_CENTERS[dog.ownerCity] : undefined) ?? fallback;
+  const [dlat, dlng] = deterministicOffset(dog.id);
+  return [base[0] + dlat, base[1] + dlng];
+}
+
+// Fit the viewport to the dog pins so towns spread across the region stay visible.
+// With a single dog, just center on it at a neighbourhood zoom.
+function FitToDogs({ positions, center }: { positions: [number, number][]; center: [number, number] }) {
   const map = useMap();
   useEffect(() => {
-    map.setView(center);
-  }, [center, map]);
+    if (positions.length === 0) {
+      map.setView(center, 12);
+    } else if (positions.length === 1) {
+      map.setView(positions[0], 13);
+    } else {
+      map.fitBounds(L.latLngBounds(positions), { padding: [40, 40] });
+    }
+  }, [positions, center, map]);
   return null;
 }
 
@@ -50,31 +54,27 @@ interface Props {
 }
 
 export default function DogMap({ dogs, center, onDogSelect }: Props) {
+  const positioned = dogs.map((dog) => ({ dog, pos: dogPosition(dog, center) }));
+
   return (
-    <MapContainer center={center} zoom={13} style={{ height: "100%", width: "100%" }}>
+    <MapContainer center={center} zoom={12} style={{ height: "100%", width: "100%" }}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <RecenterMap center={center} />
-      {dogs.map((dog) => {
-        const [dlat, dlng] = deterministicOffset(dog.id);
-        const pos: [number, number] = [center[0] + dlat, center[1] + dlng];
-        return (
-          <Marker
-            key={dog.id}
-            position={pos}
-            icon={makeDogIcon(dog.name)}
-            eventHandlers={{
-              click: () => {
-                onDogSelect(dog);
-              },
-            }}
-          />
-        );
-      })}
+      <FitToDogs positions={positioned.map((p) => p.pos)} center={center} />
+      {positioned.map(({ dog, pos }) => (
+        <Marker
+          key={dog.id}
+          position={pos}
+          icon={makeDogIcon(dog.name)}
+          eventHandlers={{
+            click: () => {
+              onDogSelect(dog);
+            },
+          }}
+        />
+      ))}
     </MapContainer>
   );
 }
-
-export { CITY_CENTERS };

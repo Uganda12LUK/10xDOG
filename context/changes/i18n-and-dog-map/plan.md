@@ -278,8 +278,8 @@ Manual, via `npm run build && npx wrangler dev` (port 8787) with the Rzeszów te
 ### Phase 4: Breed dropdown
 
 #### Automated
-- [x] 4.1 `npm run lint` passes
-- [x] 4.2 `npm run build` passes
+- [x] 4.1 `npm run lint` passes — 806e4e0
+- [x] 4.2 `npm run build` passes — 806e4e0
 
 #### Manual
 - [ ] 4.3 Breed filter is a dropdown; selecting narrows pins + list; reset works
@@ -288,8 +288,47 @@ Manual, via `npm run build && npx wrangler dev` (port 8787) with the Rzeszów te
 ### Phase 5: Dashboard width verify/refine
 
 #### Automated
-- [ ] 5.1 `npm run lint` passes
-- [ ] 5.2 `npm run build` passes
+- [x] 5.1 `npm run lint` passes — no-op phase (alignment already correct from change 67a2786)
+- [x] 5.2 `npm run build` passes — no-op phase
 
 #### Manual
 - [ ] 5.3 Dashboard content edges line up with the Topbar at desktop width
+
+### Phase 6: i18n gap closure — auth page chrome + public landing
+
+Follow-up from manual verification: the auth page headings/titles and the public
+landing hero/feature cards were hardcoded English (outside the letter of Phase 2's
+nav/tabs/labels/buttons scope). Closed so a PL user never sees an English page frame.
+
+#### Automated
+- [x] 6.1 `npm run lint` passes
+- [x] 6.2 `npm run build` passes
+
+#### Manual
+- [x] 6.3 `/auth/signin` + `/auth/signup` `<h1>` and `<title>` switch PL/EN (curl-verified)
+- [x] 6.4 Landing hero tagline, CTA buttons, and 3 feature cards switch PL/EN (curl-verified)
+- [x] 6.5 `<html lang>` reflects active locale (`pl`/`en`) (curl-verified)
+
+### Phase 7: Dogs anchored to their owner's town (deviation from "offsets from one center")
+
+User feedback: demo dogs all clustered on the user's GPS location (Kielanówka),
+not on distinct towns. Deliberately supersedes the design's "pins stay deterministic
+offsets from map center" note. New model: each dog is anchored to its owner's town.
+
+- New `src/lib/geo.ts` — single source for `CITY_CENTERS` (+ Tyczyn, Chmielnik,
+  Borek Stary, Kielanówka) and `citiesNear()` region grouping. Imported by `DogMap`,
+  `OwnersMapView`, `MeetingForm`, and `listOwners`.
+- `DogMap` positions each pin at `CITY_CENTERS[ownerCity]` + deterministic offset and
+  `fitBounds` to the pins. `OwnersMapView` no longer overrides center with geolocation.
+- `listOwners` filters by `in(citiesNear(city))` (region) instead of `eq(city)`.
+- `supabase/rzeszow-testdata.sql` spreads the 5 demo owners across those towns
+  (`on conflict do update`, so re-running fixes existing rows).
+
+#### Automated
+- [x] 7.1 `npm run lint` passes
+- [x] 7.2 `npm run build` passes
+
+#### Manual
+- [x] 7.3 After running the testdata SQL on the live DB, map shows pins in distinct
+      towns (Tyczyn, Chmielnik, Borek Stary, Rzeszów, Kielanówka), not one cluster
+- [x] 7.4 Breed filter still narrows across towns (Border Collie: Kasia + Piotr)

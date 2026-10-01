@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { Dog } from "@/types";
-import { CITY_CENTERS } from "@/components/map/DogMap";
+import { CITY_CENTERS } from "@/lib/geo";
 import { cn } from "@/lib/utils";
 
 interface Props {
