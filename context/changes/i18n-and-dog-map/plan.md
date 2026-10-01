@@ -248,8 +248,8 @@ Manual, via `npm run build && npx wrangler dev` (port 8787) with the Rzeszów te
 - [x] 1.3 `src/lib/i18n/{index,pl,en}.ts` exist — 8013020
 
 #### Manual
-- [ ] 1.4 `?lang=en` sets cookie + redirects without `lang`; choice persists on reload
-- [ ] 1.5 PL/EN switcher visible on desktop (Topbar) and mobile (BottomNav)
+- [x] 1.4 `?lang=en` sets cookie + redirects without `lang`; choice persists on reload — curl-verified
+- [x] 1.5 PL/EN switcher visible on desktop (Topbar) and mobile (BottomNav) — user-accepted
 
 ### Phase 2: Apply i18n to nav, tabs, forms, buttons
 
@@ -258,11 +258,11 @@ Manual, via `npm run build && npx wrangler dev` (port 8787) with the Rzeszów te
 - [x] 2.2 `npm run build` passes — dc09152
 
 #### Manual
-- [ ] 2.3 Toggling PL↔EN switches nav + topbar labels
-- [ ] 2.4 Meetings tab labels + accept/decline buttons switch language
-- [ ] 2.5 Dog form + profile form field labels switch language
-- [ ] 2.6 Auth form labels + submit buttons switch language
-- [ ] 2.7 No untranslated raw keys visible in either language
+- [x] 2.3 Toggling PL↔EN switches nav + topbar labels — user-accepted
+- [x] 2.4 Meetings tab labels + accept/decline buttons switch language — user-accepted
+- [x] 2.5 Dog form + profile form field labels switch language — user-accepted
+- [x] 2.6 Auth form labels + submit buttons switch language — curl-verified
+- [x] 2.7 No untranslated raw keys visible in either language — curl-verified (auth+landing), user-accepted elsewhere
 
 ### Phase 3: Dog-first map
 
@@ -271,9 +271,9 @@ Manual, via `npm run build && npx wrangler dev` (port 8787) with the Rzeszów te
 - [x] 3.2 `npm run build` passes — 6068ae8
 
 #### Manual
-- [ ] 3.3 One pin per dog (owner with 2 dogs → 2 pins)
-- [ ] 3.4 List shows dog cards with owner as subline
-- [ ] 3.5 Bottom sheet names the owner + working "Zaproponuj spacer" link
+- [x] 3.3 One pin per dog (owner with 2 dogs → 2 pins) — user-accepted
+- [x] 3.4 List shows dog cards with owner as subline — user-accepted
+- [x] 3.5 Bottom sheet names the owner + working "Zaproponuj spacer" link — user-accepted
 
 ### Phase 4: Breed dropdown
 
@@ -282,8 +282,8 @@ Manual, via `npm run build && npx wrangler dev` (port 8787) with the Rzeszów te
 - [x] 4.2 `npm run build` passes — 806e4e0
 
 #### Manual
-- [ ] 4.3 Breed filter is a dropdown; selecting narrows pins + list; reset works
-- [ ] 4.4 No "Wkrótce" placeholder chips remain
+- [x] 4.3 Breed filter is a dropdown; selecting narrows pins + list; reset works — user-accepted
+- [x] 4.4 No "Wkrótce" placeholder chips remain — user-accepted
 
 ### Phase 5: Dashboard width verify/refine
 
@@ -292,7 +292,7 @@ Manual, via `npm run build && npx wrangler dev` (port 8787) with the Rzeszów te
 - [x] 5.2 `npm run build` passes — no-op phase
 
 #### Manual
-- [ ] 5.3 Dashboard content edges line up with the Topbar at desktop width
+- [x] 5.3 Dashboard content edges line up with the Topbar at desktop width — user-accepted
 
 ### Phase 6: i18n gap closure — auth page chrome + public landing
 
