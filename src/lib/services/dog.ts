@@ -9,6 +9,8 @@ interface DogRow {
   name: string;
   breed: string;
   birthdate: string | null;
+  size: string | null;
+  traits: string[] | null;
   photo_path: string | null;
   created_at: string;
   updated_at: string;
@@ -25,6 +27,8 @@ function mapRow(client: SupabaseClient, row: DogRow): Dog {
     name: row.name,
     breed: row.breed,
     birthdate: row.birthdate,
+    size: (row.size as Dog["size"]) ?? null,
+    traits: row.traits ?? [],
     photoPath: row.photo_path,
     photoUrl,
     createdAt: row.created_at,
@@ -90,6 +94,8 @@ export async function createDog(client: SupabaseClient, ownerId: string, input: 
       name: input.name,
       breed: input.breed,
       birthdate: input.birthdate ?? null,
+      size: input.size ?? null,
+      traits: input.traits ?? [],
     })
     .select()
     .single();
@@ -122,11 +128,15 @@ export async function updateDog(client: SupabaseClient, ownerId: string, id: str
     name: string;
     breed: string;
     birthdate: string | null;
+    size: string | null;
+    traits: string[];
     photo_path?: string;
   } = {
     name: input.name,
     breed: input.breed,
     birthdate: input.birthdate ?? null,
+    size: input.size ?? null,
+    traits: input.traits ?? [],
   };
 
   // Only touch photo_path when a new photo was uploaded; otherwise preserve

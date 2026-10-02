@@ -1,3 +1,5 @@
+import type { DogSize } from "@/lib/dogAttributes";
+
 export interface Profile {
   id: string;
   name: string;
@@ -22,6 +24,8 @@ export interface Dog {
   name: string;
   breed: string;
   birthdate: string | null;
+  size: DogSize | null;
+  traits: string[];
   photoPath: string | null;
   photoUrl: string | null;
   createdAt: string;
@@ -55,5 +59,7 @@ export interface DogInput {
   name: string;
   breed: string;
   birthdate?: string | null;
+  size?: DogSize | null;
+  traits?: string[];
   photo?: File | null;
 }
