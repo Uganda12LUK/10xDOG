@@ -54,13 +54,40 @@ const pl: Record<string, string> = {
   // dogs listing
   "dogs.title": "Twoje psy",
   "dogs.add": "Dodaj psa",
+  "dogs.addTitle": "Dodaj psa",
+  "dogs.saved": "Zapisano.",
+  "dogs.empty": "Nie masz jeszcze psów — dodaj pierwszego!",
+  "dogs.years": "lat",
 
   // dog form
   "form.dog.name": "Imię",
+  "form.dog.namePlaceholder": "Imię Twojego psa",
+  "form.dog.nameRequired": "Imię jest wymagane",
   "form.dog.breed": "Rasa",
+  "form.dog.selectBreed": "Wybierz rasę",
+  "form.dog.size": "Wielkość",
+  "form.dog.traits": "Charakter",
   "form.dog.birthdate": "Data urodzenia",
   "form.dog.photo": "Zdjęcie",
   "form.dog.submit": "Zapisz psa",
+  "form.dog.saving": "Zapisywanie…",
+
+  // dog sizes
+  "size.small": "Mała",
+  "size.medium": "Średnia",
+  "size.large": "Duża",
+
+  // dog character traits
+  "trait.energetic": "Energiczny",
+  "trait.calm": "Spokojny",
+  "trait.social": "Towarzyski",
+  "trait.shy": "Nieśmiały",
+  "trait.dog_friendly": "Przyjazny psom",
+  "trait.kid_friendly": "Przyjazny dzieciom",
+  "trait.reactive": "Reaktywny",
+  "trait.anxious": "Lękliwy",
+  "trait.dominant": "Dominujący",
+  "trait.barky": "Szczekliwy",
 
   // profile form
   "form.profile.name": "Imię",

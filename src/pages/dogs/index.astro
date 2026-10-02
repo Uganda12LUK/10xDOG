@@ -38,12 +38,14 @@ const saved = Astro.url.searchParams.get("saved");
       ) : null}
 
       {saved === "1" ? (
-        <p class="mb-4 rounded-lg border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">Saved.</p>
+        <p class="mb-4 rounded-lg border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
+          {t(locale, "dogs.saved")}
+        </p>
       ) : null}
 
       {dogs.length === 0 ? (
         <div class="rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground">
-          No dogs yet — add your first!
+          {t(locale, "dogs.empty")}
         </div>
       ) : (
         <ul class="space-y-3">
@@ -69,7 +71,11 @@ const saved = Astro.url.searchParams.get("saved");
                   <div class="min-w-0">
                     <p class="truncate font-medium text-card-foreground">{dog.name}</p>
                     <p class="truncate text-sm text-muted-foreground">{dog.breed}</p>
-                    {age !== null ? <p class="text-xs text-muted-foreground">{age} yrs</p> : null}
+                    {age !== null ? (
+                      <p class="text-xs text-muted-foreground">
+                        {age} {t(locale, "dogs.years")}
+                      </p>
+                    ) : null}
                   </div>
                 </a>
               </li>

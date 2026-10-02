@@ -18,7 +18,7 @@ Discovery on `/owners` only filters by breed today. Owners want to find compatib
 | Decision | Choice | Why |
 |----------|--------|-----|
 | New fields | `size` (enum small/medium/large, nullable) + `traits` (`text[]` of keys) | Filterable, translatable; nullable keeps existing rows valid |
-| Trait vocabulary | 6 keys: energetic, calm, social, shy, dog_friendly, kid_friendly | Covers playdate matching; short = easy to fill |
+| Trait vocabulary | 10 keys: 6 positive/neutral + 4 cautionary (reactive, anxious, dominant, barky) | Covers playdate matching and lets a challenging dog be described honestly |
 | Trait storage | stable keys, never localized text | UI translates via `t()` |
 | Where search lives | extend existing `/owners` map | One discovery surface; reuses pins+list wiring |
 | Filtering | client-side pure function `filterDogs()` | Region returns few dogs; no server queries needed; testable |

@@ -4,6 +4,7 @@ import { FormField } from "@/components/auth/FormField";
 import { SubmitButton } from "@/components/auth/SubmitButton";
 import { ServerError } from "@/components/auth/ServerError";
 import { BREEDS } from "@/lib/breeds";
+import { DOG_SIZES, DOG_TRAITS } from "@/lib/dogAttributes";
 import { t, type Locale } from "@/lib/i18n";
 import type { Dog } from "@/types";
 import { cn } from "@/lib/utils";
@@ -17,6 +18,8 @@ interface Props {
 export default function DogForm({ dog, serverError, locale }: Props) {
   const [name, setName] = useState(dog?.name ?? "");
   const [breed, setBreed] = useState(dog?.breed ?? "");
+  const [size, setSize] = useState<string>(dog?.size ?? "");
+  const [traits, setTraits] = useState<string[]>(dog?.traits ?? []);
   const [birthdate, setBirthdate] = useState(dog?.birthdate ?? "");
   const [errors, setErrors] = useState<{ name?: string }>({});
 
@@ -26,7 +29,7 @@ export default function DogForm({ dog, serverError, locale }: Props) {
     const next: typeof errors = {};
 
     if (!name.trim()) {
-      next.name = "Name is required";
+      next.name = t(locale, "form.dog.nameRequired");
     }
 
     setErrors(next);
@@ -60,7 +63,7 @@ export default function DogForm({ dog, serverError, locale }: Props) {
           setName(v);
           clearError("name");
         }}
-        placeholder="Your dog's name"
+        placeholder={t(locale, "form.dog.namePlaceholder")}
         error={errors.name}
         icon={<PawPrint className="size-4" />}
       />
@@ -82,7 +85,7 @@ export default function DogForm({ dog, serverError, locale }: Props) {
           )}
         >
           <option value="" disabled>
-            Select a breed
+            {t(locale, "form.dog.selectBreed")}
           </option>
           {BREEDS.map((b) => (
             <option key={b} value={b}>
@@ -90,6 +93,63 @@ export default function DogForm({ dog, serverError, locale }: Props) {
             </option>
           ))}
         </select>
+      </div>
+
+      <div>
+        <label htmlFor="size" className="text-muted-foreground mb-1 block text-sm">
+          {t(locale, "form.dog.size")}
+        </label>
+        <select
+          id="size"
+          name="size"
+          value={size}
+          onChange={(e) => {
+            setSize(e.target.value);
+          }}
+          className={cn(
+            "border-input bg-background text-foreground w-full rounded-lg border px-3 py-2 text-sm",
+            "focus:ring-ring focus:ring-2 focus:outline-none",
+          )}
+        >
+          <option value="">—</option>
+          {DOG_SIZES.map((s) => (
+            <option key={s} value={s}>
+              {t(locale, `size.${s}`)}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <span className="text-muted-foreground mb-1 block text-sm">{t(locale, "form.dog.traits")}</span>
+        <div className="flex flex-wrap gap-2">
+          {DOG_TRAITS.map((tr) => {
+            const checked = traits.includes(tr);
+            return (
+              <label
+                key={tr}
+                className={cn(
+                  "cursor-pointer rounded-full border px-3 py-1 text-sm transition-colors",
+                  checked
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-foreground hover:bg-accent",
+                )}
+              >
+                <input
+                  type="checkbox"
+                  name="traits"
+                  value={tr}
+                  checked={checked}
+                  onChange={(e) => {
+                    setTraits((prev) => (e.target.checked ? [...prev, tr] : prev.filter((x) => x !== tr)));
+                  }}
+                  className="sr-only"
+                />
+                {t(locale, `trait.${tr}`)}
+              </label>
+            );
+          })}
+        </div>
       </div>
 
       <div>
@@ -138,7 +198,7 @@ export default function DogForm({ dog, serverError, locale }: Props) {
 
       <ServerError message={serverError} />
 
-      <SubmitButton pendingText="Saving..." icon={<Save className="size-4" />}>
+      <SubmitButton pendingText={t(locale, "form.dog.saving")} icon={<Save className="size-4" />}>
         {t(locale, "form.dog.submit")}
       </SubmitButton>
     </form>

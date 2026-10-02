@@ -29,7 +29,7 @@ An owner on `/owners` sees a filter panel (breed, size, character, distance) abo
 
 ## Critical Implementation Details
 
-- `traits` is stored as stable **keys** (`energetic`, `calm`, `social`, `shy`, `dog_friendly`, `kid_friendly`), never localized text — the UI translates keys via `t()`.
+- `traits` is stored as stable **keys** (6 positive/neutral + 4 cautionary: `reactive`, `anxious`, `dominant`, `barky`), never localized text — the UI translates keys via `t()`.
 - A dog with `size = null` or empty `traits` is only excluded when the corresponding filter is **active**; with no filter it still shows.
 - Distance filter default is **no limit** (all region dogs shown on load). A dog whose `ownerCity` is absent from `CITY_CENTERS` is excluded only when a distance limit is active.
 
@@ -45,7 +45,7 @@ An owner on `/owners` sees a filter panel (breed, size, character, distance) abo
 
 **2. Shared vocab** `src/lib/dogAttributes.ts` (new)
 - **Intent**: One source of truth for allowed sizes and traits, imported by form, API validation, and filter.
-- **Contract**: `export const DOG_SIZES = ['small','medium','large'] as const; export type DogSize = (typeof DOG_SIZES)[number]; export const DOG_TRAITS = ['energetic','calm','social','shy','dog_friendly','kid_friendly'] as const; export type DogTrait = (typeof DOG_TRAITS)[number];`
+- **Contract**: `DOG_SIZES = ['small','medium','large']`; `DOG_TRAITS` = 6 positive/neutral (`energetic, calm, social, shy, dog_friendly, kid_friendly`) + 4 cautionary (`reactive, anxious, dominant, barky`), with `DogSize` / `DogTrait` derived types. (Cautionary traits added in Phase 2 on user request so a challenging dog can be described and filtered out.)
 
 **3. Types** `src/types.ts`
 - **Intent**: Carry the new fields through `Dog` and `DogInput`.
@@ -149,8 +149,9 @@ An owner on `/owners` sees a filter panel (breed, size, character, distance) abo
 ### Changes Required
 
 **1. i18n** `src/lib/i18n/pl.ts` + `en.ts`
-- **Intent**: Translate every new user-visible label.
-- **Contract**: Keys for filter labels (`filter.size`, `filter.character`, `filter.distance`, `filter.anySize`, `filter.distanceNoLimit`, `filter.km`), size names (`size.small|medium|large`), trait names (`trait.<key>` for all 6), and dog-form labels (`form.dog.size`, `form.dog.traits`). Parallel keys in both files.
+- **Intent**: Translate every new user-visible filter label.
+- **Contract**: Keys for filter labels (`filter.size`, `filter.character`, `filter.distance`, `filter.anySize`, `filter.distanceNoLimit`, `filter.km`). Parallel keys in both files.
+- **Note**: dog-form + `size.*` + `trait.*` keys were pulled forward into **Phase 2** so the add-dog form reads Polish during its own verification. The same pass fixed pre-existing hardcoded English across the dog surface: `DogForm` (placeholder, "Select a breed", "Saving…", name-required), `dogs/new.astro` (title + "Add a dog" heading), and `dogs/index.astro` ("Saved.", empty-state, "yrs"). The browser-native `<input type=file>` "Choose file" label is NOT localizable via HTML and is left as-is.
 
 **2. Demo data** `supabase/rzeszow-testdata.sql`
 - **Intent**: Give the 5 demo dogs size + traits so the filter demonstrably narrows.
@@ -176,22 +177,22 @@ An owner on `/owners` sees a filter panel (breed, size, character, distance) abo
 ### Phase 1: Data layer
 
 #### Automated
-- [x] 1.1 `npm run lint` passes
-- [x] 1.2 `npm run build` passes
+- [x] 1.1 `npm run lint` passes — 3a639be
+- [x] 1.2 `npm run build` passes — 3a639be
 
 #### Manual
-- [x] 1.3 Migration applied to live DB; `dogs` has `size` + `traits` columns
+- [x] 1.3 Migration applied to live DB; `dogs` has `size` + `traits` columns — 3a639be
 
 ### Phase 2: Write path
 
 #### Automated
-- [ ] 2.1 `npm run lint` passes
-- [ ] 2.2 `npm run build` passes
+- [x] 2.1 `npm run lint` passes
+- [x] 2.2 `npm run build` passes
 
 #### Manual
-- [ ] 2.3 Creating a dog with size + 2 traits persists them
-- [ ] 2.4 Editing size + toggling traits persists
-- [ ] 2.5 Submitting with no size and no traits still succeeds
+- [x] 2.3 Creating a dog with size + 2 traits persists them
+- [x] 2.4 Editing size + toggling traits persists
+- [x] 2.5 Submitting with no size and no traits still succeeds
 
 ### Phase 3: Filtering core
 

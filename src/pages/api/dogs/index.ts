@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase";
 import { BREEDS } from "@/lib/breeds";
+import { DOG_SIZES, DOG_TRAITS, type DogSize } from "@/lib/dogAttributes";
 import { createDog } from "@/lib/services/dog";
 
 export const prerender = false;
@@ -32,6 +33,11 @@ const dogSchema = z.object({
       },
       { message: "Birthdate must be a valid date that is not in the future" },
     ),
+  size: z.preprocess(
+    (value) => (typeof value === "string" && value.length > 0 ? value : null),
+    z.enum(DOG_SIZES as unknown as [string, ...string[]], { message: "Invalid size" }).nullable(),
+  ),
+  traits: z.array(z.enum(DOG_TRAITS as unknown as [string, ...string[]], { message: "Invalid trait" })).default([]),
 });
 
 function redirectError(context: Parameters<APIRoute>[0], message: string) {
@@ -57,6 +63,8 @@ export const POST: APIRoute = async (context) => {
     name: form.get("name"),
     breed: form.get("breed"),
     birthdate: form.get("birthdate") ?? undefined,
+    size: form.get("size"),
+    traits: form.getAll("traits"),
   });
   if (!parsed.success) {
     const message = parsed.error.issues[0]?.message ?? "Invalid dog data";
@@ -79,6 +87,8 @@ export const POST: APIRoute = async (context) => {
       name: parsed.data.name,
       breed: parsed.data.breed,
       birthdate: parsed.data.birthdate,
+      size: parsed.data.size as DogSize | null,
+      traits: parsed.data.traits,
       photo: hasPhoto ? photo : null,
     });
   } catch (error) {

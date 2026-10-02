@@ -54,13 +54,40 @@ const en: Record<string, string> = {
   // dogs listing
   "dogs.title": "Your dogs",
   "dogs.add": "Add dog",
+  "dogs.addTitle": "Add a dog",
+  "dogs.saved": "Saved.",
+  "dogs.empty": "No dogs yet — add your first!",
+  "dogs.years": "yrs",
 
   // dog form
   "form.dog.name": "Name",
+  "form.dog.namePlaceholder": "Your dog's name",
+  "form.dog.nameRequired": "Name is required",
   "form.dog.breed": "Breed",
+  "form.dog.selectBreed": "Select a breed",
+  "form.dog.size": "Size",
+  "form.dog.traits": "Character",
   "form.dog.birthdate": "Birth date",
   "form.dog.photo": "Photo",
   "form.dog.submit": "Save dog",
+  "form.dog.saving": "Saving…",
+
+  // dog sizes
+  "size.small": "Small",
+  "size.medium": "Medium",
+  "size.large": "Large",
+
+  // dog character traits
+  "trait.energetic": "Energetic",
+  "trait.calm": "Calm",
+  "trait.social": "Social",
+  "trait.shy": "Shy",
+  "trait.dog_friendly": "Dog-friendly",
+  "trait.kid_friendly": "Kid-friendly",
+  "trait.reactive": "Reactive",
+  "trait.anxious": "Anxious",
+  "trait.dominant": "Dominant",
+  "trait.barky": "Barky",
 
   // profile form
   "form.profile.name": "Name",
