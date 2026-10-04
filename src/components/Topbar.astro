@@ -1,24 +1,38 @@
 ---
 import { createClient } from "@/lib/supabase";
 import { countReceivedPending } from "@/lib/services/invitation";
-import LangSwitcher from "@/components/LangSwitcher.astro";
+import { getProfile } from "@/lib/services/profile";
 import { t } from "@/lib/i18n";
 
 const { user, locale } = Astro.locals;
 
 let pendingCount = 0;
+let displayName = user?.email?.split("@")[0] ?? "?";
 if (user) {
   const supabase = createClient(Astro.request.headers, Astro.cookies);
   if (supabase) {
-    pendingCount = await countReceivedPending(supabase, user.id);
+    const [count, profile] = await Promise.all([
+      countReceivedPending(supabase, user.id),
+      getProfile(supabase, user.id),
+    ]);
+    pendingCount = count;
+    if (profile?.name) displayName = profile.name;
   }
 }
+const initial = displayName.charAt(0).toUpperCase();
 ---
 
 <div class="mx-auto mb-4 hidden max-w-4xl items-center justify-between rounded-xl border border-border bg-card px-4 py-2 text-sm text-card-foreground md:flex">
   {user ? (
     <>
-      <span class="text-muted-foreground">{user.email}</span>
+      <a
+        href="/profile"
+        class="flex size-9 items-center justify-center rounded-full bg-muted text-sm font-semibold text-muted-foreground transition-colors hover:bg-accent"
+        aria-label={t(locale, "nav.profile")}
+        title={user.email}
+      >
+        {initial}
+      </a>
       <div class="flex items-center gap-3">
         <a href="/dashboard" class="text-primary transition-colors hover:text-primary/80 hover:underline">
           {t(locale, "nav.start")}
@@ -30,18 +44,17 @@ if (user) {
           {t(locale, "nav.meetings")}
           {pendingCount > 0 ? ` (${pendingCount})` : ""}
         </a>
-        <a href="/profile" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          {t(locale, "nav.profile")}
-        </a>
         <a href="/dogs" class="text-primary transition-colors hover:text-primary/80 hover:underline">
           {t(locale, "nav.dogs")}
+        </a>
+        <a href="/profile" class="text-primary transition-colors hover:text-primary/80 hover:underline">
+          {t(locale, "nav.profile")}
         </a>
         <form method="POST" action="/api/auth/signout">
           <button type="submit" class="text-primary transition-colors hover:text-primary/80 hover:underline">
             {t(locale, "nav.signout")}
           </button>
         </form>
-        <LangSwitcher />
       </div>
     </>
   ) : (
@@ -54,7 +67,6 @@ if (user) {
         <a href="/auth/signup" class="text-primary transition-colors hover:text-primary/80 hover:underline">
           {t(locale, "auth.signUp")}
         </a>
-        <LangSwitcher />
       </div>
     </>
   )}
