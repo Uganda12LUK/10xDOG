@@ -179,6 +179,15 @@
     @apply active:scale-[0.98] transition-transform duration-75;
   }
 
+  /* promień wyszukiwania na mapie – „smycz": przerywany okrąg w kolorze marki
+     (SVG path Leafletu; kolor przez token, nie literał) */
+  .dog-radius {
+    stroke: var(--color-primary);
+    fill: var(--color-primary);
+    stroke-dasharray: 7 6;
+    stroke-linecap: round;
+  }
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;

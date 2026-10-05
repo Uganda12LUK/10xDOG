@@ -5,18 +5,31 @@ import "leaflet/dist/leaflet.css";
 import type { DogWithOwner } from "@/types";
 import { CITY_CENTERS } from "@/lib/geo";
 
+// A stable per-dog jitter so dogs in the same town don't stack on one point but
+// spread across the neighbourhood (~±2 km), as if on different streets. Purely
+// visual: the distance filter measures town-center to town-center (see dogFilter),
+// so widening this never changes which dogs a filter keeps.
 function deterministicOffset(id: string): [number, number] {
   let h = 0;
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
-  return [((h % 1001) - 500) / 100000, (((h >> 4) % 1001) - 500) / 100000];
+  // lat: 1° ≈ 111 km, lng: 1° ≈ 71 km at ~50°N → divisors tuned for ~±2 km each.
+  return [((h % 1001) - 500) / 28000, (((h >> 4) % 1001) - 500) / 18000];
 }
 
-// The user's own location marker — visually distinct from the dog pins.
+// The user's own "home base" marker — a brand-colored teardrop pin with a white
+// doghouse glyph. Distinct from the round dog pins by shape, not a one-off color;
+// colors come from tokens so it tracks light/dark.
 const userIcon = L.divIcon({
   className: "",
-  html: `<div style="width:34px;height:34px;border-radius:50%;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);">🏠</div>`,
-  iconSize: [34, 34],
-  iconAnchor: [17, 17],
+  html: `<div style="filter:drop-shadow(0 2px 3px rgba(0,0,0,.3));">
+    <svg width="40" height="48" viewBox="0 0 40 48" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 46C20 46 34 28 34 16A14 14 0 1 0 6 16C6 28 20 46 20 46Z" fill="var(--color-primary)" stroke="var(--color-primary-foreground)" stroke-width="2"/>
+      <path d="M12 17 L20 9 L28 17 L26 17 L26 23 L14 23 L14 17 Z" fill="var(--color-primary-foreground)"/>
+      <path d="M17.4 23 V19.4 A2.6 2.6 0 0 1 22.6 19.4 V23 Z" fill="var(--color-primary)"/>
+    </svg>
+  </div>`,
+  iconSize: [40, 48],
+  iconAnchor: [20, 46],
 });
 
 function makeDogIcon(name: string) {
@@ -24,7 +37,7 @@ function makeDogIcon(name: string) {
   const initial = trimmed.length > 0 ? trimmed[0].toUpperCase() : "🐾";
   return L.divIcon({
     className: "",
-    html: `<div style="width:36px;height:36px;border-radius:50%;background:var(--color-primary,#e05c2e);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.25);">${initial}</div>`,
+    html: `<div style="width:36px;height:36px;border-radius:50%;background:var(--color-primary);color:var(--color-primary-foreground);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.25);">${initial}</div>`,
     iconSize: [36, 36],
     iconAnchor: [18, 18],
   });
@@ -80,7 +93,7 @@ export default function DogMap({ dogs, center, onDogSelect, userCenter, onUserMo
         <Circle
           center={userCenter}
           radius={radiusKm * 1000}
-          pathOptions={{ color: "#e05c2e", weight: 1, fillOpacity: 0.08 }}
+          pathOptions={{ className: "dog-radius", weight: 2, fillOpacity: 0.06 }}
         />
       )}
 

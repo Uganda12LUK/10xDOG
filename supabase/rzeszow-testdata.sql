@@ -19,7 +19,9 @@
 -- ─────────────────────────────────────────────────────────────
 alter table invitations
   add column if not exists dog_id uuid references dogs (id) on delete set null,
-  add column if not exists scheduled_at timestamptz;
+  add column if not exists scheduled_at timestamptz,
+  add column if not exists location_lat double precision,
+  add column if not exists location_lng double precision;
 
 -- ─────────────────────────────────────────────────────────────
 -- 1. Test owners (auth.users). Minimal rows — these accounts are for
@@ -53,16 +55,19 @@ on conflict (id) do update set city = excluded.city, district = excluded.distric
 
 -- ─────────────────────────────────────────────────────────────
 -- 3. One dog per owner. Kasia + Piotr share a breed (Border Collie)
---    so the map's breed filter has something to narrow.
+--    so the map's breed filter has something to narrow. Sizes, traits and
+--    birthdates are spread across buckets so the size / character / age
+--    filters each have something to narrow. DO UPDATE so re-running refreshes
+--    these attributes on existing demo rows.
 -- ─────────────────────────────────────────────────────────────
-insert into dogs (id, owner_id, name, breed, birthdate)
+insert into dogs (id, owner_id, name, breed, birthdate, size, traits)
 values
-  ('dddddddd-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000001', 'Fela', 'Border Collie',        '2022-04-10'),
-  ('dddddddd-0000-0000-0000-000000000002', 'aaaaaaaa-0000-0000-0000-000000000002', 'Rex',  'Owczarek niemiecki',   '2021-08-01'),
-  ('dddddddd-0000-0000-0000-000000000003', 'aaaaaaaa-0000-0000-0000-000000000003', 'Nero', 'Labrador retriever',   '2023-02-20'),
-  ('dddddddd-0000-0000-0000-000000000004', 'aaaaaaaa-0000-0000-0000-000000000004', 'Luna', 'Border Collie',        '2020-11-05'),
-  ('dddddddd-0000-0000-0000-000000000005', 'aaaaaaaa-0000-0000-0000-000000000005', 'Hera', 'Beagle',               '2022-06-30')
-on conflict (id) do nothing;
+  ('dddddddd-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000001', 'Fela', 'Border Collie',        '2022-04-10', 'medium', array['energetic','dog_friendly']),
+  ('dddddddd-0000-0000-0000-000000000002', 'aaaaaaaa-0000-0000-0000-000000000002', 'Rex',  'Owczarek niemiecki',   '2021-08-01', 'large',  array['energetic','reactive']),
+  ('dddddddd-0000-0000-0000-000000000003', 'aaaaaaaa-0000-0000-0000-000000000003', 'Nero', 'Labrador retriever',   '2023-02-20', 'large',  array['social','kid_friendly']),
+  ('dddddddd-0000-0000-0000-000000000004', 'aaaaaaaa-0000-0000-0000-000000000004', 'Luna', 'Border Collie',        '2016-11-05', 'medium', array['calm','social']),
+  ('dddddddd-0000-0000-0000-000000000005', 'aaaaaaaa-0000-0000-0000-000000000005', 'Hera', 'Beagle',               '2024-06-30', 'small',  array['social','barky'])
+on conflict (id) do update set birthdate = excluded.birthdate, size = excluded.size, traits = excluded.traits;
 
 -- ─────────────────────────────────────────────────────────────
 -- 4. Your own profile: set city to Rzeszów (map centers here + lists the
@@ -78,11 +83,11 @@ on conflict (id) do update set city = 'Rzeszów', district = null;
 -- ─────────────────────────────────────────────────────────────
 -- 5. A dog for you, so the Dashboard shows a dog card.
 -- ─────────────────────────────────────────────────────────────
-insert into dogs (id, owner_id, name, breed, birthdate)
-select 'dddddddd-0000-0000-0000-0000000000ff', u.id, 'Burek', 'Border Collie', '2023-01-05'
+insert into dogs (id, owner_id, name, breed, birthdate, size, traits)
+select 'dddddddd-0000-0000-0000-0000000000ff', u.id, 'Burek', 'Border Collie', '2025-11-01', 'medium', array['energetic']
 from auth.users u
 where u.email = 'majerskiluk@gmail.com'
-on conflict (id) do nothing;
+on conflict (id) do update set birthdate = excluded.birthdate, size = excluded.size, traits = excluded.traits;
 
 -- ─────────────────────────────────────────────────────────────
 -- 6. Invitations, one per Meetings tab (all relative to your account).
@@ -110,3 +115,51 @@ select 'ffffffff-0000-0000-0000-000000000003',
 from auth.users u
 where u.email = 'majerskiluk@gmail.com'
 on conflict (id) do nothing;
+
+-- ─────────────────────────────────────────────────────────────
+-- 7. Bulk demo dogs (35) spread across the 5 Rzeszów-area owners, so the map,
+--    the scrollable results list, and every filter (breed / size / age /
+--    character / distance) have a realistic volume to narrow. Dogs anchor to
+--    their owner's town center (see src/lib/geo.ts), so cycling owners spreads
+--    them across ~0–11 km from Rzeszów (Rzeszów 0, Kielanówka ~5, Tyczyn ~8.6,
+--    Chmielnik ~9.5, Borek Stary ~11) — enough to exercise the 5/10/25 km filter.
+--    Deterministic ids + DO UPDATE -> re-runnable, refreshes attributes.
+-- ─────────────────────────────────────────────────────────────
+insert into dogs (id, owner_id, name, breed, birthdate, size, traits)
+select
+  ('dddddddd-0000-0000-0000-' || lpad((100 + g)::text, 12, '0'))::uuid,
+  (array[
+    'aaaaaaaa-0000-0000-0000-000000000001',
+    'aaaaaaaa-0000-0000-0000-000000000002',
+    'aaaaaaaa-0000-0000-0000-000000000003',
+    'aaaaaaaa-0000-0000-0000-000000000004',
+    'aaaaaaaa-0000-0000-0000-000000000005'
+  ]::uuid[])[1 + (g % 5)],
+  (array[
+    'Max','Luna','Daisy','Rocky','Bella','Czaki','Lola','Bruno','Maja','Dino',
+    'Tofik','Nela','Pucek','Zica','Gucio','Kira','Baks','Fibi','Reksio','Puma',
+    'Azor','Sonia','Diego','Nuta','Cola','Kajtek','Perła','Figo','Zoja','Boni',
+    'Tara','Loki','Misza','Hela','Dixie'
+  ])[g],
+  (array[
+    'Labrador retriever','Golden retriever','Border Collie','Beagle',
+    'Owczarek niemiecki','Jack Russell terrier','Cocker spaniel','Buldog francuski',
+    'Mops','Husky syberyjski','Shih Tzu','Sznaucer miniaturowy','Yorkshire terrier',
+    'Kundelek'
+  ])[1 + (g % 14)],
+  (date '2015-01-01' + ((g * 137) % 3650)),
+  (array['small','medium','large'])[1 + (g % 3)],
+  case (g % 8)
+    when 0 then array['energetic','social']
+    when 1 then array['calm','kid_friendly']
+    when 2 then array['social','dog_friendly']
+    when 3 then array['shy','anxious']
+    when 4 then array['energetic','reactive']
+    when 5 then array['calm','dog_friendly','kid_friendly']
+    when 6 then array['dominant','barky']
+    else array['social','energetic','kid_friendly']
+  end
+from generate_series(1, 35) g
+on conflict (id) do update set
+  owner_id = excluded.owner_id, name = excluded.name, breed = excluded.breed,
+  birthdate = excluded.birthdate, size = excluded.size, traits = excluded.traits;
