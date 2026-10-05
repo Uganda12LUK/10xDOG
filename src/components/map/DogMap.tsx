@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import { useEffect, useRef } from "react";
+import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { DogWithOwner } from "@/types";
@@ -10,6 +10,14 @@ function deterministicOffset(id: string): [number, number] {
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
   return [((h % 1001) - 500) / 100000, (((h >> 4) % 1001) - 500) / 100000];
 }
+
+// The user's own location marker — visually distinct from the dog pins.
+const userIcon = L.divIcon({
+  className: "",
+  html: `<div style="width:34px;height:34px;border-radius:50%;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);">🏠</div>`,
+  iconSize: [34, 34],
+  iconAnchor: [17, 17],
+});
 
 function makeDogIcon(name: string) {
   const trimmed = name.trim();
@@ -51,10 +59,14 @@ interface Props {
   dogs: DogWithOwner[];
   center: [number, number];
   onDogSelect: (dog: DogWithOwner) => void;
+  userCenter?: [number, number];
+  onUserMove?: (pos: [number, number]) => void;
+  radiusKm?: number | null;
 }
 
-export default function DogMap({ dogs, center, onDogSelect }: Props) {
+export default function DogMap({ dogs, center, onDogSelect, userCenter, onUserMove, radiusKm }: Props) {
   const positioned = dogs.map((dog) => ({ dog, pos: dogPosition(dog, center) }));
+  const userMarkerRef = useRef<L.Marker>(null);
 
   return (
     <MapContainer center={center} zoom={12} style={{ height: "100%", width: "100%" }}>
@@ -63,6 +75,33 @@ export default function DogMap({ dogs, center, onDogSelect }: Props) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <FitToDogs positions={positioned.map((p) => p.pos)} center={center} />
+
+      {userCenter && radiusKm != null && (
+        <Circle
+          center={userCenter}
+          radius={radiusKm * 1000}
+          pathOptions={{ color: "#e05c2e", weight: 1, fillOpacity: 0.08 }}
+        />
+      )}
+
+      {userCenter && (
+        <Marker
+          position={userCenter}
+          icon={userIcon}
+          draggable
+          ref={userMarkerRef}
+          eventHandlers={{
+            dragend: () => {
+              const marker = userMarkerRef.current;
+              if (marker && onUserMove) {
+                const { lat, lng } = marker.getLatLng();
+                onUserMove([lat, lng]);
+              }
+            },
+          }}
+        />
+      )}
+
       {positioned.map(({ dog, pos }) => (
         <Marker
           key={dog.id}

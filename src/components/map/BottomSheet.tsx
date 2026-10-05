@@ -17,7 +17,7 @@ export default function BottomSheet({ dog, open, onClose }: Props) {
         if (!v) onClose();
       }}
     >
-      <SheetContent side="bottom" className="pb-safe-area-inset-bottom rounded-t-2xl px-4">
+      <SheetContent side="bottom" className="rounded-t-2xl px-4 pt-2 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
         {dog && (
           <>
             <SheetHeader className="mb-4">
