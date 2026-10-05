@@ -1,6 +1,8 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ageStringFromBirthdate } from "@/lib/age";
+import { useMediaQuery } from "@/components/hooks/useMediaQuery";
+import { cn } from "@/lib/utils";
 import type { DogWithOwner } from "@/types";
 
 interface Props {
@@ -10,6 +12,10 @@ interface Props {
 }
 
 export default function BottomSheet({ dog, open, onClose }: Props) {
+  // Desktop: slide in from the right (there's room beside the map); mobile keeps
+  // the bottom sheet. First render is mobile (see useMediaQuery) to avoid a flash.
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+
   return (
     <Sheet
       open={open}
@@ -17,7 +23,10 @@ export default function BottomSheet({ dog, open, onClose }: Props) {
         if (!v) onClose();
       }}
     >
-      <SheetContent side="bottom" className="rounded-t-2xl px-4 pt-2 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+      <SheetContent
+        side={isDesktop ? "right" : "bottom"}
+        className={cn("px-4", isDesktop ? "pt-6" : "rounded-t-2xl pt-2 pb-[calc(1.5rem+env(safe-area-inset-bottom))]")}
+      >
         {dog && (
           <>
             <SheetHeader className="mb-4">

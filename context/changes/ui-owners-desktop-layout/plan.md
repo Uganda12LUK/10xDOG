@@ -279,29 +279,29 @@ a `lg:` grid are CSS-only.
 
 #### Automated
 
-- [x] 1.1 Linting passes: `npm run lint`
-- [x] 1.2 Build passes: `npm run build`
-- [x] 1.3 Hardcoded-value scan shows no palette/hex literals in DogMap.tsx except the drop-shadow rgba
+- [x] 1.1 Linting passes: `npm run lint` — c974fd8
+- [x] 1.2 Build passes: `npm run build` — c974fd8
+- [x] 1.3 Hardcoded-value scan shows no palette/hex literals in DogMap.tsx except the drop-shadow rgba — c974fd8
 
 #### Manual
 
-- [ ] 1.4 User-location marker is a coral doghouse pin matching app style; readable light + dark
-- [ ] 1.5 Radius circle renders as a dashed "leash" in brand color; dog pins coral with initials
-- [ ] 1.6 ~40 varied demo dogs show on /owners (breed/size/traits/age spread); list scrolls, filters have volume
+- [x] 1.4 User-location marker is a coral doghouse pin matching app style; readable light + dark — c974fd8
+- [x] 1.5 Radius circle renders as a dashed "leash" in brand color; dog pins coral with initials — c974fd8
+- [x] 1.6 ~40 varied demo dogs show on /owners (breed/size/traits/age spread); list scrolls, filters have volume — c974fd8
 
 ### Phase 2: Desktop two-pane layout
 
 #### Automated
 
-- [ ] 2.1 Linting passes: `npm run lint`
-- [ ] 2.2 Build passes: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint`
+- [x] 2.2 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 2.3 Desktop: map stays in view while results column scrolls; map not grey
-- [ ] 2.4 Applying a filter changes the visible list without scrolling
-- [ ] 2.5 Dog detail opens right-side on desktop, bottom sheet on mobile
-- [ ] 2.6 Mobile layout unchanged from before
+- [x] 2.3 Desktop: map stays in view while results column scrolls; map not grey
+- [x] 2.4 Applying a filter changes the visible list without scrolling
+- [x] 2.5 Dog detail opens right-side on desktop, bottom sheet on mobile
+- [x] 2.6 Mobile layout unchanged from before
 
 ### Phase 3: State matrix, visual gate, and guard rule
 

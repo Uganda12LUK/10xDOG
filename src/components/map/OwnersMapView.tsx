@@ -66,22 +66,27 @@ export default function OwnersMapView({ dogs, city, userLocation, locale }: Prop
   return (
     <div className="relative">
       <SearchFilters breeds={breeds} criteria={criteria} onChange={setCriteria} locale={locale} />
-      <div className="px-0 md:px-4">
-        <div className="isolate h-[260px] overflow-hidden md:h-[380px] md:rounded-2xl">
-          <DogMap
-            dogs={filtered}
-            center={userCenter}
-            userCenter={userCenter}
-            onUserMove={setUserCenter}
-            radiusKm={criteria.maxKm}
-            onDogSelect={setSelectedDog}
-          />
+      {/* Mobile: map stacked above the list. Desktop (lg): two panes — a sticky,
+          viewport-tall map beside a scrollable results column, so a filter change
+          shows in the list without scrolling. */}
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:items-start lg:gap-4 lg:px-4">
+        <div className="px-0 md:px-4 lg:px-0">
+          <div className="isolate h-[260px] overflow-hidden md:h-[380px] md:rounded-2xl lg:sticky lg:top-4 lg:h-[calc(100svh-7rem)]">
+            <DogMap
+              dogs={filtered}
+              center={userCenter}
+              userCenter={userCenter}
+              onUserMove={setUserCenter}
+              radiusKm={criteria.maxKm}
+              onDogSelect={setSelectedDog}
+            />
+          </div>
         </div>
-      </div>
-      <div className="divide-border divide-y">
-        {filtered.map((dog) => (
-          <DogCard key={dog.id} dog={dog} onClick={setSelectedDog} />
-        ))}
+        <div className="divide-border divide-y">
+          {filtered.map((dog) => (
+            <DogCard key={dog.id} dog={dog} onClick={setSelectedDog} />
+          ))}
+        </div>
       </div>
       <BottomSheet
         dog={selectedDog}
