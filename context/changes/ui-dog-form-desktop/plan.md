@@ -53,8 +53,8 @@ keeps the single `space-y-4` column.
 
 #### Automated
 
-- [x] 1.1 Linting passes: `npm run lint`
-- [x] 1.2 Build passes: `npm run build`
+- [x] 1.1 Linting passes: `npm run lint` — 0207a55
+- [x] 1.2 Build passes: `npm run build` — 0207a55
 
 #### Manual
 
