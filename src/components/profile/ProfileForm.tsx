@@ -9,16 +9,10 @@ import { ServerError } from "@/components/auth/ServerError";
 import { t, type Locale } from "@/lib/i18n";
 import type { Profile } from "@/types";
 import { CITY_CENTERS } from "@/lib/geo";
+import { userHomeIcon } from "@/components/map/markerIcons";
 import { cn } from "@/lib/utils";
 
 const POLAND_CENTER: [number, number] = [52.0693, 19.4803];
-
-const pinIcon = L.divIcon({
-  className: "text-primary text-2xl",
-  html: "📍",
-  iconSize: [24, 24],
-  iconAnchor: [12, 24],
-});
 
 // Lets the user tap the map to move the pin (complements dragging it).
 function MapClickHandler({ onPick }: { onPick: (pos: [number, number]) => void }) {
@@ -89,69 +83,75 @@ export default function ProfileForm({ profile, serverError, saved, onboarding, l
         </p>
       ) : null}
 
-      <FormField
-        id="name"
-        label={t(locale, "form.profile.name")}
-        value={name}
-        onChange={(v) => {
-          setName(v);
-          clearError("name");
-        }}
-        placeholder="Your name"
-        error={errors.name}
-        icon={<User className="size-4" />}
-      />
+      <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-6">
+        <div className="space-y-4">
+          <FormField
+            id="name"
+            label={t(locale, "form.profile.name")}
+            value={name}
+            onChange={(v) => {
+              setName(v);
+              clearError("name");
+            }}
+            placeholder="Your name"
+            error={errors.name}
+            icon={<User className="size-4" />}
+          />
 
-      <FormField
-        id="district"
-        label={t(locale, "form.profile.district")}
-        value={district}
-        onChange={(v) => {
-          setDistrict(v);
-        }}
-        placeholder="Your district"
-        icon={<MapPin className="size-4" />}
-      />
+          <FormField
+            id="district"
+            label={t(locale, "form.profile.district")}
+            value={district}
+            onChange={(v) => {
+              setDistrict(v);
+            }}
+            placeholder="Your district"
+            icon={<MapPin className="size-4" />}
+          />
 
-      <FormField
-        id="city"
-        label={t(locale, "form.profile.city")}
-        value={city}
-        onChange={(v) => {
-          setCity(v);
-        }}
-        placeholder="Your city"
-        icon={<Building2 className="size-4" />}
-      />
+          <FormField
+            id="city"
+            label={t(locale, "form.profile.city")}
+            value={city}
+            onChange={(v) => {
+              setCity(v);
+            }}
+            placeholder="Your city"
+            icon={<Building2 className="size-4" />}
+          />
+        </div>
 
-      <div>
-        <label className="text-muted-foreground mb-1 block text-sm">{t(locale, "form.profile.location")}</label>
-        <p className="text-muted-foreground mb-2 text-xs">{t(locale, "form.profile.locationHint")}</p>
-        <input type="hidden" name="location_lat" value={position[0]} />
-        <input type="hidden" name="location_lng" value={position[1]} />
-        <div className="border-border overflow-hidden rounded-lg border" style={{ height: "200px" }}>
-          <MapContainer center={position} zoom={12} style={{ height: "100%", width: "100%" }}>
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <MapClickHandler onPick={setPosition} />
-            <Marker
-              position={position}
-              icon={pinIcon}
-              draggable
-              ref={markerRef}
-              eventHandlers={{
-                dragend: () => {
-                  const marker = markerRef.current;
-                  if (marker) {
-                    const { lat, lng } = marker.getLatLng();
-                    setPosition([lat, lng]);
-                  }
-                },
-              }}
-            />
-          </MapContainer>
+        <div className="mt-4 lg:mt-0">
+          <div>
+            <label className="text-muted-foreground mb-1 block text-sm">{t(locale, "form.profile.location")}</label>
+            <p className="text-muted-foreground mb-2 text-xs">{t(locale, "form.profile.locationHint")}</p>
+            <input type="hidden" name="location_lat" value={position[0]} />
+            <input type="hidden" name="location_lng" value={position[1]} />
+            <div className="border-border h-[200px] overflow-hidden rounded-lg border lg:h-[320px]">
+              <MapContainer center={position} zoom={12} style={{ height: "100%", width: "100%" }}>
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <MapClickHandler onPick={setPosition} />
+                <Marker
+                  position={position}
+                  icon={userHomeIcon}
+                  draggable
+                  ref={markerRef}
+                  eventHandlers={{
+                    dragend: () => {
+                      const marker = markerRef.current;
+                      if (marker) {
+                        const { lat, lng } = marker.getLatLng();
+                        setPosition([lat, lng]);
+                      }
+                    },
+                  }}
+                />
+              </MapContainer>
+            </div>
+          </div>
         </div>
       </div>
 

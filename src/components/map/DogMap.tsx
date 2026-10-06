@@ -4,6 +4,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { DogWithOwner } from "@/types";
 import { CITY_CENTERS } from "@/lib/geo";
+import { userHomeIcon } from "./markerIcons";
 
 // A stable per-dog jitter so dogs in the same town don't stack on one point but
 // spread across the neighbourhood (~±2 km), as if on different streets. Purely
@@ -15,22 +16,6 @@ function deterministicOffset(id: string): [number, number] {
   // lat: 1° ≈ 111 km, lng: 1° ≈ 71 km at ~50°N → divisors tuned for ~±2 km each.
   return [((h % 1001) - 500) / 28000, (((h >> 4) % 1001) - 500) / 18000];
 }
-
-// The user's own "home base" marker — a brand-colored teardrop pin with a white
-// doghouse glyph. Distinct from the round dog pins by shape, not a one-off color;
-// colors come from tokens so it tracks light/dark.
-const userIcon = L.divIcon({
-  className: "",
-  html: `<div style="filter:drop-shadow(0 2px 3px rgba(0,0,0,.3));">
-    <svg width="40" height="48" viewBox="0 0 40 48" xmlns="http://www.w3.org/2000/svg">
-      <path d="M20 46C20 46 34 28 34 16A14 14 0 1 0 6 16C6 28 20 46 20 46Z" fill="var(--color-primary)" stroke="var(--color-primary-foreground)" stroke-width="2"/>
-      <path d="M12 17 L20 9 L28 17 L26 17 L26 23 L14 23 L14 17 Z" fill="var(--color-primary-foreground)"/>
-      <path d="M17.4 23 V19.4 A2.6 2.6 0 0 1 22.6 19.4 V23 Z" fill="var(--color-primary)"/>
-    </svg>
-  </div>`,
-  iconSize: [40, 48],
-  iconAnchor: [20, 46],
-});
 
 function makeDogIcon(name: string) {
   const trimmed = name.trim();
@@ -100,7 +85,7 @@ export default function DogMap({ dogs, center, onDogSelect, userCenter, onUserMo
       {userCenter && (
         <Marker
           position={userCenter}
-          icon={userIcon}
+          icon={userHomeIcon}
           draggable
           ref={userMarkerRef}
           eventHandlers={{
