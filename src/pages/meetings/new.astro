@@ -4,10 +4,11 @@ import { createClient } from "@/lib/supabase";
 import { getProfile } from "@/lib/services/profile";
 import { listDogs } from "@/lib/services/dog";
 import MeetingForm from "@/components/meetings/MeetingForm";
+import { t } from "@/lib/i18n";
 import type { Dog, Profile } from "@/types";
 
 // /meetings is a protected route — middleware guarantees an authenticated user here.
-const { user } = Astro.locals;
+const { user, locale } = Astro.locals;
 const receiverId = Astro.url.searchParams.get("receiver_id");
 const error = Astro.url.searchParams.get("error");
 
@@ -25,23 +26,23 @@ if (supabase && user && receiverId) {
 }
 ---
 
-<Layout title="Zaproponuj spotkanie">
-  <div class="mx-auto max-w-sm p-4">
+<Layout title={t(locale, "meetingNew.title")}>
+  <div class="mx-auto max-w-md p-4 lg:max-w-3xl">
     {!receiverId ? (
       <div class="rounded-2xl border border-border bg-card p-8 text-center text-card-foreground">
         <p class="text-muted-foreground">
-          Nie wybrano właściciela.{" "}
+          {t(locale, "meetingNew.noReceiver")}{" "}
           <a href="/owners" class="text-primary hover:underline">
-            ← Wróć do listy
+            {t(locale, "meetingNew.backToList")}
           </a>
         </p>
       </div>
     ) : receiverProfile === null ? (
       <div class="rounded-2xl border border-border bg-card p-8 text-center text-card-foreground">
         <p class="text-muted-foreground">
-          Nie znaleziono właściciela.{" "}
+          {t(locale, "meetingNew.notFound")}{" "}
           <a href="/owners" class="text-primary hover:underline">
-            ← Wróć do listy
+            {t(locale, "meetingNew.backToList")}
           </a>
         </p>
       </div>
@@ -49,9 +50,11 @@ if (supabase && user && receiverId) {
       <>
         <div class="mb-6">
           <a href={`/owners/${receiverId}`} class="text-sm text-primary hover:underline">
-            ← Wróć do profilu
+            {t(locale, "meetingNew.backToProfile")}
           </a>
-          <h1 class="mt-3 text-2xl font-bold text-foreground">Zaproponuj spotkanie: {receiverProfile.name}</h1>
+          <h1 class="mt-3 text-2xl font-bold text-foreground">
+            {t(locale, "meetingNew.proposeWith")} {receiverProfile.name}
+          </h1>
         </div>
         <MeetingForm
           receiver={{
@@ -60,10 +63,11 @@ if (supabase && user && receiverId) {
           }}
           dogs={myDogs}
           error={error ?? undefined}
+          locale={locale}
           client:only="react"
         >
           <div slot="fallback" class="text-muted-foreground text-sm">
-            Ładowanie formularza…
+            {t(locale, "meetingNew.loading")}
           </div>
         </MeetingForm>
       </>

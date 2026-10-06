@@ -30,6 +30,29 @@ const pl: Record<string, string> = {
   "meetings.tabs.history": "Historia",
   "meetings.accept": "Akceptuj",
   "meetings.decline": "Odrzuć",
+  "meetings.viewLocation": "Zobacz miejsce",
+  "meetings.pending": "Oczekuje",
+
+  // meeting types
+  "type.walk": "Spacer",
+  "type.breeding": "Krycie",
+
+  // propose-meeting form
+  "meetingForm.type": "Typ spotkania",
+  "meetingForm.yourDog": "Twój pies",
+  "meetingForm.dateTime": "Data i czas",
+  "meetingForm.location": "Lokalizacja",
+  "meetingForm.pinHint": "Przeciągnij pinezkę lub kliknij mapę, aby zaznaczyć miejsce spotkania.",
+  "meetingForm.submit": "Wyślij zaproszenie",
+
+  // propose-meeting page (new.astro chrome)
+  "meetingNew.title": "Zaproponuj spotkanie",
+  "meetingNew.noReceiver": "Nie wybrano właściciela.",
+  "meetingNew.backToList": "← Wróć do listy",
+  "meetingNew.notFound": "Nie znaleziono właściciela.",
+  "meetingNew.backToProfile": "← Wróć do profilu",
+  "meetingNew.proposeWith": "Zaproponuj spotkanie z",
+  "meetingNew.loading": "Ładowanie formularza…",
 
   // dashboard
   "dashboard.welcomeBack": "Witaj z powrotem",
@@ -38,6 +61,8 @@ const pl: Record<string, string> = {
   "dashboard.tiles.proposeMeeting": "Zaproponuj spotkanie",
   "dashboard.tiles.dogMap": "Mapa psów",
   "dashboard.tiles.myMeetings": "Moje spotkania",
+  "dashboard.tiles.dogs": "Moje psy",
+  "dashboard.tiles.profile": "Profil",
   "dashboard.tiles.events": "Wydarzenia",
   "dashboard.tiles.places": "Miejsca",
 
@@ -50,6 +75,19 @@ const pl: Record<string, string> = {
   // map controls
   "map.breedFilter": "Rasa",
   "map.allBreeds": "Wszystkie rasy",
+
+  // map search filters
+  "filter.size": "Wielkość",
+  "filter.anySize": "Każda wielkość",
+  "filter.character": "Charakter",
+  "filter.age": "Wiek",
+  "filter.anyAge": "Każdy wiek",
+  "filter.distance": "Odległość",
+  "filter.distanceNoLimit": "Bez limitu",
+  "age.puppy": "Szczeniak (<1 r.)",
+  "age.young": "Młody (1–3 l.)",
+  "age.adult": "Dorosły (3–8 l.)",
+  "age.senior": "Senior (8+ l.)",
 
   // dogs listing
   "dogs.title": "Twoje psy",
@@ -94,6 +132,9 @@ const pl: Record<string, string> = {
   "form.profile.district": "Dzielnica",
   "form.profile.city": "Miasto",
   "form.profile.photo": "Zdjęcie",
+  "form.profile.location": "Twoja lokalizacja",
+  "form.profile.locationHint":
+    "Przeciągnij pinezkę, aby ustawić swoje miejsce — od niego zaczyna się wyszukiwanie psów.",
   "form.profile.submit": "Zapisz profil",
 
   // auth
