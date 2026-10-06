@@ -58,12 +58,12 @@ e2e test. Pure rename — no behavior change.
 
 #### Automated
 
-- [x] 1.1 No `/owners` references remain in src/ tests/ .claude/hooks/ CLAUDE.md
-- [x] 1.2 Linting passes: `npm run lint`
-- [x] 1.3 Build passes: `npm run build`
+- [x] 1.1 No `/owners` references remain in src/ tests/ .claude/hooks/ CLAUDE.md — 7e09d7b
+- [x] 1.2 Linting passes: `npm run lint` — 7e09d7b
+- [x] 1.3 Build passes: `npm run build` — 7e09d7b
 
 #### Manual
 
 - [ ] 1.4 /map serves the map; /map/<id> serves the owner detail
 - [ ] 1.5 Nav, dashboard tile, and meeting-form back links go to /map
-- [x] 1.6 Logged-out /map redirects to sign-in (curl: /map → 302, /map/<id> → 302, old /owners → 404)
+- [x] 1.6 Logged-out /map redirects to sign-in (curl: /map → 302, /map/<id> → 302, old /owners → 404) — 7e09d7b
