@@ -91,9 +91,9 @@ lg:gap-6 lg:items-start`; onboarding banner / ServerError / saved / submit stay 
 
 #### Automated
 
-- [x] 1.1 Linting passes: `npm run lint`
-- [x] 1.2 Build passes: `npm run build`
-- [x] 1.3 No emoji divIcon in ProfileForm; userIcon no longer inline in DogMap
+- [x] 1.1 Linting passes: `npm run lint` — fa6bca9
+- [x] 1.2 Build passes: `npm run build` — fa6bca9
+- [x] 1.3 No emoji divIcon in ProfileForm; userIcon no longer inline in DogMap — fa6bca9
 
 #### Manual
 
@@ -104,8 +104,8 @@ lg:gap-6 lg:items-start`; onboarding banner / ServerError / saved / submit stay 
 
 #### Automated
 
-- [x] 2.1 Linting passes: `npm run lint`
-- [x] 2.2 Build passes: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint` — fa6bca9
+- [x] 2.2 Build passes: `npm run build` — fa6bca9
 
 #### Manual
 
