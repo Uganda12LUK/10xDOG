@@ -145,7 +145,7 @@ export default function MeetingForm({ receiver, dogs, error, locale }: Props) {
           <input type="hidden" name="location_lat" value={position[0]} />
           <input type="hidden" name="location_lng" value={position[1]} />
           <div className="border-border h-[220px] overflow-hidden rounded-lg border lg:h-[360px]">
-            <MapContainer center={center} zoom={13} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
+            <MapContainer center={center} zoom={13} style={{ height: "100%", width: "100%" }}>
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
