@@ -1,9 +1,18 @@
 import { test, expect } from "@playwright/test";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// risk: #1 walk-invitation loop — the north-star flow across auth → routing →
+// API → DB: A proposes a walk to B, B accepts, and the confirmed meeting shows
+// up for BOTH parties. Needs a real two-user session, so it runs against a
+// Supabase stack (local, or the remote test project wired in .env.test /
+// .dev.vars). The users + profiles are seeded by tests/setup/playwright-global-
+// setup.ts, which also wipes prior invitations (teardown-before-setup), so
+// re-runs don't collide. It self-skips when that stack is unreachable.
+const USERS_PATH = resolve(__dirname, "../setup/.e2e-users.json");
 
 interface E2EUsers {
   userA: { email: string; password: string; id: string };
@@ -11,80 +20,101 @@ interface E2EUsers {
 }
 
 function loadUsers(): E2EUsers {
-  const filePath = resolve(__dirname, "../setup/.e2e-users.json");
-  return JSON.parse(readFileSync(filePath, "utf-8")) as E2EUsers;
+  return JSON.parse(readFileSync(USERS_PATH, "utf-8")) as E2EUsers;
 }
 
 async function signIn(page: import("@playwright/test").Page, email: string, password: string): Promise<void> {
   await page.goto("/auth/signin");
-  await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill(password);
-  await page.getByRole("button", { name: /sign in/i }).click();
-  // Wait for redirect away from the sign-in page after successful auth.
-  await page.waitForURL((url) => !url.pathname.startsWith("/auth/signin"), { timeout: 15_000 });
+  // SignInForm is a client:load React island: input typed before it hydrates is
+  // dropped (controlled inputs reset to ""), and the form blocks its own submit.
+  // Retry fill+submit until the sign-in navigation happens — clearing before
+  // each fill so re-typing the same value still fires a change event.
+  // (`textbox` role targets the inputs unambiguously — getByLabel('Password')
+  // would also match the "Show password" button.)
+  const emailBox = page.getByRole("textbox", { name: "Email" });
+  const passwordBox = page.getByRole("textbox", { name: "Password" });
+  await expect(async () => {
+    await emailBox.fill("");
+    await emailBox.fill(email);
+    await passwordBox.fill("");
+    await passwordBox.fill(password);
+    await expect(emailBox).toHaveValue(email);
+    await page.getByRole("button", { name: /^sign in$/i }).click();
+    await page.waitForURL((url) => !url.pathname.startsWith("/auth/signin"), { timeout: 5_000 });
+  }).toPass({ timeout: 40_000 });
+}
+
+// A future datetime-local value (the API rejects a past/invalid scheduled_at).
+function futureDateTimeLocal(daysAhead: number): string {
+  const d = new Date(Date.now() + daysAhead * 24 * 60 * 60 * 1000);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T12:00`;
 }
 
 test("invitation loop: User A invites User B, User B accepts, both see the meeting", async ({ browser }) => {
-  const { userA, userB } = loadUsers();
+  test.skip(!existsSync(USERS_PATH), "Requires a Supabase stack (tests/setup/.e2e-users.json was not generated).");
+  // Multi-step flow across two contexts, hitting a remote DB on each navigation.
+  test.setTimeout(120_000);
 
-  // ── Context A — User A ──────────────────────────────────────────────────
+  const { userA, userB } = loadUsers();
+  const userAName = userA.email.split("@")[0];
+  const userBName = userB.email.split("@")[0];
+
+  // ── Context A — User A proposes a walk to User B ────────────────────────────
   const contextA = await browser.newContext();
   const pageA = await contextA.newPage();
-
   await signIn(pageA, userA.email, userA.password);
 
-  // Navigate directly to User B's owner profile page to send the invitation.
-  // The /map list requires geolocation and map hydration; going straight to
-  // the detail page is faster and avoids flakiness from the React island.
+  // Open User B's owner profile and start a meeting proposal from there.
   await pageA.goto(`/map/${userB.id}`);
-  await pageA.waitForURL(`/map/${userB.id}`);
+  await expect(pageA.getByRole("heading", { name: userBName })).toBeVisible();
+  await pageA.getByRole("link", { name: "Zaproponuj spotkanie" }).click();
+  await pageA.waitForURL(`**/meetings/new?receiver_id=${userB.id}`);
 
-  // Click the "Send walk invitation" submit button.
-  await pageA.getByRole("button", { name: /send walk invitation/i }).click();
+  // The MeetingForm is a client:only React island — wait for it to hydrate
+  // (submit button present) before interacting, or typed input is lost.
+  const submit = pageA.getByRole("button", { name: "Send invitation" });
+  await expect(submit).toBeVisible({ timeout: 20_000 });
 
-  // After form POST the page redirects back to /map/<id>?sent=1.
-  await pageA.waitForURL((url) => url.pathname === `/map/${userB.id}` && url.searchParams.get("sent") === "1", {
-    timeout: 15_000,
-  });
+  // Choose a walk, pick a future date; location is pre-filled from the city.
+  await pageA.getByText("Walk", { exact: true }).click();
+  await pageA.getByLabel("Date & time").fill(futureDateTimeLocal(7));
+  await submit.click();
 
-  // ── Context B — User B ──────────────────────────────────────────────────
+  // On success the API redirects to /meetings (not back to the form with ?error).
+  await pageA.waitForURL("**/meetings", { timeout: 20_000 });
+  expect(pageA.url()).not.toContain("error");
+
+  // ── Context B — User B sees the invitation and accepts it ───────────────────
   const contextB = await browser.newContext();
   const pageB = await contextB.newPage();
-
   await signIn(pageB, userB.email, userB.password);
 
-  // Navigate to the Meetings page and open the Zaproszenia (invitations inbox) tab.
   await pageB.goto("/meetings");
-  await pageB.waitForURL("/meetings");
+  await pageB.getByRole("tab", { name: /invitations/i }).click();
 
-  // Click the "Zaproszenia" tab trigger.
-  await pageB.getByRole("tab", { name: /zaproszenia/i }).click();
-
-  // Assert User A's invitation is visible in the inbox.
-  const userAName = userA.email.split("@")[0];
+  // The inbox card shows the sender (User A) and an Accept button.
   await expect(pageB.getByText(userAName, { exact: false })).toBeVisible({ timeout: 10_000 });
 
-  // Accept the invitation.
-  await pageB.getByRole("button", { name: /akceptuj/i }).click();
+  // Wait for the respond API to actually finish, not just the button's text to
+  // flip to its "…" loading label — otherwise the next page load SSRs the
+  // Upcoming list before the accept is committed.
+  const acceptResponse = pageB.waitForResponse(
+    (r) => r.url().includes("/api/invitations/respond") && r.request().method() === "POST",
+  );
+  await pageB.getByRole("button", { name: "Accept" }).click();
+  expect((await acceptResponse).ok()).toBe(true);
 
-  // The card should disappear from the inbox after the accept action.
-  await expect(pageB.getByRole("button", { name: /akceptuj/i })).not.toBeVisible({ timeout: 10_000 });
-
-  // Navigate back to check the Nadchodzące (upcoming) tab for User B.
+  // User B now sees the confirmed meeting under Upcoming.
   await pageB.goto("/meetings");
-  await pageB.waitForURL("/meetings");
-  await pageB.getByRole("tab", { name: /nadchodzące/i }).click();
+  await pageB.getByRole("tab", { name: "Upcoming" }).click();
   await expect(pageB.getByText(userAName, { exact: false })).toBeVisible({ timeout: 10_000 });
 
-  // ── Back to Context A — assert User A also sees the meeting ─────────────
+  // ── Back to Context A — the meeting is visible for User A too ────────────────
   await pageA.goto("/meetings");
-  await pageA.waitForURL("/meetings");
-  await pageA.getByRole("tab", { name: /nadchodzące/i }).click();
-
-  const userBName = userB.email.split("@")[0];
+  await pageA.getByRole("tab", { name: "Upcoming" }).click();
   await expect(pageA.getByText(userBName, { exact: false })).toBeVisible({ timeout: 10_000 });
 
-  // Clean up contexts.
   await contextA.close();
   await contextB.close();
 });
