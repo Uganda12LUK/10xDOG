@@ -158,38 +158,38 @@ folder; also capture the deferred `/owners` desktop + mobile screenshots into th
 
 #### Automated
 
-- [x] 1.1 Linting passes: `npm run lint`
-- [x] 1.2 Build passes: `npm run build`
-- [x] 1.3 No hardcoded Polish remains in new.astro
+- [x] 1.1 Linting passes: `npm run lint` — 8ab8a4d
+- [x] 1.2 Build passes: `npm run build` — 8ab8a4d
+- [x] 1.3 No hardcoded Polish remains in new.astro — 8ab8a4d
 
 #### Manual
 
-- [x] 1.4 /meetings/new shows English title, heading, and back links
-- [x] 1.5 No-receiver and not-found states render in English
+- [x] 1.4 /meetings/new shows English title, heading, and back links — 8ab8a4d
+- [x] 1.5 No-receiver and not-found states render in English — 8ab8a4d
 
 ### Phase 2: Desktop layout
 
 #### Automated
 
-- [x] 2.1 Linting passes: `npm run lint`
-- [x] 2.2 Build passes: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint` — 8ab8a4d
+- [x] 2.2 Build passes: `npm run build` — 8ab8a4d
 
 #### Manual
 
-- [x] 2.3 Desktop: fields beside a larger map; not a narrow phone column
-- [x] 2.4 Location map renders (not grey); pin draggable / tap-to-move
-- [x] 2.5 Mobile layout unchanged (single column, 220px map)
+- [x] 2.3 Desktop: fields beside a larger map; not a narrow phone column — 8ab8a4d
+- [x] 2.4 Location map renders (not grey); pin draggable / tap-to-move — 8ab8a4d
+- [x] 2.5 Mobile layout unchanged (single column, 220px map) — 8ab8a4d
 
 ### Phase 3: Dog-nose pin, visual gate, guard rule
 
 #### Automated
 
-- [x] 3.1 Linting passes: `npm run lint`
-- [x] 3.2 Build passes: `npm run build`
+- [x] 3.1 Linting passes: `npm run lint` — 8ab8a4d
+- [x] 3.2 Build passes: `npm run build` — 8ab8a4d
 - [ ] 3.3 Screenshots exist in the change folder
 
 #### Manual
 
-- [x] 3.4 Meeting pin is a brand dog-in-profile marker; nose points at the spot; drag/tap works
-- [x] 3.5 Pin readable in light + dark
-- [x] 3.6 CLAUDE.md UI block correct and outside the CLI-managed markers
+- [x] 3.4 Meeting pin is a brand dog-in-profile marker; nose points at the spot; drag/tap works — 8ab8a4d
+- [x] 3.5 Pin readable in light + dark — 8ab8a4d
+- [x] 3.6 CLAUDE.md UI block correct and outside the CLI-managed markers — 8ab8a4d
