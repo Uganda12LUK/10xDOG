@@ -77,7 +77,7 @@ GitHub Actions workflow (`.github/workflows/ci.yml`) runs lint + build on every 
   a primitive; add new ones with `npx shadcn@latest add [name]`. Extract hooks to
   `src/components/hooks/` (e.g. `useMediaQuery`).
 - **Desktop layout is required, not optional.** Views must adapt at `lg:` — do not ship a
-  phone-width column on desktop. Map views (`/owners`, `/meetings/new`) use a two-pane/`lg:grid`
+  phone-width column on desktop. Map views (`/map`, `/meetings/new`) use a two-pane/`lg:grid`
   layout; a map pane must have a **definite height** (`lg:h-[calc(100svh-…)]` or a fixed `lg:h-[…]`),
   because Leaflet reads its size once at mount and has no `invalidateSize()` call — an auto-height
   pane renders a grey box. Switch responsive-only component props (e.g. shadcn `Sheet` `side`) with

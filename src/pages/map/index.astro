@@ -13,11 +13,15 @@ const supabase = createClient(Astro.request.headers, Astro.cookies);
 let dogs: DogWithOwner[] = [];
 let myCity: string | null = null;
 let hasCity = false;
+let myLocation: [number, number] | null = null;
 
 if (supabase && user) {
   const profile = await getProfile(supabase, user.id);
   myCity = profile?.city ?? null;
   hasCity = myCity != null && myCity.length > 0;
+  if (profile?.locationLat != null && profile.locationLng != null) {
+    myLocation = [profile.locationLat, profile.locationLng];
+  }
 
   if (hasCity && myCity) {
     const myDistrict = profile?.district ?? null;
@@ -48,6 +52,6 @@ if (supabase && user) {
       </div>
     </div>
   ) : (
-    <OwnersMapView dogs={dogs} city={myCity ?? ""} locale={locale} client:only="react" />
+    <OwnersMapView dogs={dogs} city={myCity ?? ""} userLocation={myLocation} locale={locale} client:only="react" />
   )}
 </Layout>

@@ -62,7 +62,7 @@ export default async function playwrightGlobalSetup(): Promise<void> {
 
     const userId = data.user.id;
 
-    // Upsert a minimal profile so the user appears on the /owners page.
+    // Upsert a minimal profile so the user appears on the /map page.
     const { error: profileError } = await serviceClient.from("profiles").upsert(
       {
         id: userId,

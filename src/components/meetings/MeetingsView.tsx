@@ -17,18 +17,31 @@ function profileName(profiles: Record<string, { name: string }>, id: string): st
   return (profiles[id] as { name: string } | undefined)?.name ?? id;
 }
 
+function LocationLink({ inv, locale }: { inv: Invitation; locale: Locale }) {
+  if (inv.locationLat === null || inv.locationLng === null) return null;
+  const { locationLat: lat, locationLng: lng } = inv;
+  const href = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=16/${lat}/${lng}`;
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="text-primary text-xs hover:underline">
+      📍 {t(locale, "meetings.viewLocation")}
+    </a>
+  );
+}
+
 function MeetingCard({
   inv,
   counterpartyId,
   showPending,
   profiles,
+  locale,
 }: {
   inv: Invitation;
   counterpartyId: string;
   showPending: boolean;
   profiles: Record<string, { name: string }>;
+  locale: Locale;
 }) {
-  const typeLabel = inv.type === "walk" ? "Walk" : "Breeding";
+  const typeLabel = t(locale, `type.${inv.type}`);
   const date = new Date(inv.createdAt).toLocaleDateString("pl-PL", {
     day: "numeric",
     month: "long",
@@ -40,10 +53,11 @@ function MeetingCard({
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <p className="truncate text-sm font-medium">{profileName(profiles, counterpartyId)}</p>
         <p className="text-muted-foreground text-xs">{date}</p>
+        <LocationLink inv={inv} locale={locale} />
       </div>
       <div className="flex shrink-0 items-center gap-2">
         <Badge>{typeLabel}</Badge>
-        {showPending && <Badge variant="outline">Oczekuje</Badge>}
+        {showPending && <Badge variant="outline">{t(locale, "meetings.pending")}</Badge>}
       </div>
     </div>
   );
@@ -61,7 +75,7 @@ function InboxCard({
   locale: Locale;
 }) {
   const [loading, setLoading] = useState<"accepted" | "declined" | null>(null);
-  const typeLabel = inv.type === "walk" ? "Walk" : "Breeding";
+  const typeLabel = t(locale, `type.${inv.type}`);
   const date = new Date(inv.createdAt).toLocaleDateString("pl-PL", {
     day: "numeric",
     month: "long",
@@ -88,6 +102,7 @@ function InboxCard({
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <p className="truncate text-sm font-medium">{profileName(profiles, inv.senderId)}</p>
           <p className="text-muted-foreground text-xs">{date}</p>
+          <LocationLink inv={inv} locale={locale} />
         </div>
         <Badge className="shrink-0">{typeLabel}</Badge>
       </div>
@@ -143,7 +158,7 @@ export default function MeetingsView({ accepted, sentPending, receivedPending, p
           {accepted.length === 0 ? (
             <p className="text-muted-foreground px-4 py-6 text-center text-sm">
               Brak nadchodzących spotkań.{" "}
-              <a href="/owners" className="text-primary underline">
+              <a href="/map" className="text-primary underline">
                 Zaproponuj spacer →
               </a>
             </p>
@@ -158,6 +173,7 @@ export default function MeetingsView({ accepted, sentPending, receivedPending, p
                     counterpartyId={counterpartyId}
                     showPending={false}
                     profiles={profiles}
+                    locale={locale}
                   />
                 );
               })}
@@ -177,6 +193,7 @@ export default function MeetingsView({ accepted, sentPending, receivedPending, p
                   counterpartyId={inv.receiverId}
                   showPending={true}
                   profiles={profiles}
+                  locale={locale}
                 />
               ))}
             </div>

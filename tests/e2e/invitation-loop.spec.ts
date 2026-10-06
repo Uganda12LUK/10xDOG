@@ -34,16 +34,16 @@ test("invitation loop: User A invites User B, User B accepts, both see the meeti
   await signIn(pageA, userA.email, userA.password);
 
   // Navigate directly to User B's owner profile page to send the invitation.
-  // The /owners list requires geolocation and map hydration; going straight to
+  // The /map list requires geolocation and map hydration; going straight to
   // the detail page is faster and avoids flakiness from the React island.
-  await pageA.goto(`/owners/${userB.id}`);
-  await pageA.waitForURL(`/owners/${userB.id}`);
+  await pageA.goto(`/map/${userB.id}`);
+  await pageA.waitForURL(`/map/${userB.id}`);
 
   // Click the "Send walk invitation" submit button.
   await pageA.getByRole("button", { name: /send walk invitation/i }).click();
 
-  // After form POST the page redirects back to /owners/<id>?sent=1.
-  await pageA.waitForURL((url) => url.pathname === `/owners/${userB.id}` && url.searchParams.get("sent") === "1", {
+  // After form POST the page redirects back to /map/<id>?sent=1.
+  await pageA.waitForURL((url) => url.pathname === `/map/${userB.id}` && url.searchParams.get("sent") === "1", {
     timeout: 15_000,
   });
 

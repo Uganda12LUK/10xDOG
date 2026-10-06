@@ -20,6 +20,8 @@ const invitationSchema = z.object({
       }
       return parsed.getTime() >= Date.now();
     }, "Data spotkania musi być poprawna i nie może być w przeszłości"),
+  location_lat: z.coerce.number().min(-90).max(90).nullish(),
+  location_lng: z.coerce.number().min(-180).max(180).nullish(),
 });
 
 export const POST: APIRoute = async (context) => {
@@ -29,7 +31,7 @@ export const POST: APIRoute = async (context) => {
 
   const supabase = createClient(context.request.headers, context.cookies);
   if (!supabase) {
-    const target = rawReceiverId ? `/owners/${rawReceiverId}` : "/owners";
+    const target = rawReceiverId ? `/map/${rawReceiverId}` : "/map";
     return context.redirect(`${target}?error=${encodeURIComponent("Supabase is not configured")}`);
   }
 
@@ -42,25 +44,29 @@ export const POST: APIRoute = async (context) => {
 
   const rawDogId = form.get("dog_id") as string | null;
   const rawScheduledAt = form.get("scheduled_at") as string | null;
+  const rawLat = form.get("location_lat") as string | null;
+  const rawLng = form.get("location_lng") as string | null;
 
   const parsed = invitationSchema.safeParse({
     receiver_id: rawReceiverId,
     type: form.get("type"),
     dog_id: rawDogId ?? undefined,
     scheduled_at: rawScheduledAt ?? "",
+    location_lat: rawLat ?? undefined,
+    location_lng: rawLng ?? undefined,
   });
   if (!parsed.success) {
     const message = parsed.error.issues[0]?.message ?? "Invalid invitation data";
     if (!rawReceiverId) {
-      return context.redirect(`/owners?error=${encodeURIComponent(message)}`);
+      return context.redirect(`/map?error=${encodeURIComponent(message)}`);
     }
     return context.redirect(`/meetings/new?receiver_id=${rawReceiverId}&error=${encodeURIComponent(message)}`);
   }
 
-  const { receiver_id, type, dog_id, scheduled_at } = parsed.data;
+  const { receiver_id, type, dog_id, scheduled_at, location_lat, location_lng } = parsed.data;
 
   try {
-    await sendInvitation(supabase, user.id, receiver_id, type, dog_id, scheduled_at);
+    await sendInvitation(supabase, user.id, receiver_id, type, dog_id, scheduled_at, location_lat, location_lng);
   } catch {
     return context.redirect(
       `/meetings/new?receiver_id=${receiver_id}&error=${encodeURIComponent("Something went wrong. Please try again.")}`,

@@ -16,7 +16,7 @@ const env = { ...process.env, NO_COLOR: "1", FORCE_COLOR: "0", CI: "1" };
 
 // The risk-#6 module: the data seam + everything that renders the pins.
 // A prefix match on the repo-relative, forward-slashed path.
-const MODULE_PREFIXES = ["src/lib/services/profile.ts", "src/components/map/", "src/pages/owners/"];
+const MODULE_PREFIXES = ["src/lib/services/profile.ts", "src/components/map/", "src/pages/map/"];
 
 let payload = {};
 try {
