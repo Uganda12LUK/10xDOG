@@ -65,3 +65,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 supabase/_remote_test_bundle.sql
+
+# local junk / tooling artifacts
+sh.exe.stackdump
+*.rvf

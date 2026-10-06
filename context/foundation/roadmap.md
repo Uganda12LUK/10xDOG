@@ -3,7 +3,7 @@ project: PawMeet
 version: 1
 status: draft
 created: 2026-09-22
-updated: 2026-09-29
+updated: 2026-10-05
 prd_version: 1
 main_goal: market-feedback
 top_blocker: decisions
@@ -249,7 +249,7 @@ Co jest już w kodzie na dzień `2026-09-22` (auto-researched + potwierdzone prz
 | U-03 | ui-owners-map                                                                                                        | Mapa: Leaflet z pinezkami właścicieli, chipy filtrowania, BottomSheet       | U-01          | done     |
 | U-04 | ui-meetings-tabs                                                                                                     | Spotkania: zakładki nadchodzące/historia, lista kart                        | U-01, S-05    | in-progress |
 | U-05 | ui-meeting-form                                                                                                      | Formularz propozycji spotkania z mini-mapą                                  | U-01, S-04    | in-progress |
-| U-06 | ui-dog-profile                                                                                                       | Profil psa: hero image, sekcje detali, odznaki                              | U-01, S-02    | proposed |
+| U-06 | ui-dog-profile                                                                                                       | Profil psa: hero image, sekcje detali, odznaki                              | U-01, S-02    | planning |
 | U-07 | ui-dashboard, ui-profile, ui-dogs, ui-dogs-new, ui-dog-detail, ui-owners, ui-owner-detail, ui-invitations, ui-signin, ui-signup, ui-confirm-email, ui-landing | Audyt UI wszystkich ekranów: tokeny, stany, dostępność | U-01 | proposed |
 | U-08 | ui-events-placeholder, ui-places-placeholder                                                                         | Placeholder ekranów Wydarzenia i Miejsca (pusty stan + CTA)                | U-01          | proposed |
 

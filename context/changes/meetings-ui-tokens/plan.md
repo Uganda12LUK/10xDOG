@@ -214,7 +214,7 @@ for (const [id, profile] of fetched) profileMap.set(id, profile);
 
 #### Manual
 
-- [x] 1.3 Button w /owners/[id] renderuje się fioletowo (bg-primary = purple-600) — 58f1165
+- [x] 1.3 Button w /owners/[id] renderuje się fioletowo (bg-primary = purple-600) — 58f1165 ⚠️ Natychmiast nadpisane w 0c1284f (patrz Addendum poniżej)
 - [x] 1.4 npm run dev uruchamia się bez błędów — 58f1165
 
 ### Phase 2: Migracja widoku /meetings + N+1 fix
@@ -226,7 +226,19 @@ for (const [id, profile] of fetched) profileMap.set(id, profile);
 
 #### Manual
 
-- [x] 2.3 /meetings renderuje się poprawnie: karty widoczne, badge fioletowy, linki fioletowe — 0c1284f
+- [x] 2.3 /meetings renderuje się poprawnie: karty widoczne, badge bursztynowy, linki bursztynowe — 0c1284f (nie fioletowy — patrz Addendum)
 - [x] 2.4 N+1 fix: 1 zapytanie profilowe zamiast N (widoczne w Network tab) — 0c1284f
 - [x] 2.5 Empty state widoczny i poprawny — 0c1284f
 - [x] 2.6 Wizualnie spójne z poprzednim wyglądem — 0c1284f
+
+---
+
+## Addendum (impl-review 2026-09-26)
+
+### Zmiana --primary z fioletu na bursztyn w Phase 2
+
+Phase 1 skalibrował `--primary` na fiolet `oklch(0.558 0.288 301)`. Podczas Phase 2 okazało się, że fiolet `text-primary` na ciemnych kartach jest zbyt ciemny (lightness 0.558) w porównaniu do pierwotnego `text-purple-300` (lightness ~0.79). Podjęto decyzję o przejściu na bursztyn `oklch(0.75 0.18 65)`, który jest jaśniejszy i lepiej czytelny na ciemnym tle — bez konieczności otwierania nowego change (jedna zmienna CSS, jeden commit). Decyzja udokumentowana w komunikacie commitu `0c1284f`.
+
+**Efekt**: kryterium 1.3 ("przycisk fioletowy") technicznie zostało odhaczone przy commicie 58f1165, ale natychmiast nadpisane przez 0c1284f — co jest niezgodne z protokołem "zatrzymaj się i zweryfikuj po każdej fazie". To jest recurring pattern: zmiana globalnego tokenu między fazami powinna wymagać osobnego PR lub co najmniej własnego commitu z opisem dlaczego.
+
+**Aktualny stan**: `--primary` w HEAD = bursztyn. Working tree zawiera kolejny redesign ("Koralowa smycz", koral `#C4461F`) który zastąpi bursztyn po zmergowaniu nowego change.

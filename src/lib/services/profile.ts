@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Dog, DogWithOwner, OwnerWithDogs, Profile } from "@/types";
+import type { DogSize } from "@/lib/dogAttributes";
 import { citiesNear } from "@/lib/geo";
 
 const AVATAR_BUCKET = "avatars";
@@ -12,6 +13,8 @@ export interface ProfileUpsert {
   name: string;
   district?: string | null;
   city?: string | null;
+  locationLat?: number | null;
+  locationLng?: number | null;
   avatarPath?: string;
 }
 
@@ -21,6 +24,8 @@ interface ProfileRow {
   district: string | null;
   city: string | null;
   avatar_path: string | null;
+  location_lat: number | null;
+  location_lng: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -37,6 +42,8 @@ function mapRow(client: SupabaseClient, row: ProfileRow): Profile {
     city: row.city,
     avatarPath: row.avatar_path,
     avatarUrl,
+    locationLat: row.location_lat,
+    locationLng: row.location_lng,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -84,6 +91,8 @@ interface DogRow {
   name: string;
   breed: string;
   birthdate: string | null;
+  size: string | null;
+  traits: string[] | null;
   photo_path: string | null;
   created_at: string;
   updated_at: string;
@@ -100,6 +109,8 @@ function mapDogRow(client: SupabaseClient, row: DogRow): Dog {
     name: row.name,
     breed: row.breed,
     birthdate: row.birthdate,
+    size: (row.size as DogSize | null) ?? null,
+    traits: row.traits ?? [],
     photoPath: row.photo_path,
     photoUrl,
     createdAt: row.created_at,
@@ -191,12 +202,16 @@ export async function upsertProfile(client: SupabaseClient, userId: string, inpu
     name: string;
     district: string | null;
     city: string | null;
+    location_lat: number | null;
+    location_lng: number | null;
     avatar_path?: string | null;
   } = {
     id: userId,
     name: input.name,
     district: input.district ?? null,
     city: input.city ?? null,
+    location_lat: input.locationLat ?? null,
+    location_lng: input.locationLng ?? null,
   };
 
   // Only touch avatar_path when a new avatar was uploaded; otherwise preserve

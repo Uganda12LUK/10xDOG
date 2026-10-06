@@ -293,15 +293,15 @@ a `lg:` grid are CSS-only.
 
 #### Automated
 
-- [x] 2.1 Linting passes: `npm run lint`
-- [x] 2.2 Build passes: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint` — e23b793
+- [x] 2.2 Build passes: `npm run build` — e23b793
 
 #### Manual
 
-- [x] 2.3 Desktop: map stays in view while results column scrolls; map not grey
-- [x] 2.4 Applying a filter changes the visible list without scrolling
-- [x] 2.5 Dog detail opens right-side on desktop, bottom sheet on mobile
-- [x] 2.6 Mobile layout unchanged from before
+- [x] 2.3 Desktop: map stays in view while results column scrolls; map not grey — e23b793
+- [x] 2.4 Applying a filter changes the visible list without scrolling — e23b793
+- [x] 2.5 Dog detail opens right-side on desktop, bottom sheet on mobile — e23b793
+- [x] 2.6 Mobile layout unchanged from before — e23b793
 
 ### Phase 3: State matrix, visual gate, and guard rule
 
