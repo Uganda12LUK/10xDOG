@@ -276,8 +276,8 @@ None — no schema or data changes (the data-backed sections only; deferred item
 
 #### Automated
 
-- [ ] 1.1 Linting passes: `npm run lint`
-- [ ] 1.2 Production build passes: `npm run build`
+- [x] 1.1 Linting passes: `npm run lint`
+- [x] 1.2 Production build passes: `npm run build`
 
 #### Manual
 
@@ -291,9 +291,9 @@ None — no schema or data changes (the data-backed sections only; deferred item
 
 #### Automated
 
-- [ ] 2.1 Linting passes: `npm run lint`
-- [ ] 2.2 Production build passes: `npm run build`
-- [ ] 2.3 Kitchen-sink route responds in dev; 404 in prod via `import.meta.env.DEV`
+- [x] 2.1 Linting passes: `npm run lint`
+- [x] 2.2 Production build passes: `npm run build`
+- [ ] 2.3 Kitchen-sink route responds in dev; 404 in prod via `import.meta.env.DEV` — prod 404 VERIFIED (curl on preview → 404); "responds in dev" needs local `astro dev` (crashes under this toolchain) — guard logic verified by inspection
 
 #### Manual
 
@@ -306,8 +306,8 @@ None — no schema or data changes (the data-backed sections only; deferred item
 
 #### Automated
 
-- [ ] 3.1 Linting passes: `npm run lint`
-- [ ] 3.2 Hardcoded-value scan on the view + `OwnerProfile.astro` returns 0 hits
+- [x] 3.1 Linting passes: `npm run lint`
+- [x] 3.2 Hardcoded-value scan on the view + `OwnerProfile.astro` returns 0 hits
 
 #### Manual
 

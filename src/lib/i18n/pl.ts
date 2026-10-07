@@ -72,6 +72,13 @@ const pl: Record<string, string> = {
   "owners.setCityPromptSuffix": "aby zobaczyć okolicznych właścicieli.",
   "owners.profileLink": "Profilu",
 
+  // owner profile (public profile of another owner + their dogs)
+  "ownerProfile.back": "Wróć",
+  "ownerProfile.dogsHeading": "Psy",
+  "ownerProfile.propose": "Zaproponuj spotkanie",
+  "ownerProfile.pending": "Zaproszenie wysłane — oczekuje na odpowiedź",
+  "ownerProfile.empty": "Nie dodano jeszcze żadnych psów.",
+
   // map controls
   "map.breedFilter": "Rasa",
   "map.allBreeds": "Wszystkie rasy",

@@ -82,6 +82,14 @@ GitHub Actions workflow (`.github/workflows/ci.yml`) runs lint + build on every 
   because Leaflet reads its size once at mount and has no `invalidateSize()` call — an auto-height
   pane renders a grey box. Switch responsive-only component props (e.g. shadcn `Sheet` `side`) with
   `useMediaQuery`, not CSS.
+- **Reuse `buttonVariants` / `badgeVariants` in `.astro`.** For static `<a>`/`<button>`/`<span>` that
+  need button/badge styling without React hydration, import the cva from `@/components/ui/{button,badge}`
+  and apply it via `class:list` (not `class={…}`, which trips `astro/prefer-class-list-directive`). Do
+  not hand-roll a second button.
+- **Visual gate = dev-only kitchen sink.** Prove a view's state matrix on a backend-free page guarded by
+  `import.meta.env.DEV` (404 in prod), rendering the presentational component from fixtures. Example:
+  `src/pages/dev/owner-profile-kitchen-sink.astro` drives `src/components/owners/OwnerProfile.astro`
+  across default / pending / error / empty. Screenshot it at desktop + mobile instead of needing live data.
 
 <!-- BEGIN @przeprogramowani/10x-cli -->
 

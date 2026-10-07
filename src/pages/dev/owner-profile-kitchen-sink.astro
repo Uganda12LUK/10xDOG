@@ -1,0 +1,128 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import OwnerProfile from "@/components/owners/OwnerProfile.astro";
+import type { Dog, Profile } from "@/types";
+
+// Dev-only visual gate: renders OwnerProfile across every state from fixtures,
+// with no server/Supabase dependency. 404 in production so it never ships.
+// (Guarded via Astro.response.status rather than a top-level `return`, which
+// trips an eslint typescript-plugin crash in .astro frontmatter.)
+const isDev = import.meta.env.DEV;
+if (!isDev) {
+  Astro.response.status = 404;
+}
+
+const locale = "en" as const;
+
+const profile: Profile = {
+  id: "demo-owner",
+  name: "Alex Walker",
+  district: "Mokotów",
+  city: "Warszawa",
+  avatarPath: null,
+  avatarUrl: null,
+  locationLat: null,
+  locationLng: null,
+  createdAt: "",
+  updatedAt: "",
+};
+
+const dogs: Dog[] = [
+  {
+    id: "d1",
+    ownerId: "demo-owner",
+    name: "Rex",
+    breed: "Border Collie",
+    birthdate: "2021-05-01",
+    size: "medium",
+    traits: ["energetic", "dog_friendly", "social"],
+    photoPath: null,
+    photoUrl: null,
+    createdAt: "",
+    updatedAt: "",
+  },
+  {
+    id: "d2",
+    ownerId: "demo-owner",
+    name: "Bella",
+    breed: "Dachshund",
+    birthdate: "2023-09-10",
+    size: "small",
+    traits: ["shy", "calm"],
+    photoPath: null,
+    photoUrl: null,
+    createdAt: "",
+    updatedAt: "",
+  },
+];
+
+// Each state the component can be in. `loading` is N/A — the real page is fully
+// server-rendered with no client fetch, so there is no loading state to show.
+const states = [
+  { label: "Default (owner with dogs)", pendingInvitation: false, error: null, dogs },
+  { label: "Disabled (invitation pending)", pendingInvitation: true, error: null, dogs },
+  { label: "Error (banner shown)", pendingInvitation: false, error: "Something went wrong — try again.", dogs },
+  { label: "Empty (owner with no dogs)", pendingInvitation: false, error: null, dogs: [] as Dog[] },
+];
+---
+
+<Layout title="Kitchen sink — Owner profile">
+  {isDev ? (
+    <div class="mx-auto max-w-4xl space-y-12 p-6">
+      <header class="space-y-1">
+        <h1 class="text-2xl font-bold text-foreground">OwnerProfile — state matrix</h1>
+        <p class="text-sm text-muted-foreground">
+          Dev-only (<code>import.meta.env.DEV</code>). <strong>hover</strong> and <strong>focus-visible</strong> are
+          interaction states — hover/keyboard-tab the controls below to see them. <strong>loading</strong> is N/A (the
+          real page is fully server-rendered).
+        </p>
+      </header>
+
+      {states.map((state) => (
+        <section class="space-y-3">
+          <h2 class="text-sm font-semibold text-muted-foreground">{state.label}</h2>
+          <div class="overflow-hidden rounded-2xl border border-border">
+            <OwnerProfile
+              profile={profile}
+              dogs={state.dogs}
+              pendingInvitation={state.pendingInvitation}
+              error={state.error}
+              ownerId={profile.id}
+              locale={locale}
+            />
+          </div>
+        </section>
+      ))}
+
+      <section class="space-y-3">
+        <h2 class="text-sm font-semibold text-muted-foreground">isOwnProfile notice (lives in the page branch)</h2>
+        <div class="flex min-h-[40vh] items-center justify-center rounded-2xl border border-border p-4">
+          <div class="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-center text-card-foreground">
+            <p class="text-muted-foreground">
+              This is your profile.{" "}
+              <a href="/profile" class="text-primary hover:underline">
+                Go to your profile
+              </a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-sm font-semibold text-muted-foreground">Owner not found (lives in the page branch)</h2>
+        <div class="flex min-h-[40vh] items-center justify-center rounded-2xl border border-border p-4">
+          <div class="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-center text-card-foreground">
+            <p class="text-muted-foreground">
+              Owner not found.{" "}
+              <a href="/map" class="text-primary hover:underline">
+                ← Back to owners
+              </a>
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  ) : (
+    <p class="p-6 text-muted-foreground">Not found</p>
+  )}
+</Layout>

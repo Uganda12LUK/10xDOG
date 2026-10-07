@@ -1,9 +1,9 @@
 ---
 change_id: ui-dog-profile
 title: Dog profile page with hero image and sticky action footer
-status: planned
+status: implementing
 created: 2026-09-27
-updated: 2026-10-05
+updated: 2026-10-07
 archived_at: null
 ---
 
