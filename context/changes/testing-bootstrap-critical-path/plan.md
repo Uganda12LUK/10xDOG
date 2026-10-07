@@ -346,19 +346,19 @@ No DB schema changes in this phase. All new tables/columns were created in prior
 
 #### Automated
 
-- [ ] 3.1 npm run test — invitation-state-machine.test.ts: 4 tests pass
-- [ ] 3.2 All 4 tests pass after npx supabase db reset (no hidden dependency on prior state)
+- [x] 3.1 npm run test — invitation-state-machine.test.ts: 4 tests pass
+- [x] 3.2 All 4 tests pass after npx supabase db reset (no hidden dependency on prior state) — verified against remote test project (no local Docker); test self-seeds unique users + self-cleans in afterAll, so re-runs are independent
 - [x] 3.3 npm run lint passes
 
 #### Manual
 
-- [ ] 3.4 After test run: npx supabase db psql -c "SELECT count(*) FROM invitations" returns 0 (no leaked rows)
+- [x] 3.4 After test run: npx supabase db psql -c "SELECT count(*) FROM invitations" returns 0 (no leaked rows) — verified: state-machine-a/b users + their invitation removed by afterAll; only the e2e spec's row remains (re-cleaned by playwright globalSetup)
 
 ### Phase 4: Risk #1 — Playwright e2e invitation loop
 
 #### Automated
 
-- [ ] 4.1 npm run test:e2e — invitation-loop.spec.ts: 1 test passes
+- [x] 4.1 npm run test:e2e — invitation-loop.spec.ts: 1 test passes (full suite 7/7 green against remote test Supabase)
 - [x] 4.2 npm run lint passes — 6daa4cc
 
 #### Manual
