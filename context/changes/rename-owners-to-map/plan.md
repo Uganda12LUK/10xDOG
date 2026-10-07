@@ -64,6 +64,6 @@ e2e test. Pure rename — no behavior change.
 
 #### Manual
 
-- [ ] 1.4 /map serves the map; /map/<id> serves the owner detail
-- [ ] 1.5 Nav, dashboard tile, and meeting-form back links go to /map
+- [x] 1.4 /map serves the map; /map/<id> serves the owner detail — /map renders the Leaflet map + filter chips logged-in (screenshot in ui-owners-desktop-layout/screenshots/map-desktop-light.png); /map/<id> owner-detail heading asserted by the passing invitation-loop e2e
+- [x] 1.5 Nav, dashboard tile, and meeting-form back links go to /map — verified by grep: Topbar.astro, BottomNav.astro, dashboard.astro tile, meetings/new.astro back links, MeetingsView.tsx all href="/map"; zero /owners refs in src/
 - [x] 1.6 Logged-out /map redirects to sign-in (curl: /map → 302, /map/<id> → 302, old /owners → 404) — 7e09d7b
