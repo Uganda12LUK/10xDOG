@@ -69,3 +69,32 @@ export interface DogInput {
   traits?: string[];
   photo?: File | null;
 }
+
+export interface PackConnection {
+  id: string;
+  requesterId: string;
+  addresseeId: string;
+  status: "pending" | "accepted" | "declined";
+  createdAt: string;
+  updatedAt: string;
+}
+
+// The viewer's relationship to another owner, derived from pack_connections.
+// Drives the bone button / pack badge on a profile.
+export type PackStatus = "none" | "pending_out" | "pending_in" | "accepted";
+
+// A pack member paired with the connection row that links them to the viewer.
+export interface PackMember {
+  connectionId: string;
+  ownerId: string;
+  profile: Profile;
+}
+
+export interface Message {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  body: string;
+  readAt: string | null;
+  createdAt: string;
+}

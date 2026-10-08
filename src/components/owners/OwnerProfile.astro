@@ -3,7 +3,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { badgeVariants } from "@/components/ui/badge";
 import { ageStringFromBirthdate } from "@/lib/age";
 import { t, type Locale } from "@/lib/i18n";
-import type { Dog, Profile } from "@/types";
+import type { Dog, PackStatus, Profile } from "@/types";
 
 // Pure presentation: the real route (map/[id].astro) and the dev kitchen-sink
 // render identical markup from these props. No data access, no Astro.locals.
@@ -11,12 +11,13 @@ interface Props {
   profile: Profile;
   dogs: Dog[];
   pendingInvitation: boolean;
+  packStatus: PackStatus;
   error: string | null;
   ownerId: string;
   locale: Locale;
 }
 
-const { profile, dogs, pendingInvitation, error, ownerId, locale } = Astro.props;
+const { profile, dogs, pendingInvitation, packStatus, error, ownerId, locale } = Astro.props;
 
 // Hero source: first dog with a photo → first dog → owner avatar → 🐾 placeholder.
 const heroDog: Dog | null = dogs.length > 0 ? (dogs.find((dog) => dog.photoUrl) ?? dogs[0]) : null;
@@ -43,7 +44,15 @@ const location = profile.district ? `${profile.district}, ${profile.city}` : pro
 
   <!-- Body -->
   <div class="flex-1 px-4 py-6">
-    <h1 class="text-2xl font-bold text-foreground">{profile.name}</h1>
+    <div class="flex items-center gap-2">
+      <h1 class="text-2xl font-bold text-foreground">{profile.name}</h1>
+      {packStatus === "accepted" ? (
+        <span class:list={[badgeVariants({ variant: "default" }), "gap-1"]}>
+          <span aria-hidden="true">🦴</span>
+          {t(locale, "ownerProfile.inPack")}
+        </span>
+      ) : null}
+    </div>
     {location ? <p class="mt-1 text-sm text-muted-foreground">{location}</p> : null}
 
     {error ? (
@@ -111,9 +120,32 @@ const location = profile.district ? `${profile.district}, ${profile.city}` : pro
           {t(locale, "ownerProfile.propose")}
         </a>
       )}
-      <a href="/map" class:list={buttonVariants({ variant: "outline" })}>
-        {t(locale, "ownerProfile.back")}
-      </a>
+
+      {/* Bone action: throw / awaiting / catch / message, by pack relationship. */}
+      {packStatus === "accepted" ? (
+        <a href={`/messages/${ownerId}`} class:list={[buttonVariants({ variant: "secondary" }), "flex-1 gap-1"]}>
+          <span aria-hidden="true">💬</span>
+          {t(locale, "ownerProfile.message")}
+        </a>
+      ) : packStatus === "pending_out" ? (
+        <button type="button" disabled class:list={[buttonVariants({ variant: "secondary" }), "flex-1 gap-1"]}>
+          <span aria-hidden="true">🦴</span>
+          {t(locale, "ownerProfile.boneThrown")}
+        </button>
+      ) : packStatus === "pending_in" ? (
+        <a href="/pack" class:list={[buttonVariants({ variant: "secondary" }), "flex-1 gap-1"]}>
+          <span aria-hidden="true">🦴</span>
+          {t(locale, "ownerProfile.catchBone")}
+        </a>
+      ) : (
+        <form method="POST" action="/api/pack/throw" class="flex-1">
+          <input type="hidden" name="receiver_id" value={ownerId} />
+          <button type="submit" class:list={[buttonVariants({ variant: "secondary" }), "w-full gap-1"]}>
+            <span aria-hidden="true">🦴</span>
+            {t(locale, "ownerProfile.throwBone")}
+          </button>
+        </form>
+      )}
     </div>
   </div>
 </div>
