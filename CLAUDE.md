@@ -63,7 +63,7 @@ Full server-side rendering (`output: "server"` in astro.config.mjs). All pages a
 
 GitHub Actions workflow (`.github/workflows/ci.yml`) runs lint + build on every push and PR. Requires `SUPABASE_URL` and `SUPABASE_KEY` repository secrets for the build step.
 
-> **Gotcha**: the workflow triggers on `master`, but this repo's default branch is `main` — so CI does not currently run. Fix by updating the `branches:` filter in `ci.yml` to `main` (or renaming the branch).
+The active workflow triggers on `main` (both `push` and `pull_request`), so CI runs on every push and PR against the default branch. (The original 10x scaffold template `ci.yml.scaffold` historically targeted `master`; the active `ci.yml` — and the template — are on `main`.)
 
 ## UI conventions (design-system contract)
 
