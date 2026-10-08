@@ -53,6 +53,14 @@ const steps = [
     () => request("/api/auth/signin", { method: "POST", form: { email, password } }),
     { status: 302, location: "/" },
   ],
+  // A brand-new account has no profile, and the onboarding middleware redirects
+  // profile-less users off protected routes to /profile?onboarding=1. Create the
+  // profile first so the next step actually exercises a rendered dashboard.
+  [
+    "signed-in user completes onboarding profile",
+    () => request("/api/profile", { method: "POST", form: { name: "Smoke Test" } }),
+    { status: 302, location: "/profile" },
+  ],
   ["dashboard renders for signed-in user", () => request("/dashboard"), { status: 200 }],
   ["signout clears session", () => request("/api/auth/signout", { method: "POST" }), { status: 302, location: "/" }],
   ["dashboard redirects after signout", () => request("/dashboard"), { status: 302, location: "/auth/signin" }],
