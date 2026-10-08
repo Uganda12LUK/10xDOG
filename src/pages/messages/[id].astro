@@ -1,0 +1,51 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ChatThread from "@/components/chat/ChatThread";
+import { createClient } from "@/lib/supabase";
+import { getProfile } from "@/lib/services/profile";
+import { isInPack } from "@/lib/services/pack";
+import { t } from "@/lib/i18n";
+import { z } from "zod";
+import type { Profile } from "@/types";
+
+const { user, locale } = Astro.locals;
+const { id } = Astro.params;
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+
+let other: Profile | null = null;
+let allowed = false;
+
+const validId = id && id !== user?.id && z.uuid().safeParse(id).success ? id : null;
+
+// Chat is pack-gated: only render the thread when the viewer and the other owner
+// are in the same (accepted) pack. RLS is the real backstop; this is the UX gate.
+if (supabase && user && validId && (await isInPack(supabase, user.id, validId))) {
+  other = await getProfile(supabase, validId);
+  allowed = other !== null;
+}
+---
+
+<Layout title={other ? other.name : t(locale, "chat.title")}>
+  {allowed && other && user && validId ? (
+    <div class="mx-auto flex h-[calc(100svh-5rem)] w-full max-w-2xl flex-col px-4">
+      <div class="flex items-center gap-3 border-b border-border py-3">
+        <a href="/pack" class="text-sm text-primary hover:underline">
+          {t(locale, "chat.back")}
+        </a>
+        <h1 class="text-foreground text-lg font-semibold">{other.name}</h1>
+      </div>
+      <ChatThread selfId={user.id} otherId={validId} locale={locale} client:load />
+    </div>
+  ) : (
+    <div class="flex min-h-[60vh] items-center justify-center p-4">
+      <div class="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-center text-card-foreground">
+        <p class="text-muted-foreground">
+          {t(locale, "pack.empty")}{" "}
+          <a href="/pack" class="text-primary hover:underline">
+            {t(locale, "pack.title")}
+          </a>
+        </p>
+      </div>
+    </div>
+  )}
+</Layout>

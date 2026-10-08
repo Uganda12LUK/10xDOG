@@ -1,7 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import OwnerProfile from "@/components/owners/OwnerProfile.astro";
-import type { Dog, Profile } from "@/types";
+import type { Dog, PackStatus, Profile } from "@/types";
 
 // Dev-only visual gate: renders OwnerProfile across every state from fixtures,
 // with no server/Supabase dependency. 404 in production so it never ships.
@@ -58,11 +58,32 @@ const dogs: Dog[] = [
 
 // Each state the component can be in. `loading` is N/A — the real page is fully
 // server-rendered with no client fetch, so there is no loading state to show.
-const states = [
-  { label: "Default (owner with dogs)", pendingInvitation: false, error: null, dogs },
-  { label: "Disabled (invitation pending)", pendingInvitation: true, error: null, dogs },
-  { label: "Error (banner shown)", pendingInvitation: false, error: "Something went wrong — try again.", dogs },
-  { label: "Empty (owner with no dogs)", pendingInvitation: false, error: null, dogs: [] as Dog[] },
+const states: {
+  label: string;
+  pendingInvitation: boolean;
+  packStatus: PackStatus;
+  error: string | null;
+  dogs: Dog[];
+}[] = [
+  { label: "Default (owner with dogs)", pendingInvitation: false, packStatus: "none", error: null, dogs },
+  { label: "Disabled (invitation pending)", pendingInvitation: true, packStatus: "none", error: null, dogs },
+  { label: "Bone thrown (pending_out)", pendingInvitation: false, packStatus: "pending_out", error: null, dogs },
+  { label: "Catch the bone (pending_in)", pendingInvitation: false, packStatus: "pending_in", error: null, dogs },
+  {
+    label: "In pack (accepted — badge + message)",
+    pendingInvitation: false,
+    packStatus: "accepted",
+    error: null,
+    dogs,
+  },
+  {
+    label: "Error (banner shown)",
+    pendingInvitation: false,
+    packStatus: "none",
+    error: "Something went wrong — try again.",
+    dogs,
+  },
+  { label: "Empty (owner with no dogs)", pendingInvitation: false, packStatus: "none", error: null, dogs: [] as Dog[] },
 ];
 ---
 
@@ -86,6 +107,7 @@ const states = [
               profile={profile}
               dogs={state.dogs}
               pendingInvitation={state.pendingInvitation}
+              packStatus={state.packStatus}
               error={state.error}
               ownerId={profile.id}
               locale={locale}

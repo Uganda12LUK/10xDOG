@@ -20,6 +20,7 @@ const pl: Record<string, string> = {
   "nav.events": "Wydarzenia",
   "nav.profile": "Profil",
   "nav.dogs": "Psy",
+  "nav.pack": "Stado",
   "nav.signout": "Wyloguj się",
 
   // meetings
@@ -78,6 +79,31 @@ const pl: Record<string, string> = {
   "ownerProfile.propose": "Zaproponuj spotkanie",
   "ownerProfile.pending": "Zaproszenie wysłane — oczekuje na odpowiedź",
   "ownerProfile.empty": "Nie dodano jeszcze żadnych psów.",
+  "ownerProfile.throwBone": "Rzuć kość",
+  "ownerProfile.boneThrown": "Kość rzucona — czekaj",
+  "ownerProfile.catchBone": "Złap kość",
+  "ownerProfile.inPack": "W Twoim stadzie",
+  "ownerProfile.message": "Napisz",
+
+  // pack ("moje stado")
+  "pack.title": "Moje stado",
+  "pack.requests": "Kości do złapania",
+  "pack.members": "Twoje stado",
+  "pack.empty": "Twoje stado jest puste. Rzuć kość z profilu właściciela, aby zacząć.",
+  "pack.noRequests": "Brak kości do złapania.",
+  "pack.catch": "Złap",
+  "pack.decline": "Odrzuć",
+  "pack.message": "Napisz",
+  "pack.badge": "Stado",
+  "pack.wantsToJoin": "rzucił(a) Ci kość",
+
+  // chat
+  "chat.title": "Czat",
+  "chat.back": "← Wróć do stada",
+  "chat.placeholder": "Napisz wiadomość…",
+  "chat.send": "Wyślij",
+  "chat.empty": "Brak wiadomości. Przywitaj się!",
+  "chat.failed": "Nie udało się wysłać. Spróbuj ponownie.",
 
   // map controls
   "map.breedFilter": "Rasa",

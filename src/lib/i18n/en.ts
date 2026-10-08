@@ -20,6 +20,7 @@ const en: Record<string, string> = {
   "nav.events": "Events",
   "nav.profile": "Profile",
   "nav.dogs": "Dogs",
+  "nav.pack": "Pack",
   "nav.signout": "Sign out",
 
   // meetings
@@ -78,6 +79,31 @@ const en: Record<string, string> = {
   "ownerProfile.propose": "Propose a meeting",
   "ownerProfile.pending": "Invitation sent — awaiting response",
   "ownerProfile.empty": "No dogs added yet.",
+  "ownerProfile.throwBone": "Throw a bone",
+  "ownerProfile.boneThrown": "Bone thrown — awaiting",
+  "ownerProfile.catchBone": "Catch the bone",
+  "ownerProfile.inPack": "In your pack",
+  "ownerProfile.message": "Message",
+
+  // pack ("moje stado")
+  "pack.title": "My pack",
+  "pack.requests": "Bones to catch",
+  "pack.members": "Your pack",
+  "pack.empty": "Your pack is empty. Throw a bone from an owner's profile to start.",
+  "pack.noRequests": "No bones waiting.",
+  "pack.catch": "Catch",
+  "pack.decline": "Decline",
+  "pack.message": "Message",
+  "pack.badge": "Pack",
+  "pack.wantsToJoin": "threw you a bone",
+
+  // chat
+  "chat.title": "Chat",
+  "chat.back": "← Back to pack",
+  "chat.placeholder": "Write a message…",
+  "chat.send": "Send",
+  "chat.empty": "No messages yet. Say hi!",
+  "chat.failed": "Could not send. Try again.",
 
   // map controls
   "map.breedFilter": "Breed",
