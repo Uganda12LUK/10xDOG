@@ -1,0 +1,67 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import OwnerProfile from "@/components/owners/OwnerProfile.astro";
+import { createClient } from "@/lib/supabase";
+import { getProfile } from "@/lib/services/profile";
+import { listDogs } from "@/lib/services/dog";
+import { hasPendingInvitation } from "@/lib/services/invitation";
+import type { Dog, Profile } from "@/types";
+
+const { user, locale } = Astro.locals;
+const { id } = Astro.params;
+
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+
+let profile: Profile | null = null;
+let dogs: Dog[] = [];
+let pendingInvitation = false;
+const isOwnProfile = user && id ? id === user.id : false;
+const ownerId = id ?? "";
+
+if (supabase && id && !isOwnProfile) {
+  profile = await getProfile(supabase, id);
+  if (profile) {
+    dogs = await listDogs(supabase, id);
+    if (user) {
+      pendingInvitation = await hasPendingInvitation(supabase, user.id, id);
+    }
+  }
+}
+
+const error = Astro.url.searchParams.get("error");
+---
+
+<Layout title={profile?.name ?? "Owner"}>
+  {isOwnProfile ? (
+    <div class="flex min-h-[80vh] items-center justify-center p-4">
+      <div class="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-center text-card-foreground">
+        <p class="text-muted-foreground">
+          This is your profile.{" "}
+          <a href="/profile" class="text-primary hover:underline">
+            Go to your profile
+          </a>
+        </p>
+      </div>
+    </div>
+  ) : profile ? (
+    <OwnerProfile
+      profile={profile}
+      dogs={dogs}
+      pendingInvitation={pendingInvitation}
+      error={error}
+      ownerId={ownerId}
+      locale={locale}
+    />
+  ) : (
+    <div class="flex min-h-[80vh] items-center justify-center p-4">
+      <div class="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-center text-card-foreground">
+        <p class="text-muted-foreground">
+          Owner not found.{" "}
+          <a href="/map" class="text-primary hover:underline">
+            ← Back to owners
+          </a>
+        </p>
+      </div>
+    </div>
+  )}
+</Layout>

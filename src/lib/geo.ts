@@ -34,3 +34,19 @@ export function citiesNear(city: string): string[] {
   const region = CITY_REGIONS.find((r) => r.includes(city));
   return region ?? [city];
 }
+
+/**
+ * Approximate great-circle distance in kilometers between two [lat, lng] points
+ * (haversine). Used by the map filter for an approximate "within N km" check between
+ * city centers — not GPS-accurate, but good enough for town-level discovery.
+ */
+export function distanceKm(a: [number, number], b: [number, number]): number {
+  const R = 6371; // Earth radius in km
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const dLat = toRad(b[0] - a[0]);
+  const dLng = toRad(b[1] - a[1]);
+  const lat1 = toRad(a[0]);
+  const lat2 = toRad(b[0]);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}

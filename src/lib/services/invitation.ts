@@ -13,6 +13,8 @@ interface InvitationRow {
   updated_at: string;
   dog_id: string | null;
   scheduled_at: string | null;
+  location_lat: number | null;
+  location_lng: number | null;
 }
 
 function mapRow(row: InvitationRow): Invitation {
@@ -26,6 +28,8 @@ function mapRow(row: InvitationRow): Invitation {
     updatedAt: row.updated_at,
     dogId: row.dog_id,
     scheduledAt: row.scheduled_at,
+    locationLat: row.location_lat,
+    locationLng: row.location_lng,
   };
 }
 
@@ -36,6 +40,8 @@ export async function sendInvitation(
   type: "walk" | "breeding",
   dogId?: string | null,
   scheduledAt?: string | null,
+  locationLat?: number | null,
+  locationLng?: number | null,
 ): Promise<Invitation> {
   // Ownership guard: the endpoint is the trust boundary. The FK only proves the
   // dog exists, not that the sender owns it — verify before attaching.
@@ -54,6 +60,8 @@ export async function sendInvitation(
       type,
       dog_id: dogId ?? null,
       scheduled_at: scheduledAt ?? null,
+      location_lat: locationLat ?? null,
+      location_lng: locationLng ?? null,
     })
     .select()
     .single();

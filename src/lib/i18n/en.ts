@@ -30,6 +30,29 @@ const en: Record<string, string> = {
   "meetings.tabs.history": "History",
   "meetings.accept": "Accept",
   "meetings.decline": "Decline",
+  "meetings.viewLocation": "View location",
+  "meetings.pending": "Pending",
+
+  // meeting types
+  "type.walk": "Walk",
+  "type.breeding": "Breeding",
+
+  // propose-meeting form
+  "meetingForm.type": "Meeting type",
+  "meetingForm.yourDog": "Your dog",
+  "meetingForm.dateTime": "Date & time",
+  "meetingForm.location": "Location",
+  "meetingForm.pinHint": "Drag the pin or tap the map to mark the meeting spot.",
+  "meetingForm.submit": "Send invitation",
+
+  // propose-meeting page (new.astro chrome)
+  "meetingNew.title": "Propose a meeting",
+  "meetingNew.noReceiver": "No owner selected.",
+  "meetingNew.backToList": "← Back to list",
+  "meetingNew.notFound": "Owner not found.",
+  "meetingNew.backToProfile": "← Back to profile",
+  "meetingNew.proposeWith": "Propose a meeting with",
+  "meetingNew.loading": "Loading the form…",
 
   // dashboard
   "dashboard.welcomeBack": "Welcome back",
@@ -38,6 +61,8 @@ const en: Record<string, string> = {
   "dashboard.tiles.proposeMeeting": "Propose a meeting",
   "dashboard.tiles.dogMap": "Dog map",
   "dashboard.tiles.myMeetings": "My meetings",
+  "dashboard.tiles.dogs": "My dogs",
+  "dashboard.tiles.profile": "Profile",
   "dashboard.tiles.events": "Events",
   "dashboard.tiles.places": "Places",
 
@@ -47,9 +72,29 @@ const en: Record<string, string> = {
   "owners.setCityPromptSuffix": "to see local owners.",
   "owners.profileLink": "Profile",
 
+  // owner profile (public profile of another owner + their dogs)
+  "ownerProfile.back": "Back",
+  "ownerProfile.dogsHeading": "Dogs",
+  "ownerProfile.propose": "Propose a meeting",
+  "ownerProfile.pending": "Invitation sent — awaiting response",
+  "ownerProfile.empty": "No dogs added yet.",
+
   // map controls
   "map.breedFilter": "Breed",
   "map.allBreeds": "All breeds",
+
+  // map search filters
+  "filter.size": "Size",
+  "filter.anySize": "Any size",
+  "filter.character": "Character",
+  "filter.age": "Age",
+  "filter.anyAge": "Any age",
+  "filter.distance": "Distance",
+  "filter.distanceNoLimit": "No limit",
+  "age.puppy": "Puppy (<1 yr)",
+  "age.young": "Young (1–3 yrs)",
+  "age.adult": "Adult (3–8 yrs)",
+  "age.senior": "Senior (8+ yrs)",
 
   // dogs listing
   "dogs.title": "Your dogs",
@@ -94,6 +139,8 @@ const en: Record<string, string> = {
   "form.profile.district": "District",
   "form.profile.city": "City",
   "form.profile.photo": "Photo",
+  "form.profile.location": "Your location",
+  "form.profile.locationHint": "Drag the pin to set your spot — dog search starts from here.",
   "form.profile.submit": "Save profile",
 
   // auth

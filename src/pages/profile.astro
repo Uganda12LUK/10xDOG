@@ -20,7 +20,7 @@ const onboarding = Astro.url.searchParams.get("onboarding");
 
 <Layout title="Your profile">
   <div class="flex min-h-[80vh] items-center justify-center p-4">
-    <div class="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-card-foreground">
+    <div class="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-card-foreground lg:max-w-3xl">
       <h1 class="mb-6 text-center text-2xl font-bold text-foreground">Your profile</h1>
       <ProfileForm
         profile={profile}
@@ -28,7 +28,7 @@ const onboarding = Astro.url.searchParams.get("onboarding");
         saved={saved === "1"}
         onboarding={onboarding === "1"}
         locale={locale}
-        client:load
+        client:only="react"
       />
       <a
         href="/dogs"

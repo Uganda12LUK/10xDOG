@@ -1,14 +1,20 @@
-import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import { useEffect, useRef } from "react";
+import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { DogWithOwner } from "@/types";
 import { CITY_CENTERS } from "@/lib/geo";
+import { userHomeIcon } from "./markerIcons";
 
+// A stable per-dog jitter so dogs in the same town don't stack on one point but
+// spread across the neighbourhood (~±2 km), as if on different streets. Purely
+// visual: the distance filter measures town-center to town-center (see dogFilter),
+// so widening this never changes which dogs a filter keeps.
 function deterministicOffset(id: string): [number, number] {
   let h = 0;
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
-  return [((h % 1001) - 500) / 100000, (((h >> 4) % 1001) - 500) / 100000];
+  // lat: 1° ≈ 111 km, lng: 1° ≈ 71 km at ~50°N → divisors tuned for ~±2 km each.
+  return [((h % 1001) - 500) / 28000, (((h >> 4) % 1001) - 500) / 18000];
 }
 
 function makeDogIcon(name: string) {
@@ -16,7 +22,7 @@ function makeDogIcon(name: string) {
   const initial = trimmed.length > 0 ? trimmed[0].toUpperCase() : "🐾";
   return L.divIcon({
     className: "",
-    html: `<div style="width:36px;height:36px;border-radius:50%;background:var(--color-primary,#e05c2e);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.25);">${initial}</div>`,
+    html: `<div style="width:36px;height:36px;border-radius:50%;background:var(--color-primary);color:var(--color-primary-foreground);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.25);">${initial}</div>`,
     iconSize: [36, 36],
     iconAnchor: [18, 18],
   });
@@ -51,10 +57,14 @@ interface Props {
   dogs: DogWithOwner[];
   center: [number, number];
   onDogSelect: (dog: DogWithOwner) => void;
+  userCenter?: [number, number];
+  onUserMove?: (pos: [number, number]) => void;
+  radiusKm?: number | null;
 }
 
-export default function DogMap({ dogs, center, onDogSelect }: Props) {
+export default function DogMap({ dogs, center, onDogSelect, userCenter, onUserMove, radiusKm }: Props) {
   const positioned = dogs.map((dog) => ({ dog, pos: dogPosition(dog, center) }));
+  const userMarkerRef = useRef<L.Marker>(null);
 
   return (
     <MapContainer center={center} zoom={12} style={{ height: "100%", width: "100%" }}>
@@ -63,6 +73,33 @@ export default function DogMap({ dogs, center, onDogSelect }: Props) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <FitToDogs positions={positioned.map((p) => p.pos)} center={center} />
+
+      {userCenter && radiusKm != null && (
+        <Circle
+          center={userCenter}
+          radius={radiusKm * 1000}
+          pathOptions={{ className: "dog-radius", weight: 2, fillOpacity: 0.06 }}
+        />
+      )}
+
+      {userCenter && (
+        <Marker
+          position={userCenter}
+          icon={userHomeIcon}
+          draggable
+          ref={userMarkerRef}
+          eventHandlers={{
+            dragend: () => {
+              const marker = userMarkerRef.current;
+              if (marker && onUserMove) {
+                const { lat, lng } = marker.getLatLng();
+                onUserMove([lat, lng]);
+              }
+            },
+          }}
+        />
+      )}
+
       {positioned.map(({ dog, pos }) => (
         <Marker
           key={dog.id}

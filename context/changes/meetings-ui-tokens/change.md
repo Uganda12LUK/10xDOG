@@ -1,7 +1,7 @@
 ---
 change_id: meetings-ui-tokens
 title: Replace hardcoded colors in /meetings with semantic design tokens
-status: implemented
+status: impl_reviewed
 created: 2026-09-26
 updated: 2026-09-26
 archived_at: null

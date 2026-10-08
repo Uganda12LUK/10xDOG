@@ -18,6 +18,8 @@ const profileSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
   district: optionalTrimmed,
   city: optionalTrimmed,
+  location_lat: z.coerce.number().min(-90).max(90).nullish(),
+  location_lng: z.coerce.number().min(-180).max(180).nullish(),
 });
 
 function redirectError(context: Parameters<APIRoute>[0], message: string) {
@@ -39,10 +41,15 @@ export const POST: APIRoute = async (context) => {
 
   const form = await context.request.formData();
 
+  const rawLat = form.get("location_lat") as string | null;
+  const rawLng = form.get("location_lng") as string | null;
+
   const parsed = profileSchema.safeParse({
     name: form.get("name"),
     district: form.get("district") ?? undefined,
     city: form.get("city") ?? undefined,
+    location_lat: rawLat ?? undefined,
+    location_lng: rawLng ?? undefined,
   });
   if (!parsed.success) {
     const message = parsed.error.issues[0]?.message ?? "Invalid profile data";
@@ -67,6 +74,8 @@ export const POST: APIRoute = async (context) => {
       name: parsed.data.name,
       district: parsed.data.district,
       city: parsed.data.city,
+      locationLat: parsed.data.location_lat,
+      locationLng: parsed.data.location_lng,
       avatarPath,
     });
   } catch (error) {

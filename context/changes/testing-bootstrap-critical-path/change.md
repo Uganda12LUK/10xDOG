@@ -3,7 +3,7 @@ change_id: testing-bootstrap-critical-path
 title: Phase 1 integration tests — bootstrap and critical-path coverage
 status: implementing
 created: 2026-09-28
-updated: 2026-09-28
+updated: 2026-09-29
 archived_at: null
 ---
 

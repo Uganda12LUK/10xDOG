@@ -7,6 +7,8 @@ export interface Profile {
   city: string | null;
   avatarPath: string | null;
   avatarUrl: string | null;
+  locationLat: number | null;
+  locationLng: number | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -15,6 +17,8 @@ export interface ProfileInput {
   name: string;
   district?: string | null;
   city?: string | null;
+  locationLat?: number | null;
+  locationLng?: number | null;
   photo?: File | null;
 }
 
@@ -53,6 +57,8 @@ export interface Invitation {
   updatedAt: string;
   dogId: string | null;
   scheduledAt: string | null;
+  locationLat: number | null;
+  locationLng: number | null;
 }
 
 export interface DogInput {

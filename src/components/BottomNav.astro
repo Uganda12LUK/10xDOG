@@ -15,7 +15,7 @@ const tabs = [
     exact: true,
   },
   {
-    href: "/owners",
+    href: "/map",
     label: t(locale, "nav.map"),
     exact: false,
   },
@@ -74,7 +74,7 @@ function isActive(href: string, exact: boolean): boolean {
             />
           </svg>
         )}
-        {tab.href === "/owners" && (
+        {tab.href === "/map" && (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

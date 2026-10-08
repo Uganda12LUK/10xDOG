@@ -186,39 +186,44 @@ An owner on `/owners` sees a filter panel (breed, size, character, distance) abo
 ### Phase 2: Write path
 
 #### Automated
-- [x] 2.1 `npm run lint` passes
-- [x] 2.2 `npm run build` passes
+- [x] 2.1 `npm run lint` passes — 13503e7
+- [x] 2.2 `npm run build` passes — 13503e7
 
 #### Manual
-- [x] 2.3 Creating a dog with size + 2 traits persists them
-- [x] 2.4 Editing size + toggling traits persists
-- [x] 2.5 Submitting with no size and no traits still succeeds
+- [x] 2.3 Creating a dog with size + 2 traits persists them — 13503e7
+- [x] 2.4 Editing size + toggling traits persists — 13503e7
+- [x] 2.5 Submitting with no size and no traits still succeeds — 13503e7
+
+> Extension (user request): an **age** filter was added alongside breed/size/traits/distance.
+> Age buckets (puppy/young/adult/senior) live in `src/lib/dogFilter.ts` and are computed via
+> the existing `ageFromBirthdate` (`src/lib/age.ts`). Unit test is at `tests/unit/dogFilter.test.ts`
+> (vitest `include` only covers `tests/**`, so it lives there, not under `src/`).
 
 ### Phase 3: Filtering core
 
 #### Automated
-- [ ] 3.1 `npx vitest run src/lib/dogFilter.test.ts` passes
-- [ ] 3.2 `npm run lint` passes
+- [x] 3.1 `npx vitest run tests/unit/dogFilter.test.ts` passes (8 tests, incl. age cases)
+- [x] 3.2 `npm run lint` passes
 
 ### Phase 4: Map filter UI
 
 #### Automated
-- [ ] 4.1 `npm run lint` passes
-- [ ] 4.2 `npm run build` passes
+- [x] 4.1 `npm run lint` passes
+- [x] 4.2 `npm run build` passes
 
 #### Manual
 - [ ] 4.3 Size filter narrows pins + list together; clearing restores
 - [ ] 4.4 Two traits → only dogs having both
 - [ ] 4.5 Distance 10 km drops far-town dogs; no-limit restores
-- [ ] 4.6 Breed + size + distance combined intersect correctly
+- [ ] 4.6 Breed + size + age + distance combined intersect correctly
 
 ### Phase 5: i18n + demo data
 
 #### Automated
-- [ ] 5.1 `npm run lint` passes
-- [ ] 5.2 `npm run build` passes
+- [x] 5.1 `npm run lint` passes
+- [x] 5.2 `npm run build` passes
 
 #### Manual
 - [ ] 5.3 PL↔EN toggles all new filter + form labels
-- [ ] 5.4 Demo dogs carry size/traits and filters narrow them
+- [ ] 5.4 Demo dogs carry size/traits/age and filters narrow them
 - [ ] 5.5 No untranslated raw keys visible in either language
