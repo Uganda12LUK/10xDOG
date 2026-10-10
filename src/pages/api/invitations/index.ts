@@ -67,10 +67,24 @@ export const POST: APIRoute = async (context) => {
 
   try {
     await sendInvitation(supabase, user.id, receiver_id, type, dog_id, scheduled_at, location_lat, location_lng);
-  } catch {
-    return context.redirect(
-      `/meetings/new?receiver_id=${receiver_id}&error=${encodeURIComponent("Something went wrong. Please try again.")}`,
-    );
+  } catch (err) {
+    // Monitoring: surface the cause to the Cloudflare Workers log stream (the
+    // only tracker boundary this app has). No PII — ids only, never names/emails.
+    // eslint-disable-next-line no-console
+    console.error("[api/invitations] sendInvitation failed", {
+      senderId: user.id,
+      receiverId: receiver_id,
+      type,
+      error: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : undefined,
+    });
+    // Response: an unexpected server failure must reach the response AS a
+    // failure (5xx), not be flattened into a 302 redirect that monitoring reads
+    // as success. Validation errors are already handled above with a redirect.
+    return new Response(JSON.stringify({ error: "Failed to send invitation" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   return context.redirect("/meetings");
