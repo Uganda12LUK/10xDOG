@@ -68,7 +68,7 @@ test("invitation loop: User A invites User B, User B accepts, both see the meeti
   // Open User B's owner profile and start a meeting proposal from there.
   await pageA.goto(`/map/${userB.id}`);
   await expect(pageA.getByRole("heading", { name: userBName })).toBeVisible();
-  await pageA.getByRole("link", { name: "Zaproponuj spotkanie" }).click();
+  await pageA.getByRole("link", { name: "Propose a meeting" }).click();
   await pageA.waitForURL(`**/meetings/new?receiver_id=${userB.id}`);
 
   // The MeetingForm is a client:only React island — wait for it to hydrate
