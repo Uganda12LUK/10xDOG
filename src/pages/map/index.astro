@@ -2,9 +2,10 @@
 import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
 import { listDogsForMap, getProfile } from "@/lib/services/profile";
+import { listPackStatuses } from "@/lib/services/pack";
 import OwnersMapView from "@/components/map/OwnersMapView";
 import { t } from "@/lib/i18n";
-import type { DogWithOwner } from "@/types";
+import type { DogWithOwner, PackStatus } from "@/types";
 
 const { user, locale } = Astro.locals;
 
@@ -14,6 +15,7 @@ let dogs: DogWithOwner[] = [];
 let myCity: string | null = null;
 let hasCity = false;
 let myLocation: [number, number] | null = null;
+let packStatusByOwner: Record<string, PackStatus> = {};
 
 if (supabase && user) {
   const profile = await getProfile(supabase, user.id);
@@ -24,16 +26,11 @@ if (supabase && user) {
   }
 
   if (hasCity && myCity) {
-    const myDistrict = profile?.district ?? null;
-
-    if (myDistrict) {
-      dogs = await listDogsForMap(supabase, user.id, myCity, myDistrict);
-      if (dogs.length === 0) {
-        dogs = await listDogsForMap(supabase, user.id, myCity);
-      }
-    } else {
-      dogs = await listDogsForMap(supabase, user.id, myCity);
-    }
+    // Discovery is city/region-scoped; street is display-only, never a filter.
+    [dogs, packStatusByOwner] = await Promise.all([
+      listDogsForMap(supabase, user.id, myCity),
+      listPackStatuses(supabase, user.id),
+    ]);
   }
 }
 ---
@@ -52,6 +49,13 @@ if (supabase && user) {
       </div>
     </div>
   ) : (
-    <OwnersMapView dogs={dogs} city={myCity ?? ""} userLocation={myLocation} locale={locale} client:only="react" />
+    <OwnersMapView
+      dogs={dogs}
+      city={myCity ?? ""}
+      userLocation={myLocation}
+      packStatusByOwner={packStatusByOwner}
+      locale={locale}
+      client:only="react"
+    />
   )}
 </Layout>

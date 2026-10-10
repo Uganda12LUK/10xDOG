@@ -40,7 +40,7 @@ if (supabase && user) {
     const fetched = await listProfilesByIds(supabase, Array.from(counterpartyIds));
     for (const [id, profile] of fetched) profileMap.set(id, profile);
   } catch {
-    errorMsg = "Nie udało się załadować spotkań. Spróbuj ponownie.";
+    errorMsg = t(locale, "meetings.loadError");
   }
 }
 

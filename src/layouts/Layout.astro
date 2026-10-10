@@ -42,8 +42,10 @@ const { user, locale } = Astro.locals;
         )}
       </Banner>
     ))}
-    <div class:list={["bg-background min-h-screen", { "pb-[70px]": !!user }]}>
-      <div class="p-4">
+    <div class:list={["bg-background min-h-screen", { "max-md:pb-[70px]": !!user }]}>
+      {/* Topbar is desktop-only (md:flex). Hide its padded wrapper on mobile so it
+          doesn't leave an empty strip pushing content (e.g. the map) below the fold. */}
+      <div class="hidden p-4 md:block">
         <Topbar />
       </div>
       <slot />

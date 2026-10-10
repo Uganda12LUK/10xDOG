@@ -11,7 +11,7 @@ const AVATAR_BUCKET = "avatars";
 // avatar untouched on a text-only edit.
 export interface ProfileUpsert {
   name: string;
-  district?: string | null;
+  street?: string | null;
   city?: string | null;
   locationLat?: number | null;
   locationLng?: number | null;
@@ -38,7 +38,8 @@ function mapRow(client: SupabaseClient, row: ProfileRow): Profile {
   return {
     id: row.id,
     name: row.name,
-    district: row.district,
+    // DB column is `district`; surfaced to the app as `street`.
+    street: row.district,
     city: row.city,
     avatarPath: row.avatar_path,
     avatarUrl,
@@ -118,20 +119,11 @@ function mapDogRow(client: SupabaseClient, row: DogRow): Dog {
   };
 }
 
-export async function listOwners(
-  client: SupabaseClient,
-  userId: string,
-  city: string,
-  district?: string | null,
-): Promise<OwnerWithDogs[]> {
+export async function listOwners(client: SupabaseClient, userId: string, city: string): Promise<OwnerWithDogs[]> {
   // Match the whole region around the user's town (e.g. Rzeszów + satellite
   // towns), not just an exact city string, so nearby owners show on the map.
-  let profileQuery = client.from("profiles").select("*").in("city", citiesNear(city)).neq("id", userId);
-  if (district != null) {
-    profileQuery = profileQuery.eq("district", district);
-  }
-
-  const profileResult = await profileQuery;
+  // Discovery is city/region-scoped only — street is display-only, never a filter.
+  const profileResult = await client.from("profiles").select("*").in("city", citiesNear(city)).neq("id", userId);
   if (profileResult.error) {
     throw new Error(profileResult.error.message);
   }
@@ -165,13 +157,8 @@ export async function listOwners(
     .sort((a, b) => a.profile.name.localeCompare(b.profile.name));
 }
 
-export async function listDogsForMap(
-  client: SupabaseClient,
-  userId: string,
-  city: string,
-  district?: string | null,
-): Promise<DogWithOwner[]> {
-  const owners = await listOwners(client, userId, city, district);
+export async function listDogsForMap(client: SupabaseClient, userId: string, city: string): Promise<DogWithOwner[]> {
+  const owners = await listOwners(client, userId, city);
 
   return owners.flatMap((owner) =>
     owner.dogs.map((dog) => ({
@@ -208,7 +195,8 @@ export async function upsertProfile(client: SupabaseClient, userId: string, inpu
   } = {
     id: userId,
     name: input.name,
-    district: input.district ?? null,
+    // `street` maps to the legacy `district` column (see Profile type note).
+    district: input.street ?? null,
     city: input.city ?? null,
     location_lat: input.locationLat ?? null,
     location_lng: input.locationLng ?? null,

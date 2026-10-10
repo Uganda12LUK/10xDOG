@@ -33,6 +33,12 @@ const pl: Record<string, string> = {
   "meetings.decline": "Odrzuć",
   "meetings.viewLocation": "Zobacz miejsce",
   "meetings.pending": "Oczekuje",
+  "meetings.proposeWalk": "Zaproponuj spacer →",
+  "meetings.loadError": "Nie udało się załadować spotkań. Spróbuj ponownie.",
+  "meetings.empty.upcoming": "Brak nadchodzących spotkań.",
+  "meetings.empty.proposals": "Brak wysłanych propozycji.",
+  "meetings.empty.invitations": "Brak oczekujących zaproszeń.",
+  "meetings.empty.history": "Zakończone spacery pojawią się tutaj.",
 
   // meeting types
   "type.walk": "Spacer",
@@ -72,6 +78,19 @@ const pl: Record<string, string> = {
   "owners.setCityPrompt": "Ustaw swoje miasto w",
   "owners.setCityPromptSuffix": "aby zobaczyć okolicznych właścicieli.",
   "owners.profileLink": "Profilu",
+  "owners.ownerLabel": "właściciel",
+  "owners.proposeWalk": "Zaproponuj spacer",
+
+  // events (placeholder page)
+  "events.title": "Wydarzenia",
+  "events.inPreparation": "Ta sekcja jest w przygotowaniu.",
+  "events.soon": "Wkrótce",
+
+  // bone (pack throw control on discovery surfaces)
+  "bone.throw": "Rzuć kość",
+  "bone.thrown": "Rzucono",
+  "bone.catch": "Złap kość",
+  "bone.message": "Napisz",
 
   // owner profile (public profile of another owner + their dogs)
   "ownerProfile.back": "Wróć",
@@ -162,7 +181,7 @@ const pl: Record<string, string> = {
 
   // profile form
   "form.profile.name": "Imię",
-  "form.profile.district": "Dzielnica",
+  "form.profile.street": "Ulica",
   "form.profile.city": "Miasto",
   "form.profile.photo": "Zdjęcie",
   "form.profile.location": "Twoja lokalizacja",

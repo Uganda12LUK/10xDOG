@@ -99,6 +99,38 @@ export async function isInPack(client: SupabaseClient, a: string, b: string): Pr
   return (await getPackStatus(client, a, b)) === "accepted";
 }
 
+// The viewer's pack status toward every owner they have a connection with, keyed
+// by the other owner's id. One query for the whole map (declined rows are omitted
+// = "none"). Used to render the right bone control per dog in discovery.
+export async function listPackStatuses(client: SupabaseClient, userId: string): Promise<Record<string, PackStatus>> {
+  const result = await client
+    .from("pack_connections")
+    .select("*")
+    .or(`requester_id.eq.${userId},addressee_id.eq.${userId}`)
+    .order("updated_at", { ascending: false });
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  const latest = new Map<string, PackConnection>();
+  for (const row of (result.data as PackConnectionRow[]).map(mapRow)) {
+    const other = row.requesterId === userId ? row.addresseeId : row.requesterId;
+    if (!latest.has(other)) latest.set(other, row); // rows are newest-first
+  }
+
+  const out: Record<string, PackStatus> = {};
+  for (const [other, row] of latest) {
+    if (row.status === "accepted") {
+      out[other] = "accepted";
+    } else if (row.status === "pending") {
+      out[other] = row.requesterId === userId ? "pending_out" : "pending_in";
+    }
+    // declined → omit (treated as "none" by callers)
+  }
+  return out;
+}
+
 // Bones waiting to be caught: pending requests where the caller is the addressee.
 export async function listPendingReceived(client: SupabaseClient, userId: string): Promise<PackMember[]> {
   const result = await client

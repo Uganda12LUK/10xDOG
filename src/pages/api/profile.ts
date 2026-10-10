@@ -16,7 +16,7 @@ const optionalTrimmed = z
 
 const profileSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
-  district: optionalTrimmed,
+  street: optionalTrimmed,
   city: optionalTrimmed,
   location_lat: z.coerce.number().min(-90).max(90).nullish(),
   location_lng: z.coerce.number().min(-180).max(180).nullish(),
@@ -46,7 +46,7 @@ export const POST: APIRoute = async (context) => {
 
   const parsed = profileSchema.safeParse({
     name: form.get("name"),
-    district: form.get("district") ?? undefined,
+    street: form.get("street") ?? undefined,
     city: form.get("city") ?? undefined,
     location_lat: rawLat ?? undefined,
     location_lng: rawLng ?? undefined,
@@ -72,7 +72,7 @@ export const POST: APIRoute = async (context) => {
 
     await upsertProfile(supabase, user.id, {
       name: parsed.data.name,
-      district: parsed.data.district,
+      street: parsed.data.street,
       city: parsed.data.city,
       locationLat: parsed.data.location_lat,
       locationLng: parsed.data.location_lng,
