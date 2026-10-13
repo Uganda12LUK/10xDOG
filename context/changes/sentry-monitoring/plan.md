@@ -325,21 +325,21 @@ No data migration. The only deploy-time consideration: after Phase 3, the worker
 
 #### Automated
 
-- [x] 1.1 Dependencies install cleanly: `npm install`
-- [x] 1.2 Linting passes: `npm run lint`
-- [x] 1.3 Production build passes with no DSN set: `npm run build`
+- [x] 1.1 Dependencies install cleanly: `npm install` — 758c214
+- [x] 1.2 Linting passes: `npm run lint` — 758c214
+- [x] 1.3 Production build passes with no DSN set: `npm run build` — 758c214
 
 #### Manual
 
-- [x] 1.4 Preview with no DSN shows the banner + "Sentry not configured" note; app behaves as before
+- [x] 1.4 Preview with no DSN shows the banner + "Sentry not configured" note; app behaves as before — 758c214
 
 ### Phase 2: Client-side error monitoring
 
 #### Automated
 
-- [ ] 2.1 Build passes with a DSN set: `PUBLIC_SENTRY_DSN=<dsn> npm run build`
-- [ ] 2.2 Build still passes with no DSN: `npm run build`
-- [ ] 2.3 Linting passes: `npm run lint`
+- [x] 2.1 Build passes with a DSN set: `PUBLIC_SENTRY_DSN=<dsn> npm run build`
+- [x] 2.2 Build still passes with no DSN: `npm run build`
+- [x] 2.3 Linting passes: `npm run lint`
 
 #### Manual
 
