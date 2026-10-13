@@ -337,9 +337,9 @@ No data migration. The only deploy-time consideration: after Phase 3, the worker
 
 #### Automated
 
-- [x] 2.1 Build passes with a DSN set: `PUBLIC_SENTRY_DSN=<dsn> npm run build`
-- [x] 2.2 Build still passes with no DSN: `npm run build`
-- [x] 2.3 Linting passes: `npm run lint`
+- [x] 2.1 Build passes with a DSN set: `PUBLIC_SENTRY_DSN=<dsn> npm run build` — 9b3f35d
+- [x] 2.2 Build still passes with no DSN: `npm run build` — 9b3f35d
+- [x] 2.3 Linting passes: `npm run lint` — 9b3f35d
 
 #### Manual
 
@@ -350,9 +350,9 @@ No data migration. The only deploy-time consideration: after Phase 3, the worker
 
 #### Automated
 
-- [ ] 3.1 Preview build + server boot: `npm run build && npm run preview` starts without error
-- [ ] 3.2 Worker entry resolves using `sentry.server.config.ts`: `npm run build` shows no unresolved-entry error
-- [ ] 3.3 Linting + typecheck pass: `npm run lint`
+- [x] 3.1 Preview build + server boot: `npm run build && npm run preview` starts without error
+- [x] 3.2 Worker entry resolves using `sentry.server.config.ts`: `npm run build` shows no unresolved-entry error
+- [x] 3.3 Linting + typecheck pass: `npm run lint`
 
 #### Manual
 
