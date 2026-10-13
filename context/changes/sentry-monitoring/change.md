@@ -1,7 +1,7 @@
 ---
 change_id: sentry-monitoring
 title: Integrate Sentry error monitoring across server and client
-status: implementing
+status: implemented
 created: 2026-10-13
 updated: 2026-10-13
 archived_at: null

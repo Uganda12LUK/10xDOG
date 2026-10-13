@@ -376,10 +376,10 @@ No data migration. The only deploy-time consideration: after Phase 3, the worker
 
 #### Automated
 
-- [x] 5.1 Production build does not expose `/dev/sentry-check` or `/api/dev/sentry-error` (404)
-- [x] 5.2 Linting passes: `npm run lint`
+- [x] 5.1 Production build does not expose `/dev/sentry-check` or `/api/dev/sentry-error` (404) — 5663c03
+- [x] 5.2 Linting passes: `npm run lint` — 5663c03
 
 #### Manual
 
-- [x] 5.3 Client trap produces one browser event and server endpoint produces one worker event in Sentry
-- [x] 5.4 Route confirmed 404 in a production build
+- [x] 5.3 Client trap produces one browser event and server endpoint produces one worker event in Sentry — 5663c03
+- [x] 5.4 Route confirmed 404 in a production build — 5663c03
