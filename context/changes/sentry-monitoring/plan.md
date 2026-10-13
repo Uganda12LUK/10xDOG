@@ -350,9 +350,9 @@ No data migration. The only deploy-time consideration: after Phase 3, the worker
 
 #### Automated
 
-- [x] 3.1 Preview build + server boot: `npm run build && npm run preview` starts without error
-- [x] 3.2 Worker entry resolves using `sentry.server.config.ts`: `npm run build` shows no unresolved-entry error
-- [x] 3.3 Linting + typecheck pass: `npm run lint`
+- [x] 3.1 Preview build + server boot: `npm run build && npm run preview` starts without error — e9eaeaa
+- [x] 3.2 Worker entry resolves using `sentry.server.config.ts`: `npm run build` shows no unresolved-entry error — e9eaeaa
+- [x] 3.3 Linting + typecheck pass: `npm run lint` — e9eaeaa
 
 #### Manual
 
@@ -363,9 +363,9 @@ No data migration. The only deploy-time consideration: after Phase 3, the worker
 
 #### Automated
 
-- [ ] 4.1 Build with no auth token skips upload and succeeds: `npm run build`
-- [ ] 4.2 Build with a token attempts upload without error: `SENTRY_AUTH_TOKEN=<t> SENTRY_ORG=<o> SENTRY_PROJECT=<p> npm run build`
-- [ ] 4.3 Linting passes: `npm run lint`
+- [x] 4.1 Build with no auth token skips upload and succeeds: `npm run build`
+- [x] 4.2 Build with a token attempts upload without error: `SENTRY_AUTH_TOKEN=<t> SENTRY_ORG=<o> SENTRY_PROJECT=<p> npm run build`
+- [x] 4.3 Linting passes: `npm run lint`
 
 #### Manual
 
