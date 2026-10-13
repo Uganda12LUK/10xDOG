@@ -343,8 +343,8 @@ No data migration. The only deploy-time consideration: after Phase 3, the worker
 
 #### Manual
 
-- [ ] 2.4 Thrown client error appears in the Sentry dashboard with a DSN configured
-- [ ] 2.5 No Sentry requests fire locally without a DSN
+- [x] 2.4 Thrown client error appears in the Sentry dashboard with a DSN configured — 9b3f35d (verified in p5 live test)
+- [x] 2.5 No Sentry requests fire locally without a DSN — 9b3f35d
 
 ### Phase 3: Server-side error monitoring (Cloudflare Workers workaround)
 
@@ -356,16 +356,16 @@ No data migration. The only deploy-time consideration: after Phase 3, the worker
 
 #### Manual
 
-- [ ] 3.4 Unhandled API/SSR error appears in Sentry as a server event with the correct `environment` tag
-- [ ] 3.5 Event confirmed to originate from the worker boundary (#21901 workaround active)
+- [x] 3.4 Unhandled API/SSR error appears in Sentry as a server event with the correct `environment` tag — e9eaeaa (verified in p5 live test)
+- [x] 3.5 Event confirmed to originate from the worker boundary (#21901 workaround active) — e9eaeaa (verified in p5 live test)
 
 ### Phase 4: Conditional source-maps upload in CI
 
 #### Automated
 
-- [x] 4.1 Build with no auth token skips upload and succeeds: `npm run build`
-- [x] 4.2 Build with a token attempts upload without error: `SENTRY_AUTH_TOKEN=<t> SENTRY_ORG=<o> SENTRY_PROJECT=<p> npm run build`
-- [x] 4.3 Linting passes: `npm run lint`
+- [x] 4.1 Build with no auth token skips upload and succeeds: `npm run build` — 37c071c
+- [x] 4.2 Build with a token attempts upload without error: `SENTRY_AUTH_TOKEN=<t> SENTRY_ORG=<o> SENTRY_PROJECT=<p> npm run build` — 37c071c
+- [x] 4.3 Linting passes: `npm run lint` — 37c071c
 
 #### Manual
 
@@ -376,10 +376,10 @@ No data migration. The only deploy-time consideration: after Phase 3, the worker
 
 #### Automated
 
-- [ ] 5.1 Production build does not expose `/dev/sentry-check` or `/api/dev/sentry-error` (404)
-- [ ] 5.2 Linting passes: `npm run lint`
+- [x] 5.1 Production build does not expose `/dev/sentry-check` or `/api/dev/sentry-error` (404)
+- [x] 5.2 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 5.3 Client trap produces one browser event and server endpoint produces one worker event in Sentry
-- [ ] 5.4 Route confirmed 404 in a production build
+- [x] 5.3 Client trap produces one browser event and server endpoint produces one worker event in Sentry
+- [x] 5.4 Route confirmed 404 in a production build
