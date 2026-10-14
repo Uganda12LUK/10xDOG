@@ -4,7 +4,7 @@ import { t, type Locale } from "@/lib/i18n";
 import SearchFilters from "./SearchFilters";
 import BottomSheet from "./BottomSheet";
 import BoneButton from "@/components/pack/BoneButton";
-import { CITY_CENTERS } from "@/lib/geo";
+import { cityCenter } from "@/lib/geo";
 import { filterDogs, EMPTY_CRITERIA, type DogFilterCriteria } from "@/lib/dogFilter";
 
 // DogMap is only rendered client-side (parent uses client:only="react")
@@ -73,8 +73,8 @@ export default function OwnersMapView({ dogs, city, userLocation, packStatusByOw
   // Anchor the search on the user's saved home location when set, else the town center.
   // The marker is draggable on the map to re-center the search for the current session
   // (dragging here does NOT persist — that's changed in the profile).
-  const cityCenter: [number, number] = CITY_CENTERS[city] ?? [52.2297, 21.0122];
-  const [userCenter, setUserCenter] = useState<[number, number]>(userLocation ?? cityCenter);
+  const fallbackCenter: [number, number] = cityCenter(city) ?? [52.2297, 21.0122];
+  const [userCenter, setUserCenter] = useState<[number, number]>(userLocation ?? fallbackCenter);
   const [selectedDog, setSelectedDog] = useState<DogWithOwner | null>(null);
   const [criteria, setCriteria] = useState<DogFilterCriteria>({ ...EMPTY_CRITERIA, maxKm: DEFAULT_RADIUS_KM });
 

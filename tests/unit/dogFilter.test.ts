@@ -95,6 +95,18 @@ describe("filterDogs", () => {
     expect(filterDogs(pool, EMPTY_CRITERIA, RZESZOW_CENTER)).toHaveLength(3);
   });
 
+  it("resolves owner-city variants (case/diacritics) the same as the dictionary key", () => {
+    // Regression: a diacritic-free "Rzeszow" must match the "Rzeszów" center so the
+    // client distance filter agrees with the (normalized) server discovery scope.
+    const asciiVariant = makeDog({ id: "ascii", ownerCity: "Rzeszow" });
+    const lowerVariant = makeDog({ id: "lower", ownerCity: "rzeszów" });
+    const pool = [asciiVariant, lowerVariant];
+
+    // Both sit at the Rzeszów center (0 km from the viewer) → kept under a tight limit.
+    const result = filterDogs(pool, criteria({ maxKm: 5 }), RZESZOW_CENTER);
+    expect(result.map((d) => d.id)).toEqual(["ascii", "lower"]);
+  });
+
   it("intersects multiple criteria", () => {
     const result = filterDogs(dogs, criteria({ breed: "Labrador", size: "large", traits: ["calm"] }), RZESZOW_CENTER);
     expect(result.map((d) => d.id)).toEqual(["a"]);

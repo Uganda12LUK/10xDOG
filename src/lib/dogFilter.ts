@@ -4,7 +4,7 @@
 
 import type { DogWithOwner } from "@/types";
 import type { DogSize } from "@/lib/dogAttributes";
-import { CITY_CENTERS, distanceKm } from "@/lib/geo";
+import { cityCenter, distanceKm } from "@/lib/geo";
 import { ageFromBirthdate } from "@/lib/age";
 
 // Age buckets derived from the dog's birthdate. Chosen to be meaningful to owners
@@ -71,7 +71,7 @@ export function filterDogs(
     }
 
     if (maxKm !== null) {
-      const center = dog.ownerCity ? CITY_CENTERS[dog.ownerCity] : undefined;
+      const center = cityCenter(dog.ownerCity);
       if (!center || distanceKm(userCenter, center) > maxKm) return false;
     }
 

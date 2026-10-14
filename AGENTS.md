@@ -30,7 +30,7 @@ Source in `src/`: `pages/` (routes + `pages/api/`), `components/` (`components/u
 
 ## Commit & PR Guidelines
 
-Commit convention not yet established (history is scaffold-only) — use short imperative subjects. Pre-commit hooks (husky + lint-staged) run `eslint --fix` and `prettier --write`. CI runs lint + build; note the workflow triggers on `master` while the default branch is `main`, so CI currently does not run — see `@CLAUDE.md`.
+Commit convention: Conventional Commits with a change-id scope — e.g. `feat(owner-location-privacy): …`, `fix(discovery): …`, `chore(...): …`. Pre-commit hooks (husky + lint-staged) run `eslint --fix` and `prettier --write`. CI (`.github/workflows/ci.yml`) runs lint + `astro check` + build, plus a `smoke` job against a local Supabase, on every push and PR to `main` (the default branch) — so CI does run — see `@CLAUDE.md`.
 
 ## Security & Configuration
 

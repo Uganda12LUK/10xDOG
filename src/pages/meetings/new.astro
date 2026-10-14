@@ -1,13 +1,13 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
-import { getProfile } from "@/lib/services/profile";
+import { getPublicProfile } from "@/lib/services/profile";
 import { listDogs } from "@/lib/services/dog";
 import { getPackStatus } from "@/lib/services/pack";
 import MeetingForm from "@/components/meetings/MeetingForm";
 import BoneButton from "@/components/pack/BoneButton";
 import { t } from "@/lib/i18n";
-import type { Dog, PackStatus, Profile } from "@/types";
+import type { Dog, PackStatus, PublicProfile } from "@/types";
 
 // /meetings is a protected route — middleware guarantees an authenticated user here.
 const { user, locale } = Astro.locals;
@@ -16,12 +16,12 @@ const error = Astro.url.searchParams.get("error");
 
 const supabase = createClient(Astro.request.headers, Astro.cookies);
 
-let receiverProfile: Profile | null = null;
+let receiverProfile: PublicProfile | null = null;
 let myDogs: Dog[] = [];
 let receiverPackStatus: PackStatus = "none";
 if (supabase && user && receiverId) {
   const [fetchedProfile, fetchedDogs, status] = await Promise.all([
-    getProfile(supabase, receiverId),
+    getPublicProfile(supabase, receiverId),
     listDogs(supabase, user.id),
     getPackStatus(supabase, user.id, receiverId),
   ]);

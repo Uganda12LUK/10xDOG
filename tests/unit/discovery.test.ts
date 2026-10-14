@@ -8,10 +8,12 @@ import { cityCenter, discoveryPosition, withinDiscoveryRadius, DISCOVERY_RADIUS_
 // in Tyczyn / Borek Stary / Chmielnik. Discovery is now position-based, so an
 // off-dictionary town still finds its neighbours.
 
-// Real coordinates pulled from the production profiles row for the affected user.
-const KIELNAROWA_PIN: [number, number] = [49.9647423, 22.0662213];
-const TYCZYN_CENTER: [number, number] = [49.9686, 22.0286]; // ~3 km away
-const WARSZAWA_CENTER: [number, number] = [52.2297, 21.0122]; // ~250 km away
+// Synthetic off-dictionary pin standing in for a Rzeszów-area village absent from
+// CITY_CENTERS (no real user coordinates). Placed ~3 km from the Tyczyn center so
+// the regression below still exercises the "near neighbour" path.
+const KIELNAROWA_PIN: [number, number] = [49.99, 22.05];
+const TYCZYN_CENTER: [number, number] = [49.9686, 22.0286]; // CITY_CENTERS.Tyczyn, ~3 km away
+const WARSZAWA_CENTER: [number, number] = [52.2297, 21.0122]; // CITY_CENTERS.Warszawa, ~250 km away
 
 describe("cityCenter", () => {
   it("resolves a known city regardless of case or diacritics", () => {
@@ -30,9 +32,9 @@ describe("cityCenter", () => {
 
 describe("discoveryPosition", () => {
   it("prefers the saved pin over the city center", () => {
-    expect(discoveryPosition({ locationLat: 49.9647423, locationLng: 22.0662213, city: "Kielnarowa" })).toEqual(
-      KIELNAROWA_PIN,
-    );
+    expect(
+      discoveryPosition({ locationLat: KIELNAROWA_PIN[0], locationLng: KIELNAROWA_PIN[1], city: "Kielnarowa" }),
+    ).toEqual(KIELNAROWA_PIN);
   });
 
   it("falls back to the city center when no pin is saved", () => {

@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Dog, DogWithOwner, OwnerWithDogs, Profile } from "@/types";
+import type { Dog, DogWithOwner, OwnerWithDogs, Profile, PublicProfile } from "@/types";
 import type { DogSize } from "@/lib/dogAttributes";
 import { discoveryPosition, withinDiscoveryRadius } from "@/lib/geo";
 
@@ -48,6 +48,45 @@ function mapRow(client: SupabaseClient, row: ProfileRow): Profile {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
+}
+
+// Narrow row for the foreign-safe read: only the columns getPublicProfile
+// selects. Keeping it separate from ProfileRow ensures private columns
+// (district/location_lat/location_lng) never enter this code path.
+interface PublicProfileRow {
+  id: string;
+  name: string;
+  city: string | null;
+  avatar_path: string | null;
+}
+
+function mapPublicRow(client: SupabaseClient, row: PublicProfileRow): PublicProfile {
+  const avatarUrl = row.avatar_path
+    ? client.storage.from(AVATAR_BUCKET).getPublicUrl(row.avatar_path).data.publicUrl
+    : null;
+
+  return {
+    id: row.id,
+    name: row.name,
+    city: row.city,
+    avatarPath: row.avatar_path,
+    avatarUrl,
+  };
+}
+
+// Foreign-safe single-profile read. Uses an explicit column allow-list (never
+// `*`) so private columns are not even fetched, and maps via mapPublicRow —
+// NOT mapRow, which pulls street/coords. Mirrors getProfile's error/null convention.
+export async function getPublicProfile(client: SupabaseClient, userId: string): Promise<PublicProfile | null> {
+  const result = await client.from("profiles").select("id, name, city, avatar_path").eq("id", userId).maybeSingle();
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+  if (!result.data) {
+    return null;
+  }
+  return mapPublicRow(client, result.data);
 }
 
 function extensionFor(file: File): string {

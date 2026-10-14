@@ -1,8 +1,8 @@
-# 10x Astro Starter
+# PawMeet
 
 ![](./public/template.png)
 
-A modern, opinionated starter template for building fast, accessible web applications.
+PawMeet — a web app for dog owners to socialise their dogs (walk meetups) and find breeding partners. Built on the 10x Astro Starter (Astro SSR + React islands + Supabase + Cloudflare Workers); the setup and tooling sections below are inherited from that scaffold.
 
 ## Tech Stack
 
@@ -112,7 +112,7 @@ npx supabase stop
 
 The local Studio UI is available at `http://localhost:54323`.
 
-No database tables or migrations are required — this project uses Supabase Auth's built-in `auth.users` table only.
+PawMeet ships its own schema: apply the migrations in `supabase/migrations/` (profiles, dogs, invitations, pack_connections, messages — all with row-level security) after starting the stack. Locally the CLI applies them on `npx supabase start`; for a cloud project run `npx supabase db push` (or paste the SQL in the dashboard editor).
 
 ### Using a cloud Supabase project instead
 
@@ -182,7 +182,7 @@ It needs a reachable Supabase instance (local or cloud) with email confirmation 
 
 ## CI
 
-GitHub Actions runs two jobs on every push and PR to `master`:
+GitHub Actions runs two jobs on every push and PR to `main`:
 
 - **ci** — lint, `astro check` and build. Configure `SUPABASE_URL` and `SUPABASE_KEY` as repository secrets for the build step.
 - **smoke** — starts a local Supabase via the Supabase CLI, builds, serves the production preview on the Cloudflare runtime and runs `npm run smoke` against it. No secrets required.
