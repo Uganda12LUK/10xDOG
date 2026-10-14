@@ -2,18 +2,18 @@
 import Layout from "@/layouts/Layout.astro";
 import OwnerProfile from "@/components/owners/OwnerProfile.astro";
 import { createClient } from "@/lib/supabase";
-import { getProfile } from "@/lib/services/profile";
+import { getPublicProfile } from "@/lib/services/profile";
 import { listDogs } from "@/lib/services/dog";
 import { hasPendingInvitation } from "@/lib/services/invitation";
 import { getPackStatus } from "@/lib/services/pack";
-import type { Dog, PackStatus, Profile } from "@/types";
+import type { Dog, PackStatus, PublicProfile } from "@/types";
 
 const { user, locale } = Astro.locals;
 const { id } = Astro.params;
 
 const supabase = createClient(Astro.request.headers, Astro.cookies);
 
-let profile: Profile | null = null;
+let profile: PublicProfile | null = null;
 let dogs: Dog[] = [];
 let pendingInvitation = false;
 let packStatus: PackStatus = "none";
@@ -21,7 +21,7 @@ const isOwnProfile = user && id ? id === user.id : false;
 const ownerId = id ?? "";
 
 if (supabase && id && !isOwnProfile) {
-  profile = await getProfile(supabase, id);
+  profile = await getPublicProfile(supabase, id);
   if (profile) {
     dogs = await listDogs(supabase, id);
     if (user) {

@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { PackConnection, PackMember, PackStatus } from "@/types";
-import { getProfile } from "./profile";
+import { getPublicProfile } from "./profile";
 
 interface PackConnectionRow {
   id: string;
@@ -171,7 +171,7 @@ async function hydrateMembers(client: SupabaseClient, rows: PackConnection[], us
   const members = await Promise.all(
     rows.map(async (row) => {
       const otherId = row.requesterId === userId ? row.addresseeId : row.requesterId;
-      const profile = await getProfile(client, otherId);
+      const profile = await getPublicProfile(client, otherId);
       return profile ? { connectionId: row.id, ownerId: otherId, profile } : null;
     }),
   );

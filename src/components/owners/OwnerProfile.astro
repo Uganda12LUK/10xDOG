@@ -3,12 +3,12 @@ import { buttonVariants } from "@/components/ui/button";
 import { badgeVariants } from "@/components/ui/badge";
 import { ageStringFromBirthdate } from "@/lib/age";
 import { t, type Locale } from "@/lib/i18n";
-import type { Dog, PackStatus, Profile } from "@/types";
+import type { Dog, PackStatus, PublicProfile } from "@/types";
 
 // Pure presentation: the real route (map/[id].astro) and the dev kitchen-sink
 // render identical markup from these props. No data access, no Astro.locals.
 interface Props {
-  profile: Profile;
+  profile: PublicProfile;
   dogs: Dog[];
   pendingInvitation: boolean;
   packStatus: PackStatus;
@@ -22,7 +22,7 @@ const { profile, dogs, pendingInvitation, packStatus, error, ownerId, locale } =
 // Hero source: first dog with a photo → first dog → owner avatar → 🐾 placeholder.
 const heroDog: Dog | null = dogs.length > 0 ? (dogs.find((dog) => dog.photoUrl) ?? dogs[0]) : null;
 const heroSrc = heroDog?.photoUrl ?? profile.avatarUrl;
-const location = profile.street ? `${profile.street}, ${profile.city}` : profile.city;
+const location = profile.city;
 ---
 
 <div class="mx-auto flex min-h-[100svh] w-full max-w-2xl flex-col">

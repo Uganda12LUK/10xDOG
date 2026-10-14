@@ -287,28 +287,28 @@ None — no schema or data changes. Pure service/type/view read-path change.
 
 #### Automated
 
-- [x] 1.1 New regression test is present and passes: `npm run test`
-- [x] 1.2 Existing privacy test still passes (`locationPrivacy`): `npm run test`
-- [x] 1.3 Type checking passes: `npm run build`
-- [x] 1.4 Linting passes: `npm run lint`
+- [x] 1.1 New regression test is present and passes: `npm run test` — d1bc94d
+- [x] 1.2 Existing privacy test still passes (`locationPrivacy`): `npm run test` — d1bc94d
+- [x] 1.3 Type checking passes: `npm run build` — d1bc94d
+- [x] 1.4 Linting passes: `npm run lint` — d1bc94d
 
 #### Manual
 
-- [x] 1.5 Confirmed test fails before `getPublicProfile` exists (genuine red→green)
+- [x] 1.5 Confirmed test fails before `getPublicProfile` exists (genuine red→green) — d1bc94d
 
 ### Phase 2: Route foreign call sites through the narrow shape
 
 #### Automated
 
-- [ ] 2.1 Type checking passes with narrowed props/types: `npm run build`
-- [ ] 2.2 Linting passes: `npm run lint`
-- [ ] 2.3 Full unit suite passes: `npm run test`
+- [x] 2.1 Type checking passes with narrowed props/types: `npm run build`
+- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.3 Full unit suite passes: `npm run test`
 
 #### Manual
 
-- [ ] 2.4 `/map/[id]` for another owner shows no street (city only)
-- [ ] 2.5 `view-source` on `/pack` contains no street text and no coordinates for members
-- [ ] 2.6 Pack list and owner-detail still render name, city, avatar, and actions correctly
+- [x] 2.4 `/map/[id]` for another owner shows no street (city only)
+- [x] 2.5 `view-source` on `/pack` contains no street text and no coordinates for members
+- [x] 2.6 Pack list and owner-detail still render name, city, avatar, and actions correctly
 
 ### Phase 3: Test-fixture hygiene
 

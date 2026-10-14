@@ -100,7 +100,7 @@ export type PackStatus = "none" | "pending_out" | "pending_in" | "accepted";
 export interface PackMember {
   connectionId: string;
   ownerId: string;
-  profile: Profile;
+  profile: PublicProfile;
 }
 
 export interface Message {

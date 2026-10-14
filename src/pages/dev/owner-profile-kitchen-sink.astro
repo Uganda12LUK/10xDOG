@@ -1,7 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import OwnerProfile from "@/components/owners/OwnerProfile.astro";
-import type { Dog, PackStatus, Profile } from "@/types";
+import type { Dog, PackStatus, PublicProfile } from "@/types";
 
 // Dev-only visual gate: renders OwnerProfile across every state from fixtures,
 // with no server/Supabase dependency. 404 in production so it never ships.
@@ -14,17 +14,12 @@ if (!isDev) {
 
 const locale = "en" as const;
 
-const profile: Profile = {
+const profile: PublicProfile = {
   id: "demo-owner",
   name: "Alex Walker",
-  street: "ul. Puławska 12",
   city: "Warszawa",
   avatarPath: null,
   avatarUrl: null,
-  locationLat: null,
-  locationLng: null,
-  createdAt: "",
-  updatedAt: "",
 };
 
 const dogs: Dog[] = [
