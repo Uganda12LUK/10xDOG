@@ -15,6 +15,17 @@ export interface Profile {
   updatedAt: string;
 }
 
+// A profile shape safe to send to any authenticated viewer. Omits street,
+// locationLat, locationLng, createdAt, updatedAt — the foreign-read seam
+// (getPublicProfile) never surfaces precise location or audit timestamps.
+export interface PublicProfile {
+  id: string;
+  name: string;
+  city: string | null;
+  avatarPath: string | null;
+  avatarUrl: string | null;
+}
+
 export interface ProfileInput {
   name: string;
   street?: string | null;
