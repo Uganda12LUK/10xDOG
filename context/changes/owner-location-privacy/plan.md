@@ -314,9 +314,9 @@ None — no schema or data changes. Pure service/type/view read-path change.
 
 #### Automated
 
-- [x] 3.1 Discovery test passes with synthetic data: `npm run test`
-- [x] 3.2 Lint passes and no production-data reference remains: `npm run lint`
+- [x] 3.1 Discovery test passes with synthetic data: `npm run test` — c923b66
+- [x] 3.2 Lint passes and no production-data reference remains: `npm run lint` — c923b66
 
 #### Manual
 
-- [x] 3.3 Confirmed no comment claims real/production coordinates remain in `tests/unit/`
+- [x] 3.3 Confirmed no comment claims real/production coordinates remain in `tests/unit/` — c923b66
