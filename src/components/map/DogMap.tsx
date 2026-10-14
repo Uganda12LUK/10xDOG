@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { DogWithOwner } from "@/types";
-import { CITY_CENTERS } from "@/lib/geo";
+import { cityCenter } from "@/lib/geo";
 import { userHomeIcon } from "./markerIcons";
 
 // A stable per-dog jitter so dogs in the same town don't stack on one point but
@@ -32,7 +32,7 @@ function makeDogIcon(name: string) {
 // deterministic offset so dogs in the same town don't overlap. Falls back to the
 // map's default center when the owner's city is unknown.
 function dogPosition(dog: DogWithOwner, fallback: [number, number]): [number, number] {
-  const base = (dog.ownerCity != null ? CITY_CENTERS[dog.ownerCity] : undefined) ?? fallback;
+  const base = cityCenter(dog.ownerCity) ?? fallback;
   const [dlat, dlng] = deterministicOffset(dog.id);
   return [base[0] + dlat, base[1] + dlng];
 }
