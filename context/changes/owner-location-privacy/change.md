@@ -1,7 +1,7 @@
 ---
 change_id: owner-location-privacy
 title: Stop leaking owners' street & exact GPS to other users (column-level privacy)
-status: implemented
+status: impl_reviewed
 created: 2026-10-14
 updated: 2026-10-14
 archived_at: null

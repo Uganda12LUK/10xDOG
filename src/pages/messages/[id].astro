@@ -2,17 +2,17 @@
 import Layout from "@/layouts/Layout.astro";
 import ChatThread from "@/components/chat/ChatThread";
 import { createClient } from "@/lib/supabase";
-import { getProfile } from "@/lib/services/profile";
+import { getPublicProfile } from "@/lib/services/profile";
 import { isInPack } from "@/lib/services/pack";
 import { t } from "@/lib/i18n";
 import { z } from "zod";
-import type { Profile } from "@/types";
+import type { PublicProfile } from "@/types";
 
 const { user, locale } = Astro.locals;
 const { id } = Astro.params;
 const supabase = createClient(Astro.request.headers, Astro.cookies);
 
-let other: Profile | null = null;
+let other: PublicProfile | null = null;
 let allowed = false;
 
 const validId = id && id !== user?.id && z.uuid().safeParse(id).success ? id : null;
@@ -20,7 +20,7 @@ const validId = id && id !== user?.id && z.uuid().safeParse(id).success ? id : n
 // Chat is pack-gated: only render the thread when the viewer and the other owner
 // are in the same (accepted) pack. RLS is the real backstop; this is the UX gate.
 if (supabase && user && validId && (await isInPack(supabase, user.id, validId))) {
-  other = await getProfile(supabase, validId);
+  other = await getPublicProfile(supabase, validId);
   allowed = other !== null;
 }
 ---
