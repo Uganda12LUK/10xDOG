@@ -1,0 +1,65 @@
+---
+import Layout from "@/layouts/Layout.astro";
+
+// Dev-only diagnostic: re-triggers a client-side error on demand so we can prove
+// the Sentry browser SDK captures uncaught errors. 404 in production so it never
+// ships. (Guarded via Astro.response.status rather than a top-level `return`,
+// which trips an eslint typescript-plugin crash in .astro frontmatter.)
+const isDev = import.meta.env.DEV;
+if (!isDev) {
+  Astro.response.status = 404;
+}
+---
+
+<Layout title="Sentry check — client/server error trap">
+  {isDev ? (
+    <div class="mx-auto max-w-2xl space-y-6 p-6">
+      <header class="space-y-1">
+        <h1 class="text-2xl font-bold text-foreground">Sentry check</h1>
+        <p class="text-sm text-muted-foreground">
+          Dev-only (<code>import.meta.env.DEV</code>). These controls deliberately throw errors so you can confirm
+          Sentry captures them. They only report when a Sentry DSN is configured — without a DSN the SDK is inert and
+          nothing is sent.
+        </p>
+      </header>
+
+      <section class="space-y-3">
+        <h2 class="text-sm font-semibold text-muted-foreground">Client error</h2>
+        <p class="text-sm text-muted-foreground">
+          The button below throws an uncaught <code>Error</code> inside its click handler. That reaches{" "}
+          <code>window.onerror</code>, which the Sentry browser SDK hooks to capture the exception.
+        </p>
+        <button
+          id="sentry-client-throw"
+          type="button"
+          class="rounded-md border border-border bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+        >
+          Throw client error
+        </button>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-sm font-semibold text-muted-foreground">Server error</h2>
+        <p class="text-sm text-muted-foreground">
+          Visit <code>/api/dev/sentry-error</code> to make the server throw an unhandled error. It reaches the worker
+          boundary where the <code>withSentry</code> wrapper captures it.
+        </p>
+        <a
+          href="/api/dev/sentry-error"
+          class="inline-block rounded-md border border-border bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground"
+        >
+          Trigger server error
+        </a>
+      </section>
+    </div>
+  ) : (
+    <p class="p-6 text-muted-foreground">Not found</p>
+  )}
+</Layout>
+
+<script>
+  const button = document.getElementById("sentry-client-throw");
+  button?.addEventListener("click", () => {
+    throw new Error("Sentry client test error");
+  });
+</script>

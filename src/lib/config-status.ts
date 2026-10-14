@@ -1,4 +1,5 @@
 import { SUPABASE_URL, SUPABASE_KEY } from "astro:env/server";
+import { PUBLIC_SENTRY_DSN } from "astro:env/client";
 
 export interface ConfigStatus {
   name: string;
@@ -15,6 +16,11 @@ export const configStatuses: ConfigStatus[] = [
     message: "Supabase nie jest skonfigurowany — funkcje uwierzytelniania są wyłączone.",
     docsUrl: "https://github.com/przeprogramowani/10x-astro-starter#supabase-configuration",
     docsLabel: "Zobacz instrukcję konfiguracji",
+  },
+  {
+    name: "Sentry",
+    configured: Boolean(PUBLIC_SENTRY_DSN),
+    message: "Sentry nie jest skonfigurowany — monitoring błędów jest wyłączony.",
   },
 ];
 

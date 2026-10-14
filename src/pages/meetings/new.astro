@@ -3,9 +3,11 @@ import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
 import { getProfile } from "@/lib/services/profile";
 import { listDogs } from "@/lib/services/dog";
+import { getPackStatus } from "@/lib/services/pack";
 import MeetingForm from "@/components/meetings/MeetingForm";
+import BoneButton from "@/components/pack/BoneButton";
 import { t } from "@/lib/i18n";
-import type { Dog, Profile } from "@/types";
+import type { Dog, PackStatus, Profile } from "@/types";
 
 // /meetings is a protected route — middleware guarantees an authenticated user here.
 const { user, locale } = Astro.locals;
@@ -16,13 +18,16 @@ const supabase = createClient(Astro.request.headers, Astro.cookies);
 
 let receiverProfile: Profile | null = null;
 let myDogs: Dog[] = [];
+let receiverPackStatus: PackStatus = "none";
 if (supabase && user && receiverId) {
-  const [fetchedProfile, fetchedDogs] = await Promise.all([
+  const [fetchedProfile, fetchedDogs, status] = await Promise.all([
     getProfile(supabase, receiverId),
     listDogs(supabase, user.id),
+    getPackStatus(supabase, user.id, receiverId),
   ]);
   receiverProfile = fetchedProfile;
   myDogs = fetchedDogs;
+  receiverPackStatus = status;
 }
 ---
 
@@ -55,6 +60,10 @@ if (supabase && user && receiverId) {
           <h1 class="mt-3 text-2xl font-bold text-foreground">
             {t(locale, "meetingNew.proposeWith")} {receiverProfile.name}
           </h1>
+          {/* Add them to your pack right from here — or jump to the chat once connected. */}
+          <div class="mt-3">
+            <BoneButton ownerId={receiverId} status={receiverPackStatus} locale={locale} />
+          </div>
         </div>
         <MeetingForm
           receiver={{

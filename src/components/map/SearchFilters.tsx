@@ -96,7 +96,9 @@ export default function SearchFilters({ breeds, criteria, onChange, locale }: Pr
 
       <div className="flex flex-col gap-1">
         <span className="text-muted-foreground text-xs font-medium">{t(locale, "filter.character")}</span>
-        <div className="flex flex-wrap gap-1.5">
+        {/* Single horizontally-scrollable row on mobile so the trait list doesn't
+            wrap to several lines and push the map below the fold; wraps on desktop. */}
+        <div className="-mx-4 flex gap-1.5 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-wrap lg:px-0 lg:pb-0">
           {DOG_TRAITS.map((trait) => {
             const active = criteria.traits.includes(trait);
             return (
@@ -108,7 +110,7 @@ export default function SearchFilters({ breeds, criteria, onChange, locale }: Pr
                 }}
                 aria-pressed={active}
                 className={cn(
-                  "rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
+                  "shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
                   active
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-card text-foreground",

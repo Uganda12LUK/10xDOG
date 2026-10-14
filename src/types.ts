@@ -3,7 +3,9 @@ import type { DogSize } from "@/lib/dogAttributes";
 export interface Profile {
   id: string;
   name: string;
-  district: string | null;
+  // User-facing "street" (optional). NOTE: the DB column is still named
+  // `district` — mapped in src/lib/services/profile.ts. Rename deferred.
+  street: string | null;
   city: string | null;
   avatarPath: string | null;
   avatarUrl: string | null;
@@ -15,7 +17,7 @@ export interface Profile {
 
 export interface ProfileInput {
   name: string;
-  district?: string | null;
+  street?: string | null;
   city?: string | null;
   locationLat?: number | null;
   locationLng?: number | null;

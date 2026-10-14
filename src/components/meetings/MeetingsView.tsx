@@ -157,9 +157,9 @@ export default function MeetingsView({ accepted, sentPending, receivedPending, p
         <TabsContent value="nadchodzace">
           {accepted.length === 0 ? (
             <p className="text-muted-foreground px-4 py-6 text-center text-sm">
-              Brak nadchodzących spotkań.{" "}
+              {t(locale, "meetings.empty.upcoming")}{" "}
               <a href="/map" className="text-primary underline">
-                Zaproponuj spacer →
+                {t(locale, "meetings.proposeWalk")}
               </a>
             </p>
           ) : (
@@ -183,7 +183,9 @@ export default function MeetingsView({ accepted, sentPending, receivedPending, p
 
         <TabsContent value="propozycje">
           {sentPending.length === 0 ? (
-            <p className="text-muted-foreground px-4 py-6 text-center text-sm">Brak wysłanych propozycji.</p>
+            <p className="text-muted-foreground px-4 py-6 text-center text-sm">
+              {t(locale, "meetings.empty.proposals")}
+            </p>
           ) : (
             <div>
               {sentPending.map((inv) => (
@@ -202,7 +204,9 @@ export default function MeetingsView({ accepted, sentPending, receivedPending, p
 
         <TabsContent value="zaproszenia">
           {inbox.length === 0 ? (
-            <p className="text-muted-foreground px-4 py-6 text-center text-sm">Brak oczekujących zaproszeń.</p>
+            <p className="text-muted-foreground px-4 py-6 text-center text-sm">
+              {t(locale, "meetings.empty.invitations")}
+            </p>
           ) : (
             <div>
               {inbox.map((inv) => (
@@ -213,7 +217,7 @@ export default function MeetingsView({ accepted, sentPending, receivedPending, p
         </TabsContent>
 
         <TabsContent value="historia">
-          <p className="text-muted-foreground px-4 py-6 text-center text-sm">Zakończone spacery pojawią się tutaj.</p>
+          <p className="text-muted-foreground px-4 py-6 text-center text-sm">{t(locale, "meetings.empty.history")}</p>
         </TabsContent>
       </Tabs>
 

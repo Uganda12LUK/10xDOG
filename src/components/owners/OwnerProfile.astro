@@ -22,7 +22,7 @@ const { profile, dogs, pendingInvitation, packStatus, error, ownerId, locale } =
 // Hero source: first dog with a photo → first dog → owner avatar → 🐾 placeholder.
 const heroDog: Dog | null = dogs.length > 0 ? (dogs.find((dog) => dog.photoUrl) ?? dogs[0]) : null;
 const heroSrc = heroDog?.photoUrl ?? profile.avatarUrl;
-const location = profile.district ? `${profile.district}, ${profile.city}` : profile.city;
+const location = profile.street ? `${profile.street}, ${profile.city}` : profile.city;
 ---
 
 <div class="mx-auto flex min-h-[100svh] w-full max-w-2xl flex-col">

@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Dog, DogWithOwner, OwnerWithDogs, Profile } from "@/types";
 import type { DogSize } from "@/lib/dogAttributes";
-import { citiesNear } from "@/lib/geo";
+import { discoveryPosition, withinDiscoveryRadius } from "@/lib/geo";
 
 const AVATAR_BUCKET = "avatars";
 
@@ -11,7 +11,7 @@ const AVATAR_BUCKET = "avatars";
 // avatar untouched on a text-only edit.
 export interface ProfileUpsert {
   name: string;
-  district?: string | null;
+  street?: string | null;
   city?: string | null;
   locationLat?: number | null;
   locationLng?: number | null;
@@ -38,7 +38,8 @@ function mapRow(client: SupabaseClient, row: ProfileRow): Profile {
   return {
     id: row.id,
     name: row.name,
-    district: row.district,
+    // DB column is `district`; surfaced to the app as `street`.
+    street: row.district,
     city: row.city,
     avatarPath: row.avatar_path,
     avatarUrl,
@@ -118,25 +119,27 @@ function mapDogRow(client: SupabaseClient, row: DogRow): Dog {
   };
 }
 
-export async function listOwners(
-  client: SupabaseClient,
-  userId: string,
-  city: string,
-  district?: string | null,
-): Promise<OwnerWithDogs[]> {
-  // Match the whole region around the user's town (e.g. Rzeszów + satellite
-  // towns), not just an exact city string, so nearby owners show on the map.
-  let profileQuery = client.from("profiles").select("*").in("city", citiesNear(city)).neq("id", userId);
-  if (district != null) {
-    profileQuery = profileQuery.eq("district", district);
-  }
-
-  const profileResult = await profileQuery;
+export async function listOwners(client: SupabaseClient, userId: string, city: string): Promise<OwnerWithDogs[]> {
+  // Discovery is scoped by geography, not by an exact city string: owners within
+  // DISCOVERY_RADIUS_KM of the viewer's position show on the map. This keeps
+  // off-dictionary towns (e.g. "Kielnarowa") and diacritic variants ("Rzeszow")
+  // from silently matching nobody. Street is display-only, never a filter.
+  const profileResult = await client.from("profiles").select("*");
   if (profileResult.error) {
     throw new Error(profileResult.error.message);
   }
 
-  const profiles = (profileResult.data as ProfileRow[]).map((row) => mapRow(client, row));
+  const allProfiles = (profileResult.data as ProfileRow[]).map((row) => mapRow(client, row));
+
+  // Anchor on the viewer's own saved position, falling back to the center of the
+  // city passed in (their profile city). A null anchor means we can't scope by
+  // distance, so withinDiscoveryRadius shows everyone rather than an empty map.
+  const viewer = allProfiles.find((p) => p.id === userId);
+  const anchor =
+    discoveryPosition(viewer ?? { locationLat: null, locationLng: null, city }) ??
+    discoveryPosition({ locationLat: null, locationLng: null, city });
+
+  const profiles = allProfiles.filter((p) => p.id !== userId && withinDiscoveryRadius(anchor, discoveryPosition(p)));
 
   if (profiles.length === 0) {
     return [];
@@ -165,13 +168,8 @@ export async function listOwners(
     .sort((a, b) => a.profile.name.localeCompare(b.profile.name));
 }
 
-export async function listDogsForMap(
-  client: SupabaseClient,
-  userId: string,
-  city: string,
-  district?: string | null,
-): Promise<DogWithOwner[]> {
-  const owners = await listOwners(client, userId, city, district);
+export async function listDogsForMap(client: SupabaseClient, userId: string, city: string): Promise<DogWithOwner[]> {
+  const owners = await listOwners(client, userId, city);
 
   return owners.flatMap((owner) =>
     owner.dogs.map((dog) => ({
@@ -208,7 +206,8 @@ export async function upsertProfile(client: SupabaseClient, userId: string, inpu
   } = {
     id: userId,
     name: input.name,
-    district: input.district ?? null,
+    // `street` maps to the legacy `district` column (see Profile type note).
+    district: input.street ?? null,
     city: input.city ?? null,
     location_lat: input.locationLat ?? null,
     location_lng: input.locationLng ?? null,
