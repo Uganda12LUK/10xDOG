@@ -300,23 +300,23 @@ None — no schema or data changes. Pure service/type/view read-path change.
 
 #### Automated
 
-- [x] 2.1 Type checking passes with narrowed props/types: `npm run build`
-- [x] 2.2 Linting passes: `npm run lint`
-- [x] 2.3 Full unit suite passes: `npm run test`
+- [x] 2.1 Type checking passes with narrowed props/types: `npm run build` — 9d1a996
+- [x] 2.2 Linting passes: `npm run lint` — 9d1a996
+- [x] 2.3 Full unit suite passes: `npm run test` — 9d1a996
 
 #### Manual
 
-- [x] 2.4 `/map/[id]` for another owner shows no street (city only)
-- [x] 2.5 `view-source` on `/pack` contains no street text and no coordinates for members
-- [x] 2.6 Pack list and owner-detail still render name, city, avatar, and actions correctly
+- [x] 2.4 `/map/[id]` for another owner shows no street (city only) — 9d1a996
+- [x] 2.5 `view-source` on `/pack` contains no street text and no coordinates for members — 9d1a996
+- [x] 2.6 Pack list and owner-detail still render name, city, avatar, and actions correctly — 9d1a996
 
 ### Phase 3: Test-fixture hygiene
 
 #### Automated
 
-- [ ] 3.1 Discovery test passes with synthetic data: `npm run test`
-- [ ] 3.2 Lint passes and no production-data reference remains: `npm run lint`
+- [x] 3.1 Discovery test passes with synthetic data: `npm run test`
+- [x] 3.2 Lint passes and no production-data reference remains: `npm run lint`
 
 #### Manual
 
-- [ ] 3.3 Confirmed no comment claims real/production coordinates remain in `tests/unit/`
+- [x] 3.3 Confirmed no comment claims real/production coordinates remain in `tests/unit/`
