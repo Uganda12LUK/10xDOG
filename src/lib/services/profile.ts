@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Dog, DogWithOwner, OwnerWithDogs, Profile } from "@/types";
 import type { DogSize } from "@/lib/dogAttributes";
-import { citiesNear } from "@/lib/geo";
+import { discoveryPosition, withinDiscoveryRadius } from "@/lib/geo";
 
 const AVATAR_BUCKET = "avatars";
 
@@ -120,15 +120,26 @@ function mapDogRow(client: SupabaseClient, row: DogRow): Dog {
 }
 
 export async function listOwners(client: SupabaseClient, userId: string, city: string): Promise<OwnerWithDogs[]> {
-  // Match the whole region around the user's town (e.g. Rzeszów + satellite
-  // towns), not just an exact city string, so nearby owners show on the map.
-  // Discovery is city/region-scoped only — street is display-only, never a filter.
-  const profileResult = await client.from("profiles").select("*").in("city", citiesNear(city)).neq("id", userId);
+  // Discovery is scoped by geography, not by an exact city string: owners within
+  // DISCOVERY_RADIUS_KM of the viewer's position show on the map. This keeps
+  // off-dictionary towns (e.g. "Kielnarowa") and diacritic variants ("Rzeszow")
+  // from silently matching nobody. Street is display-only, never a filter.
+  const profileResult = await client.from("profiles").select("*");
   if (profileResult.error) {
     throw new Error(profileResult.error.message);
   }
 
-  const profiles = (profileResult.data as ProfileRow[]).map((row) => mapRow(client, row));
+  const allProfiles = (profileResult.data as ProfileRow[]).map((row) => mapRow(client, row));
+
+  // Anchor on the viewer's own saved position, falling back to the center of the
+  // city passed in (their profile city). A null anchor means we can't scope by
+  // distance, so withinDiscoveryRadius shows everyone rather than an empty map.
+  const viewer = allProfiles.find((p) => p.id === userId);
+  const anchor =
+    discoveryPosition(viewer ?? { locationLat: null, locationLng: null, city }) ??
+    discoveryPosition({ locationLat: null, locationLng: null, city });
+
+  const profiles = allProfiles.filter((p) => p.id !== userId && withinDiscoveryRadius(anchor, discoveryPosition(p)));
 
   if (profiles.length === 0) {
     return [];
