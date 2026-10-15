@@ -300,9 +300,9 @@ of data needed (data is copied, not transformed); a down-path would re-add colum
 ### Phase 1: Migration — schema split, data move, discovery RPC, A/B test
 
 #### Automated
-- [x] 1.1 Migration file present; lint unaffected: `npm run lint`
-- [x] 1.2 Test + migration artifacts type-check: `npm run build`
-- [x] 1.3 `profile-location-privacy.test.ts` present in the suite
+- [x] 1.1 Migration file present; lint unaffected: `npm run lint` — d509a37
+- [x] 1.2 Test + migration artifacts type-check: `npm run build` — d509a37
+- [x] 1.3 `profile-location-privacy.test.ts` present in the suite — d509a37
 
 #### Manual
 - [ ] 1.4 Migration applied to test DB; `profile-location-privacy.test.ts` GREEN (A/B + discovery)
@@ -311,9 +311,9 @@ of data needed (data is copied, not transformed); a down-path would re-add colum
 ### Phase 2: Service + type refactor
 
 #### Automated
-- [ ] 2.1 Type check passes with narrowed Profile: `npm run build`
-- [ ] 2.2 Lint passes: `npm run lint`
-- [ ] 2.3 Unit suite green: `npm run test:unit`
+- [x] 2.1 Type check passes with narrowed Profile: `npm run build`
+- [x] 2.2 Lint passes: `npm run lint`
+- [x] 2.3 Unit suite green: `npm run test:unit`
 
 #### Manual
 - [ ] 2.4 Discovery returns expected owners with the migration applied (map / integration)
@@ -321,8 +321,8 @@ of data needed (data is copied, not transformed); a down-path would re-add colum
 ### Phase 3: UI / API wiring
 
 #### Automated
-- [ ] 3.1 Type check + lint pass: `npm run build`, `npm run lint`
-- [ ] 3.2 Full unit suite green: `npm run test:unit`
+- [x] 3.1 Type check + lint pass: `npm run build`, `npm run lint`
+- [x] 3.2 Full unit suite green: `npm run test:unit`
 
 #### Manual
 - [ ] 3.3 Edit profile (street + pin) persists and reloads; `/map` anchors on own pin

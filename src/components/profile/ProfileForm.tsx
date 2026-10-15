@@ -7,7 +7,7 @@ import { FormField } from "@/components/auth/FormField";
 import { SubmitButton } from "@/components/auth/SubmitButton";
 import { ServerError } from "@/components/auth/ServerError";
 import { t, type Locale } from "@/lib/i18n";
-import type { Profile } from "@/types";
+import type { OwnerLocation, Profile } from "@/types";
 import { CITY_CENTERS } from "@/lib/geo";
 import { userHomeIcon } from "@/components/map/markerIcons";
 import { cn } from "@/lib/utils";
@@ -45,23 +45,25 @@ function Recenter({ position }: { position: [number, number] }) {
 
 interface Props {
   profile?: Profile | null;
+  location?: OwnerLocation | null;
   serverError?: string | null;
   saved?: boolean;
   onboarding?: boolean;
   locale: Locale;
 }
 
-export default function ProfileForm({ profile, serverError, saved, onboarding, locale }: Props) {
+export default function ProfileForm({ profile, location, serverError, saved, onboarding, locale }: Props) {
   const [name, setName] = useState(profile?.name ?? "");
-  const [street, setStreet] = useState(profile?.street ?? "");
+  const [street, setStreet] = useState(location?.street ?? "");
   const [city, setCity] = useState(profile?.city ?? "");
   const [errors, setErrors] = useState<{ name?: string }>({});
 
   // Home-location pin. Initial position: saved location → city center → Poland center.
+  // The saved pin comes from the owner-only location row (getOwnLocation), not the public profile.
   // (This component is rendered client:only, so react-leaflet never runs on the server.)
   const initialPos: [number, number] =
-    profile?.locationLat != null && profile.locationLng != null
-      ? [profile.locationLat, profile.locationLng]
+    location?.locationLat != null && location.locationLng != null
+      ? [location.locationLat, location.locationLng]
       : (CITY_CENTERS[profile?.city ?? ""] ?? POLAND_CENTER);
   const [position, setPosition] = useState<[number, number]>(initialPos);
   // Once the user drags/taps the pin, stop auto-moving it when the city changes.

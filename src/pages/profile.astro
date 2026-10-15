@@ -2,15 +2,17 @@
 import Layout from "@/layouts/Layout.astro";
 import ProfileForm from "@/components/profile/ProfileForm";
 import { createClient } from "@/lib/supabase";
-import { getProfile } from "@/lib/services/profile";
-import type { Profile } from "@/types";
+import { getProfile, getOwnLocation } from "@/lib/services/profile";
+import type { OwnerLocation, Profile } from "@/types";
 
 const { user, locale } = Astro.locals;
 
 const supabase = createClient(Astro.request.headers, Astro.cookies);
 let profile: Profile | null = null;
+let location: OwnerLocation | null = null;
 if (supabase && user) {
   profile = await getProfile(supabase, user.id);
+  location = await getOwnLocation(supabase, user.id);
 }
 
 const error = Astro.url.searchParams.get("error");
@@ -24,6 +26,7 @@ const onboarding = Astro.url.searchParams.get("onboarding");
       <h1 class="mb-6 text-center text-2xl font-bold text-foreground">Your profile</h1>
       <ProfileForm
         profile={profile}
+        location={location}
         serverError={error}
         saved={saved === "1"}
         onboarding={onboarding === "1"}
