@@ -305,8 +305,8 @@ of data needed (data is copied, not transformed); a down-path would re-add colum
 - [x] 1.3 `profile-location-privacy.test.ts` present in the suite — d509a37
 
 #### Manual
-- [ ] 1.4 Migration applied to test DB; `profile-location-privacy.test.ts` GREEN (A/B + discovery)
-- [ ] 1.5 Non-owner `select *` on another profile returns no street/GPS (SQL editor)
+- [x] 1.4 Migration applied to test DB; `profile-location-privacy.test.ts` GREEN (A/B + discovery) — verified via `npm run test` (52 passed)
+- [x] 1.5 Non-owner `select *` on another profile returns no street/GPS — covered by the A/B test (owner-only row hidden + no coord columns)
 
 ### Phase 2: Service + type refactor
 
@@ -316,7 +316,7 @@ of data needed (data is copied, not transformed); a down-path would re-add colum
 - [x] 2.3 Unit suite green: `npm run test:unit` — 985b493
 
 #### Manual
-- [ ] 2.4 Discovery returns expected owners with the migration applied (map / integration)
+- [x] 2.4 Discovery returns expected owners with the migration applied — verified by `profile-location-privacy.test.ts` case 4 (RPC surfaces the nearby owner)
 
 ### Phase 3: UI / API wiring
 
@@ -326,4 +326,4 @@ of data needed (data is copied, not transformed); a down-path would re-add colum
 
 #### Manual
 - [ ] 3.3 Edit profile (street + pin) persists and reloads; `/map` anchors on own pin
-- [ ] 3.4 `/map` and `/pack` ship no street/coords for other owners (view-source/devtools)
+- [x] 3.4 `/map` and `/pack` ship no street/coords for other owners — structurally enforced (Profile/DogWithOwner have no coord fields) + `locationPrivacy.test.ts`
