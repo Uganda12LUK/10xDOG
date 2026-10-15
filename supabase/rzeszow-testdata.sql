@@ -44,14 +44,19 @@ on conflict (id) do nothing;
 --    region as Rzeszów, see src/lib/geo.ts) so the map shows distinct pins
 --    rather than one cluster. DO UPDATE so re-running fixes existing rows.
 -- ─────────────────────────────────────────────────────────────
-insert into profiles (id, name, district, city)
+insert into profiles (id, name, city)
 values
-  ('aaaaaaaa-0000-0000-0000-000000000001', 'Kasia', null, 'Tyczyn'),
-  ('aaaaaaaa-0000-0000-0000-000000000002', 'Marek', null, 'Chmielnik'),
-  ('aaaaaaaa-0000-0000-0000-000000000003', 'Ola',   null, 'Borek Stary'),
-  ('aaaaaaaa-0000-0000-0000-000000000004', 'Piotr', 'Śródmieście', 'Rzeszów'),
-  ('aaaaaaaa-0000-0000-0000-000000000005', 'Zosia', null, 'Kielanówka')
-on conflict (id) do update set city = excluded.city, district = excluded.district;
+  ('aaaaaaaa-0000-0000-0000-000000000001', 'Kasia', 'Tyczyn'),
+  ('aaaaaaaa-0000-0000-0000-000000000002', 'Marek', 'Chmielnik'),
+  ('aaaaaaaa-0000-0000-0000-000000000003', 'Ola',   'Borek Stary'),
+  ('aaaaaaaa-0000-0000-0000-000000000004', 'Piotr', 'Rzeszów'),
+  ('aaaaaaaa-0000-0000-0000-000000000005', 'Zosia', 'Kielanówka')
+on conflict (id) do update set city = excluded.city;
+
+-- Private street lives in the owner-only profile_locations table (post profile-private-location).
+insert into profile_locations (profile_id, district)
+values ('aaaaaaaa-0000-0000-0000-000000000004', 'Śródmieście')
+on conflict (profile_id) do update set district = excluded.district;
 
 -- ─────────────────────────────────────────────────────────────
 -- 3. One dog per owner. Kasia + Piotr share a breed (Border Collie)
@@ -73,12 +78,12 @@ on conflict (id) do update set birthdate = excluded.birthdate, size = excluded.s
 -- 4. Your own profile: set city to Rzeszów (map centers here + lists the
 --    owners above). Creates the profile if you never saved one.
 -- ─────────────────────────────────────────────────────────────
-insert into profiles (id, name, district, city)
-select u.id, coalesce(p.name, 'Ja'), null, 'Rzeszów'
+insert into profiles (id, name, city)
+select u.id, coalesce(p.name, 'Ja'), 'Rzeszów'
 from auth.users u
 left join profiles p on p.id = u.id
 where u.email = 'majerskiluk@gmail.com'
-on conflict (id) do update set city = 'Rzeszów', district = null;
+on conflict (id) do update set city = 'Rzeszów';
 
 -- ─────────────────────────────────────────────────────────────
 -- 5. A dog for you, so the Dashboard shows a dog card.
