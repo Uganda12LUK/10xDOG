@@ -19,6 +19,8 @@ jobs:
       - run: npx astro sync
       - run: npm run lint
       - run: npx astro check
+      # Unit tests are pure (no DB, no server, no env) — safe to gate every push/PR.
+      - run: npm run test:unit
       - run: npm run build
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
