@@ -311,9 +311,9 @@ of data needed (data is copied, not transformed); a down-path would re-add colum
 ### Phase 2: Service + type refactor
 
 #### Automated
-- [x] 2.1 Type check passes with narrowed Profile: `npm run build`
-- [x] 2.2 Lint passes: `npm run lint`
-- [x] 2.3 Unit suite green: `npm run test:unit`
+- [x] 2.1 Type check passes with narrowed Profile: `npm run build` — 985b493
+- [x] 2.2 Lint passes: `npm run lint` — 985b493
+- [x] 2.3 Unit suite green: `npm run test:unit` — 985b493
 
 #### Manual
 - [ ] 2.4 Discovery returns expected owners with the migration applied (map / integration)
@@ -321,8 +321,8 @@ of data needed (data is copied, not transformed); a down-path would re-add colum
 ### Phase 3: UI / API wiring
 
 #### Automated
-- [x] 3.1 Type check + lint pass: `npm run build`, `npm run lint`
-- [x] 3.2 Full unit suite green: `npm run test:unit`
+- [x] 3.1 Type check + lint pass: `npm run build`, `npm run lint` — 985b493
+- [x] 3.2 Full unit suite green: `npm run test:unit` — 985b493
 
 #### Manual
 - [ ] 3.3 Edit profile (street + pin) persists and reloads; `/map` anchors on own pin
