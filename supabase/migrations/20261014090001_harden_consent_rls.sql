@@ -15,7 +15,7 @@
 -- ============================================================
 
 -- INSERT: only the requester, and only as a fresh 'pending' request.
-drop policy pack_connections_insert_own on pack_connections;
+drop policy if exists pack_connections_insert_own on pack_connections;
 create policy pack_connections_insert_own
   on pack_connections
   for insert
@@ -25,7 +25,7 @@ create policy pack_connections_insert_own
 -- UPDATE: only the addressee, only while the row is still pending, and the new status
 -- must be a terminal decision. Participant immutability and the pending->terminal
 -- transition are additionally enforced by the trigger below (it can see OLD).
-drop policy pack_connections_update_addressee on pack_connections;
+drop policy if exists pack_connections_update_addressee on pack_connections;
 create policy pack_connections_update_addressee
   on pack_connections
   for update
@@ -52,6 +52,7 @@ end;
 $$;
 
 -- Fires before the existing set_updated_at trigger (alphabetical: "enforce" < "set").
+drop trigger if exists pack_connections_enforce_update on pack_connections;
 create trigger pack_connections_enforce_update
   before update on pack_connections
   for each row
@@ -61,14 +62,14 @@ create trigger pack_connections_enforce_update
 -- invitations
 -- ============================================================
 
-drop policy invitations_insert_own on invitations;
+drop policy if exists invitations_insert_own on invitations;
 create policy invitations_insert_own
   on invitations
   for insert
   to authenticated
   with check (sender_id = (select auth.uid()) and status = 'pending');
 
-drop policy invitations_update_receiver on invitations;
+drop policy if exists invitations_update_receiver on invitations;
 create policy invitations_update_receiver
   on invitations
   for update
@@ -97,6 +98,7 @@ begin
 end;
 $$;
 
+drop trigger if exists invitations_enforce_update on invitations;
 create trigger invitations_enforce_update
   before update on invitations
   for each row

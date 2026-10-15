@@ -1,18 +1,24 @@
 import type { DogSize } from "@/lib/dogAttributes";
 
+// Public profile — safe to send to any authenticated viewer. Private location
+// (street + GPS) lives in `profile_locations` (owner-only) and is NOT part of this
+// shape; read it for the viewer's own profile via getOwnLocation → OwnerLocation.
 export interface Profile {
   id: string;
   name: string;
-  // User-facing "street" (optional). NOTE: the DB column is still named
-  // `district` — mapped in src/lib/services/profile.ts. Rename deferred.
-  street: string | null;
   city: string | null;
   avatarPath: string | null;
   avatarUrl: string | null;
-  locationLat: number | null;
-  locationLng: number | null;
   createdAt: string;
   updatedAt: string;
+}
+
+// The owner's private location, read only for the viewer themselves (owner-only RLS
+// on `profile_locations`). `street` is the app-facing name of the DB `district` column.
+export interface OwnerLocation {
+  street: string | null;
+  locationLat: number | null;
+  locationLng: number | null;
 }
 
 // A profile shape safe to send to any authenticated viewer. Omits street,

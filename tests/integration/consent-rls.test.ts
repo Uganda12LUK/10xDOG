@@ -1,6 +1,7 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { SupabaseClient, User } from "@supabase/supabase-js";
 import { throwBone, respondToBone } from "@/lib/services/pack";
+import { sendInvitation, respondToInvitation } from "@/lib/services/invitation";
 import { createServiceRoleClient, createTestUser, deleteTestUser } from "../helpers/supabase";
 
 // Regression for the consent-bypass holes (change: pack-consent-rls). Each test asserts
@@ -90,6 +91,38 @@ describe("consent RLS — pack_connections & invitations state machine", () => {
   it("allows the legitimate pending -> accepted transition by the addressee", async () => {
     const conn = await throwBone(clientA, userA.id, userB.id);
     const accepted = await respondToBone(clientB, userB.id, conn.id, "accepted");
+    expect(accepted.status).toBe("accepted");
+  });
+
+  // --- invitations: same guarantees as pack_connections ---
+
+  it("forbids the receiver from rewriting a participant on an invitation", async () => {
+    const inv = await sendInvitation(clientA, userA.id, userB.id, "walk");
+
+    // B (receiver) may accept but must not repoint the invitation's sender at a third party.
+    const { error } = await clientB
+      .from("invitations")
+      .update({ status: "accepted", sender_id: userC.id })
+      .eq("id", inv.id);
+    expect(error).not.toBeNull();
+
+    const { data } = await serviceClient.from("invitations").select("sender_id,status").eq("id", inv.id).single();
+    expect(data?.sender_id).toBe(userA.id);
+    expect(data?.status).toBe("pending");
+  });
+
+  it("freezes an invitation once it is decided", async () => {
+    const inv = await sendInvitation(clientA, userA.id, userB.id, "walk");
+    await respondToInvitation(clientB, userB.id, inv.id, "accepted");
+
+    await clientB.from("invitations").update({ status: "declined" }).eq("id", inv.id);
+    const { data } = await serviceClient.from("invitations").select("status").eq("id", inv.id).single();
+    expect(data?.status).toBe("accepted");
+  });
+
+  it("allows the legitimate pending -> accepted transition by the receiver", async () => {
+    const inv = await sendInvitation(clientA, userA.id, userB.id, "walk");
+    const accepted = await respondToInvitation(clientB, userB.id, inv.id, "accepted");
     expect(accepted.status).toBe("accepted");
   });
 });

@@ -1,7 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
-import { listDogsForMap, getProfile } from "@/lib/services/profile";
+import { listDogsForMap, getProfile, getOwnLocation } from "@/lib/services/profile";
 import { listPackStatuses } from "@/lib/services/pack";
 import OwnersMapView from "@/components/map/OwnersMapView";
 import { t } from "@/lib/i18n";
@@ -21,16 +21,15 @@ if (supabase && user) {
   const profile = await getProfile(supabase, user.id);
   myCity = profile?.city ?? null;
   hasCity = myCity != null && myCity.length > 0;
-  if (profile?.locationLat != null && profile.locationLng != null) {
-    myLocation = [profile.locationLat, profile.locationLng];
+  // Own pin comes from the owner-only location table, not the public profile.
+  const ownLocation = await getOwnLocation(supabase, user.id);
+  if (ownLocation?.locationLat != null && ownLocation.locationLng != null) {
+    myLocation = [ownLocation.locationLat, ownLocation.locationLng];
   }
 
   if (hasCity && myCity) {
-    // Discovery is city/region-scoped; street is display-only, never a filter.
-    [dogs, packStatusByOwner] = await Promise.all([
-      listDogsForMap(supabase, user.id, myCity),
-      listPackStatuses(supabase, user.id),
-    ]);
+    // Discovery is scoped server-side by the discoverable_owner_ids RPC (no coords leave the DB).
+    [dogs, packStatusByOwner] = await Promise.all([listDogsForMap(supabase), listPackStatuses(supabase, user.id)]);
   }
 }
 ---

@@ -59,6 +59,8 @@ function makeStubClient(): SupabaseClient {
   };
 
   return {
+    // Discovery now runs server-side; the RPC returns the in-radius owner IDs.
+    rpc: () => Promise.resolve({ data: ["owner-1"], error: null }),
     from: (table: string) => builder(table === "profiles" ? PROFILE_ROWS : DOG_ROWS),
     storage: {
       from: () => ({ getPublicUrl: () => ({ data: { publicUrl: "https://example.test/x.jpg" } }) }),
@@ -70,7 +72,7 @@ const FORBIDDEN_KEY = /lat|lng|location|coord|address|street/i;
 
 describe("listDogsForMap — location/PII privacy (risk #6)", () => {
   it("exposes coarse city text but no coordinate/address fields", async () => {
-    const dogs = await listDogsForMap(makeStubClient(), "me", "Rzeszów");
+    const dogs = await listDogsForMap(makeStubClient());
 
     expect(dogs).toHaveLength(1);
     const pin = dogs[0];
@@ -85,7 +87,7 @@ describe("listDogsForMap — location/PII privacy (risk #6)", () => {
   });
 
   it("does not smuggle the raw coordinates under any key", async () => {
-    const dogs = await listDogsForMap(makeStubClient(), "me", "Rzeszów");
+    const dogs = await listDogsForMap(makeStubClient());
 
     // Name-agnostic leak check: the secret lat/lng must not appear anywhere in
     // the serialized pin, even under an innocuous key.

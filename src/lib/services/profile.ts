@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Dog, DogWithOwner, OwnerWithDogs, Profile, PublicProfile } from "@/types";
+import type { Dog, DogWithOwner, OwnerLocation, OwnerWithDogs, Profile, PublicProfile } from "@/types";
 import type { DogSize } from "@/lib/dogAttributes";
-import { discoveryPosition, withinDiscoveryRadius } from "@/lib/geo";
+import { DISCOVERY_RADIUS_KM } from "@/lib/geo";
 
 const AVATAR_BUCKET = "avatars";
 
@@ -21,11 +21,8 @@ export interface ProfileUpsert {
 interface ProfileRow {
   id: string;
   name: string;
-  district: string | null;
   city: string | null;
   avatar_path: string | null;
-  location_lat: number | null;
-  location_lng: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -38,16 +35,43 @@ function mapRow(client: SupabaseClient, row: ProfileRow): Profile {
   return {
     id: row.id,
     name: row.name,
-    // DB column is `district`; surfaced to the app as `street`.
-    street: row.district,
     city: row.city,
     avatarPath: row.avatar_path,
     avatarUrl,
-    locationLat: row.location_lat,
-    locationLng: row.location_lng,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
+}
+
+// Private location row (owner-only `profile_locations`). `street` is the app name
+// for the DB `district` column.
+interface ProfileLocationRow {
+  district: string | null;
+  location_lat: number | null;
+  location_lng: number | null;
+}
+
+function mapOwnLocation(row: ProfileLocationRow): OwnerLocation {
+  return { street: row.district, locationLat: row.location_lat, locationLng: row.location_lng };
+}
+
+// Read the viewer's OWN location (owner-only RLS on `profile_locations` means a client
+// can only ever read its own row) — for self pages (profile edit, map anchor), never a
+// foreign read.
+export async function getOwnLocation(client: SupabaseClient, userId: string): Promise<OwnerLocation | null> {
+  const result = await client
+    .from("profile_locations")
+    .select("district, location_lat, location_lng")
+    .eq("profile_id", userId)
+    .maybeSingle();
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+  if (!result.data) {
+    return null;
+  }
+  return mapOwnLocation(result.data);
 }
 
 // Narrow row for the foreign-safe read: only the columns getPublicProfile
@@ -158,35 +182,27 @@ function mapDogRow(client: SupabaseClient, row: DogRow): Dog {
   };
 }
 
-export async function listOwners(client: SupabaseClient, userId: string, city: string): Promise<OwnerWithDogs[]> {
-  // Discovery is scoped by geography, not by an exact city string: owners within
-  // DISCOVERY_RADIUS_KM of the viewer's position show on the map. This keeps
-  // off-dictionary towns (e.g. "Kielnarowa") and diacritic variants ("Rzeszow")
-  // from silently matching nobody. Street is display-only, never a filter.
-  const profileResult = await client.from("profiles").select("*");
-  if (profileResult.error) {
-    throw new Error(profileResult.error.message);
+export async function listOwners(client: SupabaseClient): Promise<OwnerWithDogs[]> {
+  // Discovery runs server-side: discoverable_owner_ids() (SECURITY DEFINER) computes the
+  // geographic radius from the private pins/city centers and returns only public owner
+  // IDs, so coordinates never cross the Data API. It anchors internally on auth.uid(),
+  // so the viewer (userId) is already excluded from the result.
+  const idsResult = await client.rpc("discoverable_owner_ids", { radius_km: DISCOVERY_RADIUS_KM });
+  if (idsResult.error) {
+    throw new Error(idsResult.error.message);
   }
-
-  const allProfiles = (profileResult.data as ProfileRow[]).map((row) => mapRow(client, row));
-
-  // Anchor on the viewer's own saved position, falling back to the center of the
-  // city passed in (their profile city). A null anchor means we can't scope by
-  // distance, so withinDiscoveryRadius shows everyone rather than an empty map.
-  const viewer = allProfiles.find((p) => p.id === userId);
-  const anchor =
-    discoveryPosition(viewer ?? { locationLat: null, locationLng: null, city }) ??
-    discoveryPosition({ locationLat: null, locationLng: null, city });
-
-  const profiles = allProfiles.filter((p) => p.id !== userId && withinDiscoveryRadius(anchor, discoveryPosition(p)));
-
-  if (profiles.length === 0) {
+  const ownerIds = (idsResult.data ?? []) as string[];
+  if (ownerIds.length === 0) {
     return [];
   }
 
-  const profileIds = profiles.map((p) => p.id);
+  const profileResult = await client.from("profiles").select("*").in("id", ownerIds);
+  if (profileResult.error) {
+    throw new Error(profileResult.error.message);
+  }
+  const profiles = (profileResult.data as ProfileRow[]).map((row) => mapRow(client, row));
 
-  const dogResult = await client.from("dogs").select("*").in("owner_id", profileIds);
+  const dogResult = await client.from("dogs").select("*").in("owner_id", ownerIds);
   if (dogResult.error) {
     throw new Error(dogResult.error.message);
   }
@@ -207,8 +223,8 @@ export async function listOwners(client: SupabaseClient, userId: string, city: s
     .sort((a, b) => a.profile.name.localeCompare(b.profile.name));
 }
 
-export async function listDogsForMap(client: SupabaseClient, userId: string, city: string): Promise<DogWithOwner[]> {
-  const owners = await listOwners(client, userId, city);
+export async function listDogsForMap(client: SupabaseClient): Promise<DogWithOwner[]> {
+  const owners = await listOwners(client);
 
   return owners.flatMap((owner) =>
     owner.dogs.map((dog) => ({
@@ -237,19 +253,12 @@ export async function upsertProfile(client: SupabaseClient, userId: string, inpu
   const row: {
     id: string;
     name: string;
-    district: string | null;
     city: string | null;
-    location_lat: number | null;
-    location_lng: number | null;
     avatar_path?: string | null;
   } = {
     id: userId,
     name: input.name,
-    // `street` maps to the legacy `district` column (see Profile type note).
-    district: input.street ?? null,
     city: input.city ?? null,
-    location_lat: input.locationLat ?? null,
-    location_lng: input.locationLng ?? null,
   };
 
   // Only touch avatar_path when a new avatar was uploaded; otherwise preserve
@@ -263,5 +272,21 @@ export async function upsertProfile(client: SupabaseClient, userId: string, inpu
   if (result.error) {
     throw new Error(result.error.message);
   }
+
+  // Private location lives in the owner-only table. `street` maps to the DB `district`
+  // column. Write it after the profile so the FK (profile_id -> profiles.id) is satisfied.
+  const locationResult = await client.from("profile_locations").upsert(
+    {
+      profile_id: userId,
+      district: input.street ?? null,
+      location_lat: input.locationLat ?? null,
+      location_lng: input.locationLng ?? null,
+    },
+    { onConflict: "profile_id" },
+  );
+  if (locationResult.error) {
+    throw new Error(locationResult.error.message);
+  }
+
   return mapRow(client, result.data as ProfileRow);
 }

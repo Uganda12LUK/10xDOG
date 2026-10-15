@@ -13,6 +13,8 @@
     "smoke": "node scripts/smoke.mjs",
     "seed:dev": "node scripts/seed-dev.mjs",
     "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:rls": "vitest run tests/integration/consent-rls.test.ts tests/integration/dog-crud.test.ts",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
