@@ -28,11 +28,18 @@ values
   )
 on conflict (id) do nothing;
 
-insert into profiles (id, name, district, city)
+insert into profiles (id, name, city)
 values
-  ('00000000-0000-0000-0000-000000000001', 'Alice', 'Mokotów',  'Warsaw'),
-  ('00000000-0000-0000-0000-000000000002', 'Bob',   'Żoliborz', 'Warsaw')
+  ('00000000-0000-0000-0000-000000000001', 'Alice', 'Warsaw'),
+  ('00000000-0000-0000-0000-000000000002', 'Bob',   'Warsaw')
 on conflict (id) do nothing;
+
+-- Private location (street) lives in the owner-only profile_locations table.
+insert into profile_locations (profile_id, district)
+values
+  ('00000000-0000-0000-0000-000000000001', 'Mokotów'),
+  ('00000000-0000-0000-0000-000000000002', 'Żoliborz')
+on conflict (profile_id) do nothing;
 
 insert into dogs (id, owner_id, name, breed, birthdate)
 values
