@@ -12,7 +12,7 @@ create extension if not exists unaccent;
 -- (mirrors src/lib/geo.ts CITY_CENTERS). `norm` is computed with the same expression
 -- the RPC uses to match a profile's city, so seed and lookup always agree.
 -- ============================================================
-create table city_centers (
+create table if not exists city_centers (
   city text primary key,
   norm text not null,
   lat double precision not null,
@@ -34,11 +34,13 @@ insert into city_centers (city, norm, lat, lng) values
   ('Tyczyn',      lower(unaccent('Tyczyn')),      49.9686, 22.0286),
   ('Chmielnik',   lower(unaccent('Chmielnik')),   49.9939, 22.1089),
   ('Borek Stary', lower(unaccent('Borek Stary')), 49.9497, 22.0286),
-  ('Kielanówka',  lower(unaccent('Kielanówka')),  50.028,  21.933);
+  ('Kielanówka',  lower(unaccent('Kielanówka')),  50.028,  21.933)
+on conflict (city) do nothing;
 
 alter table city_centers enable row level security;
 
 -- Public reference data: any authenticated user may read it (carries no private data).
+drop policy if exists city_centers_select_authenticated on city_centers;
 create policy city_centers_select_authenticated
   on city_centers
   for select
@@ -48,7 +50,7 @@ create policy city_centers_select_authenticated
 -- ============================================================
 -- profile_locations: the owner's private location, readable/writable ONLY by the owner.
 -- ============================================================
-create table profile_locations (
+create table if not exists profile_locations (
   profile_id uuid primary key references profiles (id) on delete cascade,
   district text,
   location_lat double precision,
@@ -56,6 +58,7 @@ create table profile_locations (
   updated_at timestamptz not null default now()
 );
 
+drop trigger if exists profile_locations_set_updated_at on profile_locations;
 create trigger profile_locations_set_updated_at
   before update on profile_locations
   for each row
@@ -65,19 +68,23 @@ alter table profile_locations enable row level security;
 
 -- Owner-only across every operation. Non-owners cannot even read the row, so the
 -- private columns never reach the Data API for anyone but their owner.
+drop policy if exists profile_locations_select_own on profile_locations;
 create policy profile_locations_select_own
   on profile_locations for select to authenticated
   using (profile_id = (select auth.uid()));
 
+drop policy if exists profile_locations_insert_own on profile_locations;
 create policy profile_locations_insert_own
   on profile_locations for insert to authenticated
   with check (profile_id = (select auth.uid()));
 
+drop policy if exists profile_locations_update_own on profile_locations;
 create policy profile_locations_update_own
   on profile_locations for update to authenticated
   using (profile_id = (select auth.uid()))
   with check (profile_id = (select auth.uid()));
 
+drop policy if exists profile_locations_delete_own on profile_locations;
 create policy profile_locations_delete_own
   on profile_locations for delete to authenticated
   using (profile_id = (select auth.uid()));
@@ -92,9 +99,9 @@ insert into profile_locations (profile_id, district, location_lat, location_lng)
   on conflict (profile_id) do nothing;
 
 alter table profiles
-  drop column district,
-  drop column location_lat,
-  drop column location_lng;
+  drop column if exists district,
+  drop column if exists location_lat,
+  drop column if exists location_lng;
 
 -- ============================================================
 -- discoverable_owner_ids: owners within `radius_km` of the caller, as public IDs only.
