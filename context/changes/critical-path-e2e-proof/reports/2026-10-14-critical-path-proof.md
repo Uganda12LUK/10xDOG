@@ -24,8 +24,9 @@ end-to-end **browser** walk (Playwright) is the single open gate (see below).
 | 1 | Signup / login / route protection | `tests/integration/auth-gating.test.ts` (8) | integration | ✅ RUN 8/8 |
 | 1 | Full signup→signin→protected→signout | `scripts/smoke.mjs` (`npm run smoke`) | http | ⏭ not run (needs running server) |
 | 2 | Profile create/edit | `tests/e2e/invitation-loop.spec.ts`, `seed.spec.ts` | browser | ⏭ not run |
-| 2 | Profile privacy (no street/coords to others) | `tests/unit/publicProfile.test.ts` (2), `locationPrivacy.test.ts` (2) | unit | ✅ RUN 4/4 |
-| 3 | Dog create | `tests/e2e/*` | browser | ⏭ not run |
+| 2 | Profile privacy (no street/coords to others, app layer) | `tests/unit/publicProfile.test.ts` (2), `locationPrivacy.test.ts` (2) | unit | ✅ RUN 4/4 |
+| 3 | Dog CRUD + cross-owner denial | `tests/integration/dog-crud.test.ts` (5) | integration | ✅ RUN 5/5 |
+| 3 | Dog create (in-browser) | `tests/e2e/*` | browser | ⏭ not run |
 | 4 | Discover another owner (filter/distance/city) | `tests/unit/discovery.test.ts` (10), `dogFilter.test.ts` (9) | unit | ✅ RUN 19/19 |
 | 5 | Invite (send) | `tests/integration/invitation-state-machine.test.ts` | integration | ✅ RUN |
 | 6 | Accept by the second person | `tests/integration/invitation-state-machine.test.ts` | integration | ✅ RUN |
@@ -36,7 +37,7 @@ end-to-end **browser** walk (Playwright) is the single open gate (see below).
 
 | Suite | Result |
 |-------|--------|
-| `tests/unit/*` (publicProfile, locationPrivacy, discovery, dogFilter) | 35/35 ✅ |
+| `tests/unit/*` (publicProfile 2, locationPrivacy 2, discovery 10, dogFilter 9) | 23/23 ✅ |
 | `tests/integration/auth-gating.test.ts` | 8/8 ✅ |
 | `tests/integration/invitation-state-machine.test.ts` | 4/4 ✅ |
 
