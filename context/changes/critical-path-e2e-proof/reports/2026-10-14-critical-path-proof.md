@@ -9,13 +9,29 @@
 - **Scope**: the critical flow — signup/login → profile → dog → discover another owner
   → invite → accept by the second person → meeting visible to both.
 
+## Update — 2026-10-16: browser E2E GREEN (gate closed)
+
+- **Commit**: `8285942` (main, post-merge) · **Runner**: Playwright, 1 worker, port 4330
+- **Environment**: remote test Supabase (`.env.test`) with BOTH hardening migrations
+  applied (`20261014090001`, `20261015090001`); production-like `astro build` + preview.
+- **Result**: **10 passed (2.8m), 0 failed, 0 skipped.**
+  - `invitation-loop` — *User A invites User B, User B accepts, **both see the meeting*** ✓ (the full invite→accept→meeting-visible-to-both journey, in a real browser)
+  - `pack-chat-loop` — *A throws a bone, B catches it, both chat in their pack* ✓ (pack consent + `are_in_pack` chat unlock)
+  - 8× `auth-gate` route-protection specs ✓
+- Required one fix: `tests/setup/playwright-global-setup.ts` dropped the `profiles.district`
+  seed field (removed by the profile-private-location migration).
+
+The browser gate below is now **closed**. Original verdict retained for history:
+
 ## Verdict
 
-**Partially proven.** The consent tail that the review most cared about —
-invite → accept → "both parties see exactly one meeting" — is proven GREEN by an
-integration test at this commit. Earlier stages (profile/dog creation, discovery UI)
-are proven at the unit/service layer but not yet as one browser journey. The
-end-to-end **browser** walk (Playwright) is the single open gate (see below).
+**Partially proven (2026-10-14) → fully proven in the browser (2026-10-16).** The consent
+tail the review most cared about — invite → accept → "both parties see exactly one
+meeting" — was first proven by an integration test, and is now proven end-to-end in a
+real browser (invitation-loop + pack-chat-loop GREEN). Earlier stages (profile/dog,
+discovery) are covered at unit/service level; the browser journey exercises the owner
+detail (`getPublicProfile`), meeting proposal, pack and chat paths against the migrated
+schema.
 
 ## Stage coverage matrix
 
