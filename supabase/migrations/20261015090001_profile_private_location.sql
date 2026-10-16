@@ -47,6 +47,13 @@ create policy city_centers_select_authenticated
   to authenticated
   using (true);
 
+-- Explicit least-privilege grants. Supabase grants table rights to anon/authenticated by
+-- default; make the intent durable: anon gets no rights at all, authenticated may only
+-- read (nobody writes this reference data through the API). RLS and grants are two
+-- independent layers — both must agree. service_role keeps its own grant (server-only).
+revoke all on table city_centers from public, anon, authenticated;
+grant select on table city_centers to authenticated;
+
 -- ============================================================
 -- profile_locations: the owner's private location, readable/writable ONLY by the owner.
 -- ============================================================
@@ -88,6 +95,12 @@ drop policy if exists profile_locations_delete_own on profile_locations;
 create policy profile_locations_delete_own
   on profile_locations for delete to authenticated
   using (profile_id = (select auth.uid()));
+
+-- Explicit least-privilege grants. RLS already scopes every row to its owner; these make
+-- sure anon has no table rights whatsoever and authenticated carries only the CRUD the
+-- owner path needs. service_role keeps its own grant (bypasses RLS, server-only).
+revoke all on table profile_locations from public, anon, authenticated;
+grant select, insert, update, delete on table profile_locations to authenticated;
 
 -- ============================================================
 -- Move existing data, then drop the private columns from profiles.
@@ -145,4 +158,9 @@ as $$
     );
 $$;
 
+-- Functions default to EXECUTE for PUBLIC, which would let an anon caller run this: with
+-- no JWT the anchor is null, and a null anchor returns *every* owner id — i.e. anon could
+-- enumerate the whole owner set. Revoke the PUBLIC/anon default, grant EXECUTE only to
+-- authenticated. SECURITY DEFINER still never returns a coordinate (IDs only).
+revoke all on function public.discoverable_owner_ids(double precision) from public, anon;
 grant execute on function public.discoverable_owner_ids(double precision) to authenticated;

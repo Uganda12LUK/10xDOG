@@ -23,8 +23,8 @@ PawMeet — a web app for dog owners to socialise their dogs (walk meetups) and 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
+git clone https://github.com/Uganda12LUK/10xDOG.git
+cd 10xDOG
 ```
 
 2. Install dependencies:
@@ -185,7 +185,7 @@ It needs a reachable Supabase instance (local or cloud) with email confirmation 
 GitHub Actions runs two jobs on every push and PR to `main`:
 
 - **ci** — lint, `astro check` and build. Configure `SUPABASE_URL` and `SUPABASE_KEY` as repository secrets for the build step.
-- **smoke** — starts a local Supabase via the Supabase CLI, builds, serves the production preview on the Cloudflare runtime and runs `npm run smoke` against it. No secrets required.
+- **smoke** — starts a local Supabase via the Supabase CLI, runs the RLS / DB-boundary tests (`npm run test:rls`) against it, then builds, serves the production preview on the Cloudflare runtime and runs `npm run smoke` against it. No secrets required.
 
 ## License
 

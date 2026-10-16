@@ -50,7 +50,7 @@ describe("dog CRUD + cross-owner denial", () => {
 
   it("deletes its own dog", async () => {
     const dog = await createDog(clientA, userA.id, { name: "Rex", breed: "Labrador" });
-    await deleteDog(clientA, userA.id, dog.id);
+    await deleteDog(clientA, dog.id);
     expect(await getDog(clientA, dog.id)).toBeNull();
   });
 
