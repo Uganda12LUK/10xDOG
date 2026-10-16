@@ -68,7 +68,6 @@ export default async function playwrightGlobalSetup(): Promise<void> {
         id: userId,
         name: email.split("@")[0],
         city: TEST_CITY,
-        district: null,
         avatar_path: null,
       },
       { onConflict: "id" },
