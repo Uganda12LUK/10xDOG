@@ -62,7 +62,7 @@ export const POST: APIRoute = async (context) => {
 
   if (form.get("_action") === "delete") {
     try {
-      await deleteDog(supabase, user.id, id);
+      await deleteDog(supabase, id);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to delete dog";
       return context.redirect(`/dogs?error=${encodeURIComponent(message)}`);

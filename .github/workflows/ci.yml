@@ -46,12 +46,22 @@ jobs:
       - name: Start local Supabase
         run: |
           supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,realtime,storage-api,postgres-meta,supavisor
-          supabase status -o env | grep -E '^(API_URL|ANON_KEY)=' > supabase.env
+          supabase status -o env | grep -E '^(API_URL|ANON_KEY|SERVICE_ROLE_KEY)=' > supabase.env
       - name: Configure secrets for build and preview
         run: |
           source supabase.env
           printf 'SUPABASE_URL=%s\nSUPABASE_KEY=%s\n' "$API_URL" "$ANON_KEY" > .env
           cp .env .dev.vars
+      # RLS / DB-boundary tests against the local Supabase (migrations auto-applied on
+      # `supabase start`). They talk to the API directly via supabase-js, so the dev
+      # server the vitest globalSetup tries to start is irrelevant (non-fatal if absent).
+      - name: Run RLS / DB-boundary tests
+        run: |
+          source supabase.env
+          SUPABASE_TEST_URL="$API_URL" \
+          SUPABASE_TEST_ANON_KEY="$ANON_KEY" \
+          SUPABASE_TEST_SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" \
+            npm run test:rls
       - run: npm run build
       - name: Run smoke test against production preview
         run: |

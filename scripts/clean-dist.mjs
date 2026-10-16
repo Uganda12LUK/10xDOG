@@ -7,5 +7,4 @@
 import { rmSync } from "node:fs";
 
 rmSync("dist", { recursive: true, force: true });
-// eslint-disable-next-line no-console
 console.log("[clean-dist] removed dist/");

@@ -153,10 +153,10 @@ export async function updateDog(client: SupabaseClient, ownerId: string, id: str
   return mapRow(client, result.data as DogRow);
 }
 
-export async function deleteDog(client: SupabaseClient, ownerId: string, id: string): Promise<void> {
+export async function deleteDog(client: SupabaseClient, id: string): Promise<void> {
   // Best-effort remove the stored photo first; ignore storage errors so a
   // missing/absent object never blocks the row delete. RLS enforces ownership
-  // on the delete; ownerId is used only to scope the storage lookup.
+  // on the delete, and the photo path is read from the row itself — no owner id needed.
   const existing = await client.from("dogs").select("photo_path").eq("id", id).maybeSingle();
   const photoPath = (existing.data?.photo_path ?? null) as string | null;
   if (photoPath) {
