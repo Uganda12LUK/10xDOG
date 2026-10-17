@@ -81,7 +81,8 @@ export default defineConfig(
   includeIgnoreFile(gitignorePath),
   // Course tooling: the /10x-* skill scripts live outside tsconfig and break the
   // type-aware projectService parser; they are not part of the app, so skip them.
-  { ignores: [".claude/**"] },
+  // context/ holds docs + evidence scratch (e.g. map/.work/*.mjs), not app source.
+  { ignores: [".claude/**", "context/**"] },
   baseConfig,
   reactConfig,
   eslintPluginAstro.configs["flat/recommended"],

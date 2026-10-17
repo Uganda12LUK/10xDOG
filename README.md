@@ -55,6 +55,10 @@ npm run dev
 - `npm run lint` - Run ESLint with type-checked rules
 - `npm run lint:fix` - Auto-fix ESLint issues
 - `npm run format` - Run Prettier
+- `npm run test` - Run the full Vitest suite (unit + integration)
+- `npm run test:unit` - Run unit tests (`tests/unit`)
+- `npm run test:rls` - Run the RLS / DB-boundary integration tests against a Supabase instance
+- `npm run test:e2e` - Run the Playwright browser suite (builds, previews, drives a real browser)
 - `npm run smoke` - Smoke test the auth flow against a running server (`BASE_URL`, defaults to `http://localhost:4321`)
 
 ## Project Structure
@@ -178,7 +182,17 @@ BASE_URL=http://localhost:4321 npm run smoke
 
 It needs a reachable Supabase instance (local or cloud) with email confirmation disabled.
 
-> **Note:** this script exists primarily to guard the development of the starter itself — it is a fast sanity check that dependency upgrades did not break the build, the Cloudflare adapter or the Supabase auth flow. It is **not** a substitute for a real test suite. Once you build your own product on top of this starter, add proper tests (unit, integration, end-to-end) suited to your application.
+> **Note:** the smoke script is a fast sanity check that dependency upgrades did not break the build, the Cloudflare adapter or the Supabase auth flow. It complements — it does not replace — the application test suite described below.
+
+## Testing
+
+PawMeet ships a real, multi-layer test suite mapped to the risks in `context/foundation/test-plan.md`:
+
+- **Unit** (`npm run test:unit`) — pure business logic: discovery/dog filtering, location-privacy and public-profile shaping.
+- **Integration / RLS** (`npm run test:rls`) — DB-boundary and Row Level Security: dog CRUD with cross-owner denial, the invitation / pack-connection consent state machine, and private-location access. Runs against a Supabase instance (local via the Supabase CLI, or a remote test project wired through `.env.test`).
+- **End-to-end** (`npm run test:e2e`) — Playwright drives the critical path in a real browser (signup/login → profile → dog → discover → invite → accept → meeting visible to both → pack consent → chat), against a fresh production build + preview.
+
+CI runs lint, `astro check`, build, the RLS tests and the smoke test on every push and PR (see below).
 
 ## CI
 
