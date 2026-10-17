@@ -33,6 +33,33 @@ const en: Record<string, string> = {
   "settings.profile": "Your profile",
   "settings.profileDesc": "Name, photo, location and privacy.",
 
+  // onboarding wizard
+  "onboarding.title": "Getting started",
+  "onboarding.welcomeTitle": "Welcome to PawMeet!",
+  "onboarding.welcomeBody":
+    "I'll walk you through it: first a little about you, then about your dog. At the end you'll see a summary and we'll save it all.",
+  "onboarding.youTitle": "About you",
+  "onboarding.youBody": "This is the owner's info. The photo below is your photo — not the dog's.",
+  "onboarding.yourName": "Your name",
+  "onboarding.yourNamePlaceholder": "What should others call you?",
+  "onboarding.yourCity": "City (optional)",
+  "onboarding.yourPhoto": "Your photo (optional)",
+  "onboarding.yourPhotoHint":
+    "The owner's photo — shown on your profile. You can set your map location later in your profile.",
+  "onboarding.dogTitle": "Your dog",
+  "onboarding.dogBody": "Now the dog. The photo below is the dog's photo — it shows on the map and the dog's profile.",
+  "onboarding.dogName": "Dog's name",
+  "onboarding.dogPhoto": "Dog's photo (optional)",
+  "onboarding.dogPhotoHint": "A photo of your dog — this is what appears as the pin on the map.",
+  "onboarding.summaryTitle": "Summary",
+  "onboarding.summaryBody":
+    "Check the details. If something's off, go back and fix it — you can always change it later.",
+  "onboarding.back": "Back",
+  "onboarding.next": "Next",
+  "onboarding.finish": "Save and finish",
+  "onboarding.saving": "Saving…",
+  "onboarding.saveError": "Couldn't save. Please try again.",
+
   // meetings
   "meetings.title": "Meetings",
   "meetings.tabs.upcoming": "Upcoming",

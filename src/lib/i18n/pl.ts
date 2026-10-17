@@ -33,6 +33,32 @@ const pl: Record<string, string> = {
   "settings.profile": "Twój profil",
   "settings.profileDesc": "Imię, zdjęcie, lokalizacja i prywatność.",
 
+  // onboarding wizard
+  "onboarding.title": "Pierwsze kroki",
+  "onboarding.welcomeTitle": "Witaj w PawMeet!",
+  "onboarding.welcomeBody":
+    "Przeprowadzę Cię krok po kroku: najpierw kilka słów o Tobie, potem o Twoim psie. Na końcu zobaczysz podsumowanie i wszystko zapiszemy.",
+  "onboarding.youTitle": "O Tobie",
+  "onboarding.youBody": "To dane właściciela. Zdjęcie poniżej to Twoje zdjęcie — nie psa.",
+  "onboarding.yourName": "Twoje imię",
+  "onboarding.yourNamePlaceholder": "Jak mają się do Ciebie zwracać inni?",
+  "onboarding.yourCity": "Miasto (opcjonalnie)",
+  "onboarding.yourPhoto": "Twoje zdjęcie (opcjonalnie)",
+  "onboarding.yourPhotoHint":
+    "Zdjęcie właściciela — pokazuje się przy Twoim profilu. Lokalizację na mapie ustawisz później w profilu.",
+  "onboarding.dogTitle": "Twój pies",
+  "onboarding.dogBody": "Teraz pies. Zdjęcie poniżej to zdjęcie psa — pokaże się na mapie i w profilu psa.",
+  "onboarding.dogName": "Imię psa",
+  "onboarding.dogPhoto": "Zdjęcie psa (opcjonalnie)",
+  "onboarding.dogPhotoHint": "To zdjęcie Twojego psa — to ono pojawi się jako pinezka na mapie.",
+  "onboarding.summaryTitle": "Podsumowanie",
+  "onboarding.summaryBody": "Sprawdź dane. Jeśli coś się nie zgadza, wróć i popraw — zawsze możesz zmienić to później.",
+  "onboarding.back": "Wstecz",
+  "onboarding.next": "Dalej",
+  "onboarding.finish": "Zapisz i zakończ",
+  "onboarding.saving": "Zapisuję…",
+  "onboarding.saveError": "Nie udało się zapisać. Spróbuj ponownie.",
+
   // meetings
   "meetings.title": "Spotkania",
   "meetings.tabs.upcoming": "Nadchodzące",
