@@ -3,6 +3,7 @@ import Layout from "@/layouts/Layout.astro";
 import PackView from "@/components/pack/PackView";
 import { createClient } from "@/lib/supabase";
 import { listPack, listPendingReceived } from "@/lib/services/pack";
+import { unreadCountsBySender } from "@/lib/services/chat";
 import { t } from "@/lib/i18n";
 import type { PackMember } from "@/types";
 
@@ -11,9 +12,14 @@ const supabase = createClient(Astro.request.headers, Astro.cookies);
 
 let requests: PackMember[] = [];
 let members: PackMember[] = [];
+let unreadBySender: Record<string, number> = {};
 
 if (supabase && user) {
-  [requests, members] = await Promise.all([listPendingReceived(supabase, user.id), listPack(supabase, user.id)]);
+  [requests, members, unreadBySender] = await Promise.all([
+    listPendingReceived(supabase, user.id),
+    listPack(supabase, user.id),
+    unreadCountsBySender(supabase, user.id),
+  ]);
 }
 ---
 
@@ -23,6 +29,12 @@ if (supabase && user) {
       <span aria-hidden="true">🦴</span>
       {t(locale, "pack.title")}
     </h1>
-    <PackView initialRequests={requests} initialMembers={members} locale={locale} client:load />
+    <PackView
+      initialRequests={requests}
+      initialMembers={members}
+      unreadBySender={unreadBySender}
+      locale={locale}
+      client:load
+    />
   </div>
 </Layout>

@@ -4,6 +4,8 @@ import Banner from "@/components/Banner.astro";
 import BottomNav from "@/components/BottomNav.astro";
 import Topbar from "@/components/Topbar.astro";
 import { missingConfigs } from "@/lib/config-status";
+import { createClient } from "@/lib/supabase";
+import { countUnread } from "@/lib/services/chat";
 
 interface Props {
   title?: string;
@@ -11,6 +13,21 @@ interface Props {
 
 const { title = "PawMeet" } = Astro.props;
 const { user, locale } = Astro.locals;
+
+// Unread-message count for the nav badge, computed once here and shared by both
+// the mobile (BottomNav) and desktop (Topbar) navs so the "waiting in Pack"
+// signal shows on every view. SSR-only: it refreshes on navigation, not live.
+let unreadCount = 0;
+if (user) {
+  const supabase = createClient(Astro.request.headers, Astro.cookies);
+  if (supabase) {
+    try {
+      unreadCount = await countUnread(supabase, user.id);
+    } catch {
+      unreadCount = 0;
+    }
+  }
+}
 ---
 
 <!doctype html>
@@ -46,11 +63,11 @@ const { user, locale } = Astro.locals;
       {/* Topbar is desktop-only (md:flex). Hide its padded wrapper on mobile so it
           doesn't leave an empty strip pushing content (e.g. the map) below the fold. */}
       <div class="hidden p-4 md:block">
-        <Topbar currentPath={Astro.url.pathname} />
+        <Topbar currentPath={Astro.url.pathname} unreadCount={unreadCount} />
       </div>
       <slot />
     </div>
-    {user && <BottomNav currentPath={Astro.url.pathname} />}
+    {user && <BottomNav currentPath={Astro.url.pathname} unreadCount={unreadCount} />}
   </body>
 </html>
 

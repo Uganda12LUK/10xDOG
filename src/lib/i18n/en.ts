@@ -22,6 +22,7 @@ const en: Record<string, string> = {
   "nav.dogs": "Dogs",
   "nav.pack": "Pack",
   "nav.signout": "Sign out",
+  "nav.unreadAria": "unread messages",
 
   // meetings
   "meetings.title": "Meetings",

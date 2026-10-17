@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase";
 import { BREEDS } from "@/lib/breeds";
 import { DOG_SIZES, DOG_TRAITS, type DogSize } from "@/lib/dogAttributes";
-import { createDog } from "@/lib/services/dog";
+import { createDog, listDogs } from "@/lib/services/dog";
 
 export const prerender = false;
 
@@ -82,6 +82,16 @@ export const POST: APIRoute = async (context) => {
     }
   }
 
+  // Is this the owner's first dog? If so, they're a new user finishing onboarding —
+  // send them to the home view afterwards instead of the dog list. Best-effort: on a
+  // count failure, fall back to the dog list (the safe, existing behaviour).
+  let isFirstDog = false;
+  try {
+    isFirstDog = (await listDogs(supabase, user.id)).length === 0;
+  } catch {
+    // on a count failure, isFirstDog stays false → fall back to the dog list
+  }
+
   try {
     await createDog(supabase, user.id, {
       name: parsed.data.name,
@@ -96,5 +106,5 @@ export const POST: APIRoute = async (context) => {
     return redirectError(context, message);
   }
 
-  return context.redirect("/dogs?saved=1");
+  return context.redirect(isFirstDog ? "/dashboard" : "/dogs?saved=1");
 };
