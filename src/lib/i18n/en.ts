@@ -186,6 +186,8 @@ const en: Record<string, string> = {
   "form.profile.photo": "Photo",
   "form.profile.location": "Your location",
   "form.profile.locationHint": "Drag the pin to set your spot — dog search starts from here.",
+  "form.profile.locationPinned":
+    "Location set manually — after saving this exact pin position applies (address fields won't move it).",
   "form.profile.submit": "Save profile",
 
   // auth

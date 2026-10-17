@@ -46,7 +46,7 @@ const { user, locale } = Astro.locals;
       {/* Topbar is desktop-only (md:flex). Hide its padded wrapper on mobile so it
           doesn't leave an empty strip pushing content (e.g. the map) below the fold. */}
       <div class="hidden p-4 md:block">
-        <Topbar />
+        <Topbar currentPath={Astro.url.pathname} />
       </div>
       <slot />
     </div>
