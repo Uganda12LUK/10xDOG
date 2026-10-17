@@ -4,6 +4,11 @@ import { countReceivedPending } from "@/lib/services/invitation";
 import { getProfile } from "@/lib/services/profile";
 import { t } from "@/lib/i18n";
 
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
 const { user, locale } = Astro.locals;
 
 let pendingCount = 0;
@@ -20,6 +25,21 @@ if (user) {
   }
 }
 const initial = displayName.charAt(0).toUpperCase();
+
+// Mirrors BottomNav so desktop and mobile navigate the same set of sections.
+const tabs = [
+  { href: "/dashboard", label: t(locale, "nav.start"), exact: true },
+  { href: "/map", label: t(locale, "nav.map"), exact: false },
+  { href: "/meetings", label: t(locale, "nav.meetings"), exact: false },
+  { href: "/pack", label: t(locale, "nav.pack"), exact: false },
+  { href: "/dogs", label: t(locale, "nav.dogs"), exact: false },
+  { href: "/profile", label: t(locale, "nav.profile"), exact: false },
+] as const;
+
+function isActive(href: string, exact: boolean): boolean {
+  if (exact) return currentPath === href;
+  return currentPath.startsWith(href);
+}
 ---
 
 <div class="mx-auto mb-4 hidden max-w-4xl items-center justify-between rounded-xl border border-border bg-card px-4 py-2 text-sm text-card-foreground md:flex">
@@ -27,31 +47,38 @@ const initial = displayName.charAt(0).toUpperCase();
     <>
       <a
         href="/profile"
-        class="flex size-9 items-center justify-center rounded-full bg-muted text-sm font-semibold text-muted-foreground transition-colors hover:bg-accent"
+        class:list={[
+          "flex size-9 items-center justify-center rounded-full text-sm font-semibold transition-colors",
+          isActive("/profile", false)
+            ? "bg-primary text-primary-foreground"
+            : "bg-muted text-muted-foreground hover:bg-accent",
+        ]}
         aria-label={t(locale, "nav.profile")}
         title={user.email}
       >
         {initial}
       </a>
       <div class="flex items-center gap-3">
-        <a href="/dashboard" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          {t(locale, "nav.start")}
-        </a>
-        <a href="/map" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          {t(locale, "nav.map")}
-        </a>
-        <a href="/meetings" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          {t(locale, "nav.meetings")}
-          {pendingCount > 0 ? ` (${pendingCount})` : ""}
-        </a>
-        <a href="/dogs" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          {t(locale, "nav.dogs")}
-        </a>
-        <a href="/profile" class="text-primary transition-colors hover:text-primary/80 hover:underline">
-          {t(locale, "nav.profile")}
-        </a>
+        {tabs.map((tab) => {
+          const active = isActive(tab.href, tab.exact);
+          return (
+            <a
+              href={tab.href}
+              class:list={[
+                "transition-colors",
+                active
+                  ? "font-semibold text-primary underline underline-offset-4"
+                  : "text-foreground/70 hover:text-primary",
+              ]}
+              aria-current={active ? "page" : undefined}
+            >
+              {tab.label}
+              {tab.href === "/meetings" && pendingCount > 0 ? ` (${pendingCount})` : ""}
+            </a>
+          );
+        })}
         <form method="POST" action="/api/auth/signout">
-          <button type="submit" class="text-primary transition-colors hover:text-primary/80 hover:underline">
+          <button type="submit" class="text-foreground/70 transition-colors hover:text-primary">
             {t(locale, "nav.signout")}
           </button>
         </form>

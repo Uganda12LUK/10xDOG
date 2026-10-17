@@ -187,6 +187,8 @@ const pl: Record<string, string> = {
   "form.profile.location": "Twoja lokalizacja",
   "form.profile.locationHint":
     "Przeciągnij pinezkę, aby ustawić swoje miejsce — od niego zaczyna się wyszukiwanie psów.",
+  "form.profile.locationPinned":
+    "Lokalizacja ustawiona ręcznie — po zapisie obowiązuje dokładnie ta pozycja pinezki (pola adresu już jej nie zmienią).",
   "form.profile.submit": "Zapisz profil",
 
   // auth

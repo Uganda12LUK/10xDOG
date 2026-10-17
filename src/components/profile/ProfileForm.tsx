@@ -188,15 +188,42 @@ export default function ProfileForm({ profile, location, serverError, saved, onb
             placeholder="Your street (optional)"
             icon={<MapPin className="size-4" />}
           />
+
+          <div>
+            <label htmlFor="photo" className="text-muted-foreground mb-1 block text-sm">
+              {t(locale, "form.profile.photo")}
+            </label>
+            {profile?.avatarUrl ? (
+              <img
+                src={profile.avatarUrl}
+                alt="Current avatar"
+                className="border-border mb-2 size-16 rounded-full border object-cover"
+              />
+            ) : null}
+            <input
+              id="photo"
+              name="photo"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              className={cn(
+                "border-input bg-background text-foreground w-full rounded-lg border px-3 py-2 text-sm",
+                "file:bg-primary file:text-primary-foreground file:mr-3 file:rounded-md file:border-0 file:px-3 file:py-1",
+                "hover:file:bg-primary/90",
+              )}
+            />
+          </div>
         </div>
 
         <div className="mt-4 lg:mt-0">
           <div>
             <label className="text-muted-foreground mb-1 block text-sm">{t(locale, "form.profile.location")}</label>
             <p className="text-muted-foreground mb-2 text-xs">{t(locale, "form.profile.locationHint")}</p>
+            {movedPin ? (
+              <p className="text-success mb-2 text-xs font-medium">{t(locale, "form.profile.locationPinned")}</p>
+            ) : null}
             <input type="hidden" name="location_lat" value={position[0]} />
             <input type="hidden" name="location_lng" value={position[1]} />
-            <div className="border-border h-[200px] overflow-hidden rounded-lg border lg:h-[320px]">
+            <div className="border-border h-[200px] overflow-hidden rounded-lg border lg:h-[300px]">
               <MapContainer center={position} zoom={12} style={{ height: "100%", width: "100%" }}>
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -223,30 +250,6 @@ export default function ProfileForm({ profile, location, serverError, saved, onb
             </div>
           </div>
         </div>
-      </div>
-
-      <div>
-        <label htmlFor="photo" className="text-muted-foreground mb-1 block text-sm">
-          {t(locale, "form.profile.photo")}
-        </label>
-        {profile?.avatarUrl ? (
-          <img
-            src={profile.avatarUrl}
-            alt="Current avatar"
-            className="border-border mb-2 size-16 rounded-full border object-cover"
-          />
-        ) : null}
-        <input
-          id="photo"
-          name="photo"
-          type="file"
-          accept="image/png,image/jpeg,image/webp"
-          className={cn(
-            "border-input bg-background text-foreground w-full rounded-lg border px-3 py-2 text-sm",
-            "file:bg-primary file:text-primary-foreground file:mr-3 file:rounded-md file:border-0 file:px-3 file:py-1",
-            "hover:file:bg-primary/90",
-          )}
-        />
       </div>
 
       <ServerError message={serverError} />

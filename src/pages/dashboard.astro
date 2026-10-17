@@ -19,13 +19,15 @@ if (supabase && user) {
 }
 const firstDog: Dog | null = dogs.length > 0 ? dogs[0] : null;
 
-// Only real, working destinations — kept in sync with the Topbar + BottomNav so the
-// navigation and the tiles always reference the same set of features.
+// Home quick-actions — the same sections (and labels) as the nav bars, so desktop home
+// mirrors the mobile BottomNav. Desktop-only: on mobile the fixed BottomNav already
+// covers these, so the tiles would just duplicate it.
 const tiles = [
-  { label: t(locale, "dashboard.tiles.dogMap"), href: "/map", icon: "map-pin" },
-  { label: t(locale, "dashboard.tiles.myMeetings"), href: "/meetings", icon: "calendar" },
-  { label: t(locale, "dashboard.tiles.dogs"), href: "/dogs", icon: "dog" },
-  { label: t(locale, "dashboard.tiles.profile"), href: "/profile", icon: "user" },
+  { label: t(locale, "nav.map"), href: "/map", icon: "map-pin" },
+  { label: t(locale, "nav.meetings"), href: "/meetings", icon: "calendar" },
+  { label: t(locale, "nav.pack"), href: "/pack", icon: "pack" },
+  { label: t(locale, "nav.dogs"), href: "/dogs", icon: "dog" },
+  { label: t(locale, "nav.profile"), href: "/profile", icon: "user" },
 ];
 ---
 
@@ -101,8 +103,9 @@ const tiles = [
       </a>
     )}
 
-    <!-- Quick-action grid — real destinations only -->
-    <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
+    <!-- Quick-action grid — real destinations only. Desktop-only: the mobile BottomNav
+         already links these, so the tiles are hidden on phones to avoid duplicate entries. -->
+    <div class="hidden gap-3 md:grid md:grid-cols-5">
       {tiles.map((tile) => (
         <a
           href={tile.href}
@@ -137,6 +140,21 @@ const tiles = [
               stroke-linejoin="round"
             >
               <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+            </svg>
+          )}
+          {tile.icon === "pack" && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5.5 8a2.5 2.5 0 1 1 1.9-4.13A2.5 2.5 0 1 1 9 7.3l6 6a2.5 2.5 0 1 1 1.6 4.2 2.5 2.5 0 1 1-4.2-1.6l-6-6A2.5 2.5 0 0 1 5.5 8Z" />
             </svg>
           )}
           {tile.icon === "dog" && (
