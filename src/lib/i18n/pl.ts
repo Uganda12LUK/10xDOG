@@ -21,8 +21,17 @@ const pl: Record<string, string> = {
   "nav.profile": "Profil",
   "nav.dogs": "Psy",
   "nav.pack": "Stado",
+  "nav.settings": "Ustawienia",
   "nav.signout": "Wyloguj się",
   "nav.unreadAria": "nieprzeczytane wiadomości",
+  "nav.packBadgeAria": "nowe powiadomienia w Stadzie",
+
+  // settings & profiles hub
+  "settings.title": "Ustawienia i profile",
+  "settings.dogs": "Twoje psy",
+  "settings.dogsDesc": "Dodawaj i edytuj profile swoich psów.",
+  "settings.profile": "Twój profil",
+  "settings.profileDesc": "Imię, zdjęcie, lokalizacja i prywatność.",
 
   // meetings
   "meetings.title": "Spotkania",
@@ -66,6 +75,11 @@ const pl: Record<string, string> = {
   "dashboard.welcomeBack": "Witaj z powrotem",
   "dashboard.greeting": "Cześć",
   "dashboard.addFirstDog": "Dodaj pierwszego psa",
+  "dashboard.whatsNew": "Co nowego",
+  "dashboard.newMessages": "Nowe wiadomości",
+  "dashboard.receivedBones": "Otrzymane kości",
+  "dashboard.invitations": "Zaproszenia",
+  "dashboard.nothingNew": "Brak nowości — wszystko ogarnięte 🐾",
   "dashboard.tiles.proposeMeeting": "Zaproponuj spotkanie",
   "dashboard.tiles.dogMap": "Mapa psów",
   "dashboard.tiles.myMeetings": "Moje spotkania",

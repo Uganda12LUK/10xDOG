@@ -149,6 +149,21 @@ export async function listPendingReceived(client: SupabaseClient, userId: string
 }
 
 // "Moje stado": accepted connections in either direction.
+// Count of incoming, still-pending bone requests (someone threw you a bone).
+// Cheap head count for the nav badge and the dashboard, no profile hydration.
+export async function countPendingReceived(client: SupabaseClient, userId: string): Promise<number> {
+  const result = await client
+    .from("pack_connections")
+    .select("id", { count: "exact", head: true })
+    .eq("addressee_id", userId)
+    .eq("status", "pending");
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+  return result.count ?? 0;
+}
+
 export async function listPack(client: SupabaseClient, userId: string): Promise<PackMember[]> {
   const result = await client
     .from("pack_connections")

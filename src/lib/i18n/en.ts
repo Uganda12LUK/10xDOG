@@ -21,8 +21,17 @@ const en: Record<string, string> = {
   "nav.profile": "Profile",
   "nav.dogs": "Dogs",
   "nav.pack": "Pack",
+  "nav.settings": "Settings",
   "nav.signout": "Sign out",
   "nav.unreadAria": "unread messages",
+  "nav.packBadgeAria": "new Pack notifications",
+
+  // settings & profiles hub
+  "settings.title": "Settings & profiles",
+  "settings.dogs": "Your dogs",
+  "settings.dogsDesc": "Add and edit your dogs' profiles.",
+  "settings.profile": "Your profile",
+  "settings.profileDesc": "Name, photo, location and privacy.",
 
   // meetings
   "meetings.title": "Meetings",
@@ -66,6 +75,11 @@ const en: Record<string, string> = {
   "dashboard.welcomeBack": "Welcome back",
   "dashboard.greeting": "Hi",
   "dashboard.addFirstDog": "Add your first dog",
+  "dashboard.whatsNew": "What's new",
+  "dashboard.newMessages": "New messages",
+  "dashboard.receivedBones": "Bones received",
+  "dashboard.invitations": "Invitations",
+  "dashboard.nothingNew": "Nothing new — all caught up 🐾",
   "dashboard.tiles.proposeMeeting": "Propose a meeting",
   "dashboard.tiles.dogMap": "Dog map",
   "dashboard.tiles.myMeetings": "My meetings",

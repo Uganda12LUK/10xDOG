@@ -1,0 +1,78 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { t } from "@/lib/i18n";
+
+const { locale } = Astro.locals;
+
+// Combined "Settings & profiles" hub: the dog profiles and the user profile used to
+// be separate dashboard entries; they now live together here. The underlying pages
+// (/dogs, /profile) are unchanged — this just groups the way in.
+const sections = [
+  { label: t(locale, "settings.dogs"), desc: t(locale, "settings.dogsDesc"), href: "/dogs", icon: "dog" },
+  { label: t(locale, "settings.profile"), desc: t(locale, "settings.profileDesc"), href: "/profile", icon: "user" },
+];
+---
+
+<Layout title={t(locale, "settings.title")}>
+  <div class="mx-auto w-full max-w-2xl px-4 py-6">
+    <h1 class="mb-6 flex items-center gap-2 text-2xl font-bold text-foreground">
+      <span aria-hidden="true">⚙️</span>
+      {t(locale, "settings.title")}
+    </h1>
+
+    <div class="grid gap-3 sm:grid-cols-2">
+      {sections.map((s) => (
+        <a href={s.href} class="card-interactive flex items-start gap-3 rounded-xl bg-card p-4 shadow-card">
+          <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+            {s.icon === "dog" && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5" />
+                <path d="M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5" />
+                <path d="M8 14v.5M16 14v.5" />
+                <path d="M11.25 16.25h1.5L12 17l-.75-.75Z" />
+                <path d="M4.42 11.247A13.152 13.152 0 0 0 4 14.556C4 18.728 7.582 21 12 21s8-2.272 8-6.444c0-1.061-.162-2.2-.493-3.309m-9.243-6.082A8.801 8.801 0 0 1 12 4c.78 0 1.5.108 2.161.306" />
+              </svg>
+            )}
+            {s.icon === "user" && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+              </svg>
+            )}
+          </span>
+          <span class="min-w-0">
+            <span class="block font-semibold text-foreground">{s.label}</span>
+            <span class="block text-sm text-muted-foreground">{s.desc}</span>
+          </span>
+        </a>
+      ))}
+    </div>
+
+    <form method="POST" action="/api/auth/signout" class="mt-6">
+      <button type="submit" class="text-sm text-muted-foreground transition-colors hover:text-primary">
+        {t(locale, "nav.signout")}
+      </button>
+    </form>
+  </div>
+</Layout>

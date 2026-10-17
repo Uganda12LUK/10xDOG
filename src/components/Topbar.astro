@@ -6,10 +6,10 @@ import { t } from "@/lib/i18n";
 
 interface Props {
   currentPath: string;
-  unreadCount?: number;
+  packBadge?: number;
 }
 
-const { currentPath, unreadCount = 0 } = Astro.props;
+const { currentPath, packBadge = 0 } = Astro.props;
 const { user, locale } = Astro.locals;
 
 let pendingCount = 0;
@@ -33,8 +33,7 @@ const tabs = [
   { href: "/map", label: t(locale, "nav.map"), exact: false },
   { href: "/meetings", label: t(locale, "nav.meetings"), exact: false },
   { href: "/pack", label: t(locale, "nav.pack"), exact: false },
-  { href: "/dogs", label: t(locale, "nav.dogs"), exact: false },
-  { href: "/profile", label: t(locale, "nav.profile"), exact: false },
+  { href: "/settings", label: t(locale, "nav.settings"), exact: false },
 ] as const;
 
 function isActive(href: string, exact: boolean): boolean {
@@ -47,14 +46,14 @@ function isActive(href: string, exact: boolean): boolean {
   {user ? (
     <>
       <a
-        href="/profile"
+        href="/settings"
         class:list={[
           "flex size-9 items-center justify-center rounded-full text-sm font-semibold transition-colors",
-          isActive("/profile", false)
+          isActive("/settings", false)
             ? "bg-primary text-primary-foreground"
             : "bg-muted text-muted-foreground hover:bg-accent",
         ]}
-        aria-label={t(locale, "nav.profile")}
+        aria-label={t(locale, "nav.settings")}
         title={user.email}
       >
         {initial}
@@ -75,7 +74,7 @@ function isActive(href: string, exact: boolean): boolean {
             >
               {tab.label}
               {tab.href === "/meetings" && pendingCount > 0 ? ` (${pendingCount})` : ""}
-              {tab.href === "/pack" && unreadCount > 0 ? ` (${unreadCount})` : ""}
+              {tab.href === "/pack" && packBadge > 0 ? ` (${packBadge})` : ""}
             </a>
           );
         })}
