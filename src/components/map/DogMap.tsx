@@ -17,12 +17,24 @@ function deterministicOffset(id: string): [number, number] {
   return [((h % 1001) - 500) / 28000, (((h >> 4) % 1001) - 500) / 18000];
 }
 
-function makeDogIcon(name: string) {
+// Escape a value before embedding it in divIcon HTML. The photo URL is derived
+// from a storage path that includes a user-supplied file extension, so treat it
+// as untrusted in attribute context.
+function escapeHtml(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// The dog's map marker: its profile photo in a circular, brand-ringed badge. When
+// the owner hasn't set a photo, fall back to the dog's initial on a solid pin.
+function makeDogIcon(name: string, photoUrl: string | null) {
   const trimmed = name.trim();
-  const initial = trimmed.length > 0 ? trimmed[0].toUpperCase() : "🐾";
+  const initial = trimmed.length > 0 ? escapeHtml(trimmed[0].toUpperCase()) : "🐾";
+  const inner = photoUrl
+    ? `<img src="${escapeHtml(photoUrl)}" alt="" style="width:100%;height:100%;object-fit:cover;" />`
+    : `<span style="font-size:13px;font-weight:600;">${initial}</span>`;
   return L.divIcon({
     className: "",
-    html: `<div style="width:36px;height:36px;border-radius:50%;background:var(--color-primary);color:var(--color-primary-foreground);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.25);">${initial}</div>`,
+    html: `<div style="width:36px;height:36px;border-radius:50%;overflow:hidden;background:var(--color-primary);color:var(--color-primary-foreground);display:flex;align-items:center;justify-content:center;border:2px solid var(--color-primary);box-shadow:0 2px 6px rgba(0,0,0,.25);">${inner}</div>`,
     iconSize: [36, 36],
     iconAnchor: [18, 18],
   });
@@ -104,7 +116,7 @@ export default function DogMap({ dogs, center, onDogSelect, userCenter, onUserMo
         <Marker
           key={dog.id}
           position={pos}
-          icon={makeDogIcon(dog.name)}
+          icon={makeDogIcon(dog.name, dog.photoUrl)}
           eventHandlers={{
             click: () => {
               onDogSelect(dog);
