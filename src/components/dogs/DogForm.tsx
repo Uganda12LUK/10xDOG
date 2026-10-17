@@ -19,6 +19,7 @@ export default function DogForm({ dog, serverError, locale }: Props) {
   const [name, setName] = useState(dog?.name ?? "");
   const [breed, setBreed] = useState(dog?.breed ?? "");
   const [size, setSize] = useState<string>(dog?.size ?? "");
+  const [weight, setWeight] = useState<string>(dog?.weightKg != null ? String(dog.weightKg) : "");
   const [traits, setTraits] = useState<string[]>(dog?.traits ?? []);
   const [birthdate, setBirthdate] = useState(dog?.birthdate ?? "");
   const [errors, setErrors] = useState<{ name?: string }>({});
@@ -74,27 +75,29 @@ export default function DogForm({ dog, serverError, locale }: Props) {
             <label htmlFor="breed" className="text-muted-foreground mb-1 block text-sm">
               {t(locale, "form.dog.breed")}
             </label>
-            <select
+            {/* A datalist combobox: type to filter the suggestions, or enter a breed
+                that isn't listed (custom breed). Posts as a plain text field. */}
+            <input
               id="breed"
               name="breed"
+              list="breed-options"
               value={breed}
               onChange={(e) => {
                 setBreed(e.target.value);
               }}
+              placeholder={t(locale, "form.dog.selectBreed")}
+              autoComplete="off"
               className={cn(
                 "border-input bg-background text-foreground w-full rounded-lg border px-3 py-2 text-sm",
                 "focus:ring-ring focus:ring-2 focus:outline-none",
               )}
-            >
-              <option value="" disabled>
-                {t(locale, "form.dog.selectBreed")}
-              </option>
+            />
+            <datalist id="breed-options">
               {BREEDS.map((b) => (
-                <option key={b} value={b}>
-                  {b}
-                </option>
+                <option key={b} value={b} />
               ))}
-            </select>
+            </datalist>
+            <p className="text-muted-foreground mt-1 text-xs">{t(locale, "form.dog.breedHint")}</p>
           </div>
 
           <div>
@@ -120,6 +123,31 @@ export default function DogForm({ dog, serverError, locale }: Props) {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label htmlFor="weight_kg" className="text-muted-foreground mb-1 block text-sm">
+              {t(locale, "form.dog.weight")}
+            </label>
+            <input
+              id="weight_kg"
+              name="weight_kg"
+              type="number"
+              min="0"
+              max="150"
+              step="0.1"
+              inputMode="decimal"
+              value={weight}
+              onChange={(e) => {
+                setWeight(e.target.value);
+              }}
+              placeholder={t(locale, "form.dog.weightPlaceholder")}
+              className={cn(
+                "border-input bg-background text-foreground w-full rounded-lg border px-3 py-2 text-sm",
+                "focus:ring-ring focus:ring-2 focus:outline-none",
+              )}
+            />
+            <p className="text-muted-foreground mt-1 text-xs">{t(locale, "form.dog.weightHint")}</p>
           </div>
         </div>
 

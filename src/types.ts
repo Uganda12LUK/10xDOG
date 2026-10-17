@@ -48,6 +48,7 @@ export interface Dog {
   breed: string;
   birthdate: string | null;
   size: DogSize | null;
+  weightKg: number | null;
   traits: string[];
   photoPath: string | null;
   photoUrl: string | null;
@@ -85,6 +86,7 @@ export interface DogInput {
   breed: string;
   birthdate?: string | null;
   size?: DogSize | null;
+  weightKg?: number | null;
   traits?: string[];
   photo?: File | null;
 }

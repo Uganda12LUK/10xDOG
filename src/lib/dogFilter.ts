@@ -3,9 +3,18 @@
 // and the list, so the two can never disagree. No React / Leaflet imports here.
 
 import type { DogWithOwner } from "@/types";
-import type { DogSize } from "@/lib/dogAttributes";
+import { sizeFromWeight, type DogSize } from "@/lib/dogAttributes";
 import { cityCenter, distanceKm } from "@/lib/geo";
 import { ageFromBirthdate } from "@/lib/age";
+
+/**
+ * A dog's size for filtering: its explicitly chosen size if set, otherwise the
+ * bucket derived from its recorded weight. This is what links the map's size
+ * filter to the weight owners enter in the profile.
+ */
+export function effectiveSize(dog: Pick<DogWithOwner, "size" | "weightKg">): DogSize | null {
+  return dog.size ?? sizeFromWeight(dog.weightKg);
+}
 
 // Age buckets derived from the dog's birthdate. Chosen to be meaningful to owners
 // rather than exact years, and computed with the existing `ageFromBirthdate` helper.
@@ -62,7 +71,7 @@ export function filterDogs(
 
   return dogs.filter((dog) => {
     if (breed && dog.breed !== breed) return false;
-    if (size && dog.size !== size) return false;
+    if (size && effectiveSize(dog) !== size) return false;
     if (traits.length > 0 && !traits.every((t) => dog.traits.includes(t))) return false;
 
     if (ageBucket) {

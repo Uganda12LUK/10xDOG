@@ -19,7 +19,8 @@ function makeDog(overrides: Partial<DogWithOwner>): DogWithOwner {
     name: overrides.name ?? "Rex",
     breed: overrides.breed ?? "Labrador",
     birthdate: overrides.birthdate ?? yearsAgo(5),
-    size: overrides.size ?? "medium",
+    size: overrides.size !== undefined ? overrides.size : "medium",
+    weightKg: overrides.weightKg ?? null,
     traits: overrides.traits ?? [],
     photoPath: null,
     photoUrl: null,
@@ -64,6 +65,25 @@ describe("filterDogs", () => {
   it("narrows by size", () => {
     const result = filterDogs(dogs, criteria({ size: "medium" }), RZESZOW_CENTER);
     expect(result.map((d) => d.id)).toEqual(["c"]);
+  });
+
+  it("derives size from weight when no explicit size is set", () => {
+    // size:null so the filter must fall back to the weight bucket
+    const tiny = makeDog({ id: "tiny", size: null, weightKg: 5 }); // small (≤10)
+    const mid = makeDog({ id: "mid", size: null, weightKg: 20 }); // medium (≤25)
+    const big = makeDog({ id: "big", size: null, weightKg: 40 }); // large (>25)
+    const pool = [tiny, mid, big];
+
+    expect(filterDogs(pool, criteria({ size: "small" }), RZESZOW_CENTER).map((d) => d.id)).toEqual(["tiny"]);
+    expect(filterDogs(pool, criteria({ size: "medium" }), RZESZOW_CENTER).map((d) => d.id)).toEqual(["mid"]);
+    expect(filterDogs(pool, criteria({ size: "large" }), RZESZOW_CENTER).map((d) => d.id)).toEqual(["big"]);
+  });
+
+  it("prefers the explicit size over the weight-derived one", () => {
+    // A 40 kg dog explicitly marked small stays small for the filter.
+    const mislabelled = makeDog({ id: "m", size: "small", weightKg: 40 });
+    expect(filterDogs([mislabelled], criteria({ size: "small" }), RZESZOW_CENTER).map((d) => d.id)).toEqual(["m"]);
+    expect(filterDogs([mislabelled], criteria({ size: "large" }), RZESZOW_CENTER)).toHaveLength(0);
   });
 
   it("requires ALL selected traits (AND)", () => {
