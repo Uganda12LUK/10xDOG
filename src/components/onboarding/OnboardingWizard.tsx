@@ -34,6 +34,7 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
   const [ownerPhoto, setOwnerPhoto] = useState<File | null>(null);
   const [dogs, setDogs] = useState<DogDraft[]>([emptyDog()]);
   const [submitting, setSubmitting] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const inputClass = cn(
@@ -102,7 +103,11 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
           d.photo,
         );
       }
-      window.location.href = "/dashboard";
+      // Confirm success before leaving, then hand off to the dashboard.
+      setSaved(true);
+      window.setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 1200);
     } catch (e) {
       setError(e instanceof Error ? e.message : t(locale, "onboarding.saveError"));
       setSubmitting(false);
@@ -297,11 +302,12 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
       </section>
 
       {error ? <p className="text-destructive text-sm">{error}</p> : null}
+      {saved ? <p className="text-success text-sm font-medium">{t(locale, "onboarding.savedOk")}</p> : null}
 
       <button
         type="button"
         onClick={() => void finish()}
-        disabled={submitting}
+        disabled={submitting || saved}
         className={cn(buttonVariants(), "w-full gap-1")}
       >
         <Save className="size-4" /> {submitting ? t(locale, "onboarding.saving") : t(locale, "onboarding.finish")}
