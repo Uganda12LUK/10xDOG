@@ -102,6 +102,7 @@ export interface DogEvent {
   title: string;
   type: DogEventType;
   eventDate: string; // yyyy-mm-dd — first (or only) occurrence
+  eventTime: string | null; // HH:MM, optional time of day
   recurrence: DogEventRecurrence;
   recurrenceInterval: number;
   notes: string | null;
@@ -113,6 +114,7 @@ export interface DogEventInput {
   title: string;
   type: DogEventType;
   eventDate: string;
+  eventTime?: string | null;
   recurrence: DogEventRecurrence;
   recurrenceInterval: number;
   notes?: string | null;

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Save, Pencil, Trash2 } from "lucide-react";
 import { t, type Locale } from "@/lib/i18n";
 import { DOG_EVENT_RECURRENCES, DOG_EVENT_TYPES, nextOccurrence } from "@/lib/dogEventAttributes";
 import { buttonVariants } from "@/components/ui/button";
@@ -20,9 +20,12 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
   const [title, setTitle] = useState("");
   const [type, setType] = useState<DogEventType>("vaccination");
   const [eventDate, setEventDate] = useState(todayISO());
+  const [eventTime, setEventTime] = useState("");
   const [recurrence, setRecurrence] = useState<DogEventRecurrence>("none");
   const [interval, setIntervalValue] = useState("1");
   const [notes, setNotes] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +35,7 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
     return map;
   }, [dogs]);
 
-  // Sorted for display: upcoming occurrences first (soonest at top), past one-offs last.
+  // Upcoming occurrences first (soonest at top), past one-offs last.
   const sorted = useMemo(() => {
     return [...events]
       .map((e) => ({ event: e, next: nextOccurrence(e.eventDate, e.recurrence, e.recurrenceInterval) }))
@@ -49,34 +52,62 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
     "focus:ring-ring focus:ring-2 focus:outline-none",
   );
 
-  async function add(e: React.SubmitEvent<HTMLFormElement>) {
+  function resetForm() {
+    setEditingId(null);
+    setTitle("");
+    setType("vaccination");
+    setEventDate(todayISO());
+    setEventTime("");
+    setRecurrence("none");
+    setIntervalValue("1");
+    setNotes("");
+    setDogId(dogs[0]?.id ?? "");
+  }
+
+  function startEdit(event: DogEvent) {
+    setEditingId(event.id);
+    setDogId(event.dogId);
+    setTitle(event.title);
+    setType(event.type);
+    setEventDate(event.eventDate);
+    setEventTime(event.eventTime ?? "");
+    setRecurrence(event.recurrence);
+    setIntervalValue(String(event.recurrenceInterval));
+    setNotes(event.notes ?? "");
+    setError(null);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function submit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (busy || !dogId || title.trim().length === 0) return;
     setBusy(true);
     setError(null);
+    const payload = {
+      dogId,
+      title: title.trim(),
+      type,
+      eventDate,
+      eventTime: eventTime.length > 0 ? eventTime : null,
+      recurrence,
+      recurrenceInterval: recurrence === "none" ? 1 : Number(interval) || 1,
+      notes: notes.trim(),
+    };
     try {
-      const res = await fetch("/api/dog-events", {
-        method: "POST",
+      const url = editingId ? `/api/dog-events?id=${editingId}` : "/api/dog-events";
+      const res = await fetch(url, {
+        method: editingId ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          dogId,
-          title: title.trim(),
-          type,
-          eventDate,
-          recurrence,
-          recurrenceInterval: recurrence === "none" ? 1 : Number(interval) || 1,
-          notes: notes.trim(),
-        }),
+        body: JSON.stringify(payload),
       });
       const data = (await res.json()) as { event?: DogEvent; error?: string };
-      const created = data.event;
-      if (!res.ok || !created) {
+      const saved = data.event;
+      if (!res.ok || !saved) {
         setError(data.error ?? t(locale, "dogEvent.saveError"));
         return;
       }
-      setEvents((prev) => [...prev, created]);
-      setTitle("");
-      setNotes("");
+      setEvents((prev) => (editingId ? prev.map((ev) => (ev.id === saved.id ? saved : ev)) : [...prev, saved]));
+      resetForm();
     } catch {
       setError(t(locale, "dogEvent.saveError"));
     } finally {
@@ -86,23 +117,30 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
 
   async function remove(id: string) {
     const res = await fetch(`/api/dog-events?id=${id}`, { method: "DELETE" });
-    if (res.ok) setEvents((prev) => prev.filter((e) => e.id !== id));
+    if (res.ok) {
+      setEvents((prev) => prev.filter((e) => e.id !== id));
+      if (editingId === id) resetForm();
+    }
+    setConfirmId(null);
   }
 
-  function formatDate(iso: string): string {
-    return new Date(`${iso}T00:00:00Z`).toLocaleDateString(locale === "pl" ? "pl-PL" : "en-GB", {
+  function formatWhen(iso: string, time: string | null): string {
+    const date = new Date(`${iso}T00:00:00Z`).toLocaleDateString(locale === "pl" ? "pl-PL" : "en-GB", {
       day: "numeric",
       month: "short",
       year: "numeric",
       timeZone: "UTC",
     });
+    return time ? `${date}, ${time}` : date;
   }
 
   return (
     <div className="space-y-6">
-      {/* Add form */}
-      <form onSubmit={(e) => void add(e)} className="border-border space-y-3 rounded-xl border p-4">
-        <h2 className="text-foreground text-sm font-semibold">{t(locale, "dogEvent.addTitle")}</h2>
+      {/* Add / edit form */}
+      <form onSubmit={(e) => void submit(e)} className="border-border space-y-3 rounded-xl border p-4">
+        <h2 className="text-foreground text-sm font-semibold">
+          {editingId ? t(locale, "dogEvent.editTitle") : t(locale, "dogEvent.addTitle")}
+        </h2>
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
@@ -160,7 +198,7 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
           />
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           <div>
             <label htmlFor="c-date" className="text-muted-foreground mb-1 block text-sm">
               {t(locale, "dogEvent.date")}
@@ -175,6 +213,23 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
               className={inputClass}
             />
           </div>
+          <div>
+            <label htmlFor="c-time" className="text-muted-foreground mb-1 block text-sm">
+              {t(locale, "dogEvent.time")}
+            </label>
+            <input
+              id="c-time"
+              type="time"
+              value={eventTime}
+              onChange={(e) => {
+                setEventTime(e.target.value);
+              }}
+              className={inputClass}
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
           <div>
             <label htmlFor="c-rec" className="text-muted-foreground mb-1 block text-sm">
               {t(locale, "dogEvent.recurrence")}
@@ -230,9 +285,22 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
 
         {error ? <p className="text-destructive text-sm">{error}</p> : null}
 
-        <button type="submit" disabled={busy || !dogId} className={cn(buttonVariants({ size: "sm" }), "gap-1")}>
-          <Plus className="size-4" /> {t(locale, "dogEvent.add")}
-        </button>
+        <div className="flex items-center gap-2">
+          <button type="submit" disabled={busy || !dogId} className={cn(buttonVariants({ size: "sm" }), "gap-1")}>
+            <Save className="size-4" /> {editingId ? t(locale, "dogEvent.saveChanges") : t(locale, "dogEvent.save")}
+          </button>
+          {editingId ? (
+            <button
+              type="button"
+              onClick={() => {
+                resetForm();
+              }}
+              className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+            >
+              {t(locale, "dogEvent.cancelEdit")}
+            </button>
+          ) : null}
+        </div>
       </form>
 
       {/* List */}
@@ -249,18 +317,55 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
                   {event.recurrence !== "none" ? ` · ${t(locale, `dogEvent.recurrence.${event.recurrence}`)}` : ""}
                 </p>
                 <p className={cn("mt-0.5 text-xs", next ? "text-primary" : "text-muted-foreground")}>
-                  {next ? formatDate(next) : t(locale, "dogEvent.past")}
+                  {next ? formatWhen(next, event.eventTime) : t(locale, "dogEvent.past")}
                 </p>
                 {event.notes ? <p className="text-muted-foreground mt-1 text-xs">{event.notes}</p> : null}
               </div>
-              <button
-                type="button"
-                onClick={() => void remove(event.id)}
-                aria-label={t(locale, "dogEvent.delete")}
-                className="text-muted-foreground hover:text-destructive shrink-0 transition-colors"
-              >
-                <Trash2 className="size-4" />
-              </button>
+
+              {confirmId === event.id ? (
+                <div className="flex shrink-0 items-center gap-1">
+                  <span className="text-muted-foreground text-xs">{t(locale, "dogEvent.confirmDelete")}</span>
+                  <button
+                    type="button"
+                    onClick={() => void remove(event.id)}
+                    className={cn(buttonVariants({ variant: "destructive", size: "sm" }))}
+                  >
+                    {t(locale, "dogEvent.confirmYes")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setConfirmId(null);
+                    }}
+                    className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+                  >
+                    {t(locale, "dogEvent.confirmNo")}
+                  </button>
+                </div>
+              ) : (
+                <div className="flex shrink-0 items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      startEdit(event);
+                    }}
+                    aria-label={t(locale, "dogEvent.edit")}
+                    className="text-muted-foreground hover:text-primary p-1 transition-colors"
+                  >
+                    <Pencil className="size-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setConfirmId(event.id);
+                    }}
+                    aria-label={t(locale, "dogEvent.delete")}
+                    className="text-muted-foreground hover:text-destructive p-1 transition-colors"
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
+                </div>
+              )}
             </li>
           ))}
         </ul>

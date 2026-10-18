@@ -9,6 +9,7 @@ interface DogEventRow {
   title: string;
   type: string;
   event_date: string;
+  event_time: string | null;
   recurrence: string;
   recurrence_interval: number;
   notes: string | null;
@@ -23,6 +24,8 @@ function mapRow(row: DogEventRow): DogEvent {
     title: row.title,
     type: row.type as DogEventType,
     eventDate: row.event_date,
+    // Postgres `time` comes back as HH:MM:SS; keep HH:MM for display/forms.
+    eventTime: row.event_time ? row.event_time.slice(0, 5) : null,
     recurrence: row.recurrence as DogEventRecurrence,
     recurrenceInterval: row.recurrence_interval,
     notes: row.notes,
@@ -75,10 +78,41 @@ export async function createDogEvent(client: SupabaseClient, ownerId: string, in
       title: input.title,
       type: input.type,
       event_date: input.eventDate,
+      event_time: input.eventTime ?? null,
       recurrence: input.recurrence,
       recurrence_interval: input.recurrenceInterval,
       notes: input.notes ?? null,
     })
+    .select()
+    .single();
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+  return mapRow(result.data as DogEventRow);
+}
+
+// Update an existing event. RLS + the owner filter ensure only the owner's row changes.
+export async function updateDogEvent(
+  client: SupabaseClient,
+  ownerId: string,
+  id: string,
+  input: DogEventInput,
+): Promise<DogEvent> {
+  const result = await client
+    .from("dog_events")
+    .update({
+      dog_id: input.dogId,
+      title: input.title,
+      type: input.type,
+      event_date: input.eventDate,
+      event_time: input.eventTime ?? null,
+      recurrence: input.recurrence,
+      recurrence_interval: input.recurrenceInterval,
+      notes: input.notes ?? null,
+    })
+    .eq("id", id)
+    .eq("owner_id", ownerId)
     .select()
     .single();
 
