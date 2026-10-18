@@ -63,9 +63,9 @@ export const POST: APIRoute = async (context) => {
       notes: parsed.data.notes,
     });
     return json({ event }, 200);
-  } catch (e) {
-    // Surface the real reason (e.g. missing table/column, RLS) to speed diagnosis.
-    return json({ error: e instanceof Error ? e.message : "Could not save event" }, 500);
+  } catch {
+    // RLS rejection (e.g. dog not owned) lands here too — keep the reason generic.
+    return json({ error: "Could not save event" }, 500);
   }
 };
 
@@ -108,8 +108,8 @@ export const PATCH: APIRoute = async (context) => {
       notes: parsed.data.notes,
     });
     return json({ event }, 200);
-  } catch (e) {
-    return json({ error: e instanceof Error ? e.message : "Could not save event" }, 500);
+  } catch {
+    return json({ error: "Could not save event" }, 500);
   }
 };
 
