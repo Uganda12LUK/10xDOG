@@ -1,33 +1,73 @@
 ---
 import { t } from "@/lib/i18n";
+import PawMeetLogo from "@/components/PawMeetLogo.astro";
 
 const { locale } = Astro.locals;
 ---
 
-<div class="px-4 pb-8 sm:px-8">
-  <!-- Hero section -->
-  <div class="mx-auto flex max-w-4xl flex-col items-center justify-center px-4 py-24 text-center sm:py-32 lg:py-40">
-    <h1 class="mb-6 text-5xl font-bold leading-tight text-foreground sm:text-6xl lg:text-7xl">PawMeet</h1>
-    <p class="mb-10 max-w-2xl text-lg text-muted-foreground sm:text-xl">{t(locale, "landing.tagline")}</p>
-    <div class="flex flex-col gap-4 sm:flex-row">
+<div class="px-4 pb-16 sm:px-8">
+  <!-- Brand bar -->
+  <div class="mx-auto flex max-w-5xl items-center justify-between py-6">
+    <a href="/" class="flex items-center gap-2 font-semibold text-foreground">
+      <PawMeetLogo class="size-7 text-primary" />
+      <span class="text-lg tracking-tight">PawMeet</span>
+    </a>
+    <a href="/auth/signin" class="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+      {t(locale, "auth.signIn")}
+    </a>
+  </div>
+
+  <!-- Hero -->
+  <div class="mx-auto flex max-w-3xl flex-col items-center px-4 py-16 text-center sm:py-24">
+    <span class="mb-6 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-accent-foreground">
+      <PawMeetLogo class="size-4" />
+      {t(locale, "landing.badge")}
+    </span>
+    <h1 class="mb-6 text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+      {t(locale, "landing.heroTitle")}
+    </h1>
+    <p class="mb-10 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+      {t(locale, "landing.heroLede")}
+    </p>
+    <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
       <a
         href="/auth/signup"
-        class="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-base font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+        class="inline-flex items-center justify-center rounded-lg bg-primary px-7 py-3.5 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
       >
         {t(locale, "landing.getStarted")}
       </a>
       <a
         href="/auth/signin"
-        class="inline-flex items-center justify-center rounded-lg border border-border px-6 py-3 text-base font-medium text-foreground transition-colors hover:bg-accent"
+        class="inline-flex items-center justify-center rounded-lg border border-border px-7 py-3.5 text-base font-medium text-foreground transition-colors hover:bg-accent"
       >
         {t(locale, "auth.signIn")}
       </a>
     </div>
+    <p class="mt-5 text-sm text-muted-foreground">{t(locale, "landing.heroNote")}</p>
+  </div>
+
+  <!-- How it works -->
+  <div class="mx-auto max-w-5xl px-4 py-12">
+    <div class="mb-10 text-center">
+      <h2 class="mb-3 text-2xl font-bold text-foreground sm:text-3xl">{t(locale, "landing.how.title")}</h2>
+      <p class="mx-auto max-w-2xl text-muted-foreground">{t(locale, "landing.how.subtitle")}</p>
+    </div>
+    <ol class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+      {[1, 2, 3].map((step) => (
+        <li class="flex flex-col rounded-2xl border border-border bg-card p-6">
+          <span class="mb-4 flex size-10 items-center justify-center rounded-full bg-primary text-base font-bold text-primary-foreground">
+            {step}
+          </span>
+          <h3 class="mb-2 text-lg font-semibold text-foreground">{t(locale, `landing.step${step}.title`)}</h3>
+          <p class="text-sm leading-relaxed text-muted-foreground">{t(locale, `landing.step${step}.desc`)}</p>
+        </li>
+      ))}
+    </ol>
   </div>
 
   <!-- Feature cards -->
-  <div class="mx-auto grid max-w-4xl grid-cols-1 gap-6 px-4 pb-24 sm:grid-cols-3">
-    <div class="rounded-xl border border-border bg-card p-6">
+  <div class="mx-auto grid max-w-5xl grid-cols-1 gap-6 px-4 py-12 sm:grid-cols-3">
+    <div class="rounded-2xl border border-border bg-card p-6">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -49,7 +89,7 @@ const { locale } = Astro.locals;
       <p class="text-sm leading-relaxed text-muted-foreground">{t(locale, "landing.feature1.desc")}</p>
     </div>
 
-    <div class="rounded-xl border border-border bg-card p-6">
+    <div class="rounded-2xl border border-border bg-card p-6">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -69,7 +109,7 @@ const { locale } = Astro.locals;
       <p class="text-sm leading-relaxed text-muted-foreground">{t(locale, "landing.feature2.desc")}</p>
     </div>
 
-    <div class="rounded-xl border border-border bg-card p-6">
+    <div class="rounded-2xl border border-border bg-card p-6">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -89,4 +129,27 @@ const { locale } = Astro.locals;
       <p class="text-sm leading-relaxed text-muted-foreground">{t(locale, "landing.feature3.desc")}</p>
     </div>
   </div>
+
+  <!-- Closing CTA -->
+  <div class="mx-auto max-w-5xl px-4 py-12">
+    <div class="flex flex-col items-center gap-6 rounded-2xl border border-border bg-accent px-6 py-12 text-center sm:px-12">
+      <PawMeetLogo class="size-12 text-primary" />
+      <h2 class="max-w-2xl text-2xl font-bold text-foreground sm:text-3xl">{t(locale, "landing.cta.title")}</h2>
+      <p class="max-w-xl text-accent-foreground">{t(locale, "landing.cta.subtitle")}</p>
+      <a
+        href="/auth/signup"
+        class="inline-flex items-center justify-center rounded-lg bg-primary px-7 py-3.5 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+      >
+        {t(locale, "landing.getStarted")}
+      </a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="mx-auto max-w-5xl px-4 py-8 text-center text-sm text-muted-foreground">
+    <span class="inline-flex items-center gap-2">
+      <PawMeetLogo class="size-4 text-muted-foreground" />
+      {t(locale, "landing.footer")}
+    </span>
+  </footer>
 </div>

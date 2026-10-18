@@ -317,6 +317,22 @@ const pl: Record<string, string> = {
     "Wysyłaj zaproszenia na spacery i koordynuj wyjścia. Twój pies zasługuje na dobre towarzystwo.",
   "landing.feature3.title": "Profile psów",
   "landing.feature3.desc": "Dodaj swoje psy z rasą i zdjęciem. Przeglądaj inne psy przed zaproponowaniem spotkania.",
+  "landing.badge": "Dla właścicieli psów",
+  "landing.heroTitle": "Każdy spacer jest lepszy w towarzystwie",
+  "landing.heroLede":
+    "PawMeet łączy Cię z właścicielami psów w okolicy, żeby Twój pies miał dobre towarzystwo — i Ty też. Załóż darmowe konto i zaplanuj pierwszy wspólny spacer już dziś.",
+  "landing.heroNote": "Za darmo · Zajmuje chwilę · Widoczne tylko dla zalogowanych",
+  "landing.how.title": "Jak to działa",
+  "landing.how.subtitle": "Trzy kroki od samotnych kółek wokół bloku do prawdziwej spacerowej paczki.",
+  "landing.step1.title": "Załóż konto",
+  "landing.step1.desc": "Zarejestruj się i dodaj psa — imię, rasę i zdjęcie. To około minuty.",
+  "landing.step2.title": "Znajdź właścicieli w pobliżu",
+  "landing.step2.desc": "Zobacz, kto spaceruje w Twojej dzielnicy, i przejrzyj ich psy, zanim się odezwiesz.",
+  "landing.step3.title": "Umów spacer",
+  "landing.step3.desc": "Wyślij zaproszenie na spacer, wybierz miejsce i czas, a psy same się zaprzyjaźnią.",
+  "landing.cta.title": "Gotowy, żeby znaleźć psu kompana na spacer?",
+  "landing.cta.subtitle": "Dołącz do PawMeet i poznaj właścicieli psów zza rogu.",
+  "landing.footer": "PawMeet — spacery, razem.",
 };
 
 export default pl;
