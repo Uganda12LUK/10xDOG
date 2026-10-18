@@ -21,20 +21,25 @@ let pendingBones = 0;
 let pendingInvites = 0;
 let upcoming: UpcomingEvent[] = [];
 if (supabase && user) {
-  const [fetchedDogs, profile, unread, bones, invites, upcomingEvents] = await Promise.all([
+  const [fetchedDogs, profile, unread, bones, invites] = await Promise.all([
     listDogs(supabase, user.id),
     getProfile(supabase, user.id),
     countUnread(supabase, user.id),
     countPendingReceived(supabase, user.id),
     countReceivedPending(supabase, user.id),
-    listUpcomingForOwner(supabase, user.id, 2),
   ]);
   dogs = fetchedDogs;
   if (profile?.name) displayName = profile.name;
   unreadMessages = unread;
   pendingBones = bones;
   pendingInvites = invites;
-  upcoming = upcomingEvents;
+  // Upcoming events are best-effort: if the dog_events table isn't present yet
+  // (migration not applied), degrade to an empty widget rather than 500 the page.
+  try {
+    upcoming = await listUpcomingForOwner(supabase, user.id, 2);
+  } catch {
+    upcoming = [];
+  }
 }
 const firstDog: Dog | null = dogs.length > 0 ? dogs[0] : null;
 
