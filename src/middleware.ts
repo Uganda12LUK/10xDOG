@@ -49,19 +49,20 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return context.redirect("/dashboard");
   }
 
-  // Soft onboarding: nudge logged-in users with no profile toward /profile,
-  // without trapping them (skip /profile itself, plus API and auth paths).
+  // First-time onboarding: a logged-in user with no profile yet is sent to the
+  // single-screen /onboarding wizard (owner + dog in one go). Skip /onboarding
+  // itself (don't trap) plus API and auth paths.
   if (
     context.locals.user &&
     supabase &&
     isProtected &&
-    !pathname.startsWith("/profile") &&
+    !pathname.startsWith("/onboarding") &&
     !pathname.startsWith("/api") &&
     !pathname.startsWith("/auth")
   ) {
     const profile = await getProfile(supabase, context.locals.user.id);
     if (!profile) {
-      return context.redirect("/profile?onboarding=1");
+      return context.redirect("/onboarding");
     }
   }
 

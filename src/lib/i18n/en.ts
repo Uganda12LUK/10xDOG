@@ -51,6 +51,7 @@ const en: Record<string, string> = {
   "onboarding.removeDog": "Remove this dog",
   "onboarding.cityRequired": "Enter your city.",
   "onboarding.photoChosen": "Photo selected ✓",
+  "onboarding.savedOk": "Saved ✓ — taking you to your dashboard…",
   "onboarding.yourPhoto": "Your photo (optional)",
   "onboarding.yourPhotoHint":
     "The owner's photo — shown on your profile. You can set your map location later in your profile.",
