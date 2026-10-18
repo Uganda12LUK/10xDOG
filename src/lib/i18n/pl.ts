@@ -85,6 +85,8 @@ const pl: Record<string, string> = {
   "dogEvent.confirmDelete": "Na pewno usunąć?",
   "dogEvent.confirmYes": "Usuń",
   "dogEvent.confirmNo": "Anuluj",
+  "dogEvent.savedOk": "Zapisano wydarzenie ✓",
+  "dogEvent.savedChangesOk": "Zapisano zmiany ✓",
   "dogEvent.empty": "Brak terminów. Dodaj pierwszy powyżej.",
   "dogEvent.past": "Minęło",
   "dogEvent.delete": "Usuń termin",

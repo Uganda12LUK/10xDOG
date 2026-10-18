@@ -28,6 +28,7 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [okMsg, setOkMsg] = useState<string | null>(null);
 
   const dogName = useMemo(() => {
     const map: Record<string, string> = {};
@@ -81,8 +82,10 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
   async function submit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (busy || !dogId || title.trim().length === 0) return;
+    const wasEditing = editingId !== null;
     setBusy(true);
     setError(null);
+    setOkMsg(null);
     const payload = {
       dogId,
       title: title.trim(),
@@ -108,6 +111,7 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
       }
       setEvents((prev) => (editingId ? prev.map((ev) => (ev.id === saved.id ? saved : ev)) : [...prev, saved]));
       resetForm();
+      setOkMsg(wasEditing ? t(locale, "dogEvent.savedChangesOk") : t(locale, "dogEvent.savedOk"));
     } catch {
       setError(t(locale, "dogEvent.saveError"));
     } finally {
@@ -284,6 +288,7 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
         </div>
 
         {error ? <p className="text-destructive text-sm">{error}</p> : null}
+        {okMsg ? <p className="text-primary text-sm font-medium">{okMsg}</p> : null}
 
         <div className="flex items-center gap-2">
           <button type="submit" disabled={busy || !dogId} className={cn(buttonVariants({ size: "sm" }), "gap-1")}>
