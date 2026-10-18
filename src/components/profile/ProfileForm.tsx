@@ -56,7 +56,7 @@ export default function ProfileForm({ profile, location, serverError, saved, onb
   const [name, setName] = useState(profile?.name ?? "");
   const [street, setStreet] = useState(location?.street ?? "");
   const [city, setCity] = useState(profile?.city ?? "");
-  const [errors, setErrors] = useState<{ name?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; city?: string }>({});
 
   // Home-location pin. Initial position: saved location → city center → Poland center.
   // The saved pin comes from the owner-only location row (getOwnLocation), not the public profile.
@@ -117,6 +117,9 @@ export default function ProfileForm({ profile, location, serverError, saved, onb
     if (!name.trim()) {
       next.name = "Name is required";
     }
+    if (!city.trim()) {
+      next.city = t(locale, "form.profile.cityRequired");
+    }
 
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -165,10 +168,12 @@ export default function ProfileForm({ profile, location, serverError, saved, onb
 
           <FormField
             id="city"
+            required
             label={t(locale, "form.profile.city")}
             value={city}
             onChange={(v) => {
               setCity(v);
+              clearError("city");
               // Known cities jump instantly; everything else is geocoded by the effect below.
               if (!movedPin) {
                 const c = cityCenter(v);
@@ -176,6 +181,7 @@ export default function ProfileForm({ profile, location, serverError, saved, onb
               }
             }}
             placeholder="Your city"
+            error={errors.city}
             icon={<Building2 className="size-4" />}
           />
 

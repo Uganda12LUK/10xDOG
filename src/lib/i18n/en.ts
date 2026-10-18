@@ -287,6 +287,7 @@ const en: Record<string, string> = {
   "form.profile.name": "Name",
   "form.profile.street": "Street",
   "form.profile.city": "City",
+  "form.profile.cityRequired": "City is required",
   "form.profile.photo": "Your photo (owner)",
   "form.profile.location": "Your location",
   "form.profile.locationHint": "Drag the pin to set your spot — dog search starts from here.",
