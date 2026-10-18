@@ -74,6 +74,13 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
     "border-input bg-background text-foreground w-full rounded-lg border px-3 py-2 text-sm",
     "focus:ring-ring focus:ring-2 focus:outline-none",
   );
+  // File inputs get a styled "button" segment so they don't fall back to the raw,
+  // inconsistent native control.
+  const fileInputClass = cn(
+    "border-input bg-background text-muted-foreground w-full cursor-pointer rounded-lg border text-sm",
+    "file:bg-primary file:text-primary-foreground file:mr-3 file:cursor-pointer file:border-0 file:px-3 file:py-2",
+    "file:text-sm file:font-medium hover:file:bg-primary/90",
+  );
   const req = <span className="text-destructive ml-0.5">*</span>;
 
   // A manual pin move (drag/tap) wins over city-driven auto-placement.
@@ -199,52 +206,57 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
         <p className="text-muted-foreground mx-auto max-w-sm text-sm">{t(locale, "onboarding.welcomeBody")}</p>
       </header>
 
-      {/* About you (owner) */}
-      <section className="border-border space-y-4 rounded-xl border p-4">
-        <h2 className="text-foreground flex items-center gap-2 text-sm font-semibold">
-          <User className="size-4" /> {t(locale, "onboarding.ownerSection")}
+      {/* About you (owner) — primary-tinted so it's visually distinct from the dogs */}
+      <section className="border-primary/30 bg-primary/5 space-y-4 rounded-xl border p-4">
+        <h2 className="text-foreground flex items-center gap-2 text-base font-semibold">
+          <span className="bg-primary text-primary-foreground flex size-7 items-center justify-center rounded-full">
+            <User className="size-4" />
+          </span>
+          {t(locale, "onboarding.ownerSection")}
         </h2>
-        <div>
-          <label htmlFor="o-name" className="text-muted-foreground mb-1 block text-sm">
-            {t(locale, "onboarding.yourName")}
-            {req}
-          </label>
-          <input
-            id="o-name"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
-            placeholder={t(locale, "onboarding.yourNamePlaceholder")}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <label htmlFor="o-city" className="text-muted-foreground mb-1 block text-sm">
-            {t(locale, "onboarding.yourCity")}
-            {req}
-          </label>
-          <input
-            id="o-city"
-            value={city}
-            onChange={(e) => {
-              onCity(e.target.value);
-            }}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <label htmlFor="o-street" className="text-muted-foreground mb-1 block text-sm">
-            {t(locale, "form.profile.street")}
-          </label>
-          <input
-            id="o-street"
-            value={street}
-            onChange={(e) => {
-              setStreet(e.target.value);
-            }}
-            className={inputClass}
-          />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="o-name" className="text-muted-foreground mb-1 block text-sm">
+              {t(locale, "onboarding.yourName")}
+              {req}
+            </label>
+            <input
+              id="o-name"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+              placeholder={t(locale, "onboarding.yourNamePlaceholder")}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label htmlFor="o-city" className="text-muted-foreground mb-1 block text-sm">
+              {t(locale, "onboarding.yourCity")}
+              {req}
+            </label>
+            <input
+              id="o-city"
+              value={city}
+              onChange={(e) => {
+                onCity(e.target.value);
+              }}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label htmlFor="o-street" className="text-muted-foreground mb-1 block text-sm">
+              {t(locale, "form.profile.street")}
+            </label>
+            <input
+              id="o-street"
+              value={street}
+              onChange={(e) => {
+                setStreet(e.target.value);
+              }}
+              className={inputClass}
+            />
+          </div>
         </div>
         <div>
           <label htmlFor="o-ownerphoto" className="text-muted-foreground mb-1 block text-sm">
@@ -258,7 +270,7 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
             onChange={(e) => {
               setOwnerPhoto(e.target.files?.[0] ?? null);
             }}
-            className={inputClass}
+            className={fileInputClass}
           />
           {ownerPhoto ? <p className="text-success mt-1 text-xs">{t(locale, "onboarding.photoChosen")}</p> : null}
         </div>
@@ -296,15 +308,18 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
         </div>
       </section>
 
-      {/* Your dogs */}
+      {/* Your dogs — accent-tinted cards, visually separate from the owner block */}
       <section className="space-y-3">
-        <h2 className="text-foreground flex items-center gap-2 text-sm font-semibold">
-          <PawPrint className="size-4" /> {t(locale, "onboarding.dogsSection")}
+        <h2 className="text-foreground flex items-center gap-2 text-base font-semibold">
+          <span className="bg-accent text-accent-foreground flex size-7 items-center justify-center rounded-full">
+            <PawPrint className="size-4" />
+          </span>
+          {t(locale, "onboarding.dogsSection")}
         </h2>
         <p className="text-muted-foreground text-xs">{t(locale, "onboarding.dogBody")}</p>
 
         {dogs.map((d, i) => (
-          <div key={d.key} className="border-border space-y-3 rounded-xl border p-4">
+          <div key={d.key} className="border-border bg-muted/40 space-y-3 rounded-xl border p-4">
             <div className="flex items-center justify-between">
               <span className="text-foreground text-sm font-medium">
                 {t(locale, "onboarding.dogLabel")} {i + 1}
@@ -438,7 +453,7 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
                 onChange={(e) => {
                   patchDog(d.key, { photo: e.target.files?.[0] ?? null });
                 }}
-                className={inputClass}
+                className={fileInputClass}
               />
               {d.photo ? <p className="text-success mt-1 text-xs">{t(locale, "onboarding.photoChosen")}</p> : null}
             </div>
