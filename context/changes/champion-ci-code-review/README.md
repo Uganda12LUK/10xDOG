@@ -43,3 +43,10 @@ analizuje konkretny diff PR i zostawia komentarz na Pull Requeście.
 3. **Komentarz agenta** — komentarz na PR (podsumowanie i/lub inline) autorstwa bota akcji.
 
 Zrzuty wrzuć do `context/changes/champion-ci-code-review/evidence/` (katalog na screeny).
+
+## Uwaga o działaniu akcji
+
+`anthropics/claude-code-action` uruchomi review **tylko gdy plik workflow w PR jest
+identyczny z wersją na gałęzi domyślnej** (`main`) — to zabezpieczenie przed wykradaniem
+sekretów przez modyfikację workflow w PR. Dlatego PR zmieniający sam workflow jest
+pomijany (walidacja); review działa na PR-ach, które workflow już zastały na `main`.
