@@ -91,6 +91,32 @@ export interface DogInput {
   photo?: File | null;
 }
 
+export type DogEventType = "vaccination" | "vet_visit" | "exam" | "grooming" | "medication" | "other";
+export type DogEventRecurrence = "none" | "daily" | "weekly" | "monthly" | "yearly";
+
+export interface DogEvent {
+  id: string;
+  dogId: string;
+  ownerId: string;
+  title: string;
+  type: DogEventType;
+  eventDate: string; // yyyy-mm-dd — first (or only) occurrence
+  recurrence: DogEventRecurrence;
+  recurrenceInterval: number;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface DogEventInput {
+  dogId: string;
+  title: string;
+  type: DogEventType;
+  eventDate: string;
+  recurrence: DogEventRecurrence;
+  recurrenceInterval: number;
+  notes?: string | null;
+}
+
 export interface PackConnection {
   id: string;
   requesterId: string;

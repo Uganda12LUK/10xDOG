@@ -6,6 +6,7 @@ import { getProfile } from "@/lib/services/profile";
 import { countUnread } from "@/lib/services/chat";
 import { countPendingReceived } from "@/lib/services/pack";
 import { countReceivedPending } from "@/lib/services/invitation";
+import { listUpcomingForOwner, type UpcomingEvent } from "@/lib/services/dogEvents";
 import { ageStringFromBirthdate } from "@/lib/age";
 import { t } from "@/lib/i18n";
 import type { Dog } from "@/types";
@@ -18,30 +19,45 @@ let displayName = user?.email?.split("@")[0] ?? "você";
 let unreadMessages = 0;
 let pendingBones = 0;
 let pendingInvites = 0;
+let upcoming: UpcomingEvent[] = [];
 if (supabase && user) {
-  const [fetchedDogs, profile, unread, bones, invites] = await Promise.all([
+  const [fetchedDogs, profile, unread, bones, invites, upcomingEvents] = await Promise.all([
     listDogs(supabase, user.id),
     getProfile(supabase, user.id),
     countUnread(supabase, user.id),
     countPendingReceived(supabase, user.id),
     countReceivedPending(supabase, user.id),
+    listUpcomingForOwner(supabase, user.id, 2),
   ]);
   dogs = fetchedDogs;
   if (profile?.name) displayName = profile.name;
   unreadMessages = unread;
   pendingBones = bones;
   pendingInvites = invites;
+  upcoming = upcomingEvents;
 }
 const firstDog: Dog | null = dogs.length > 0 ? dogs[0] : null;
 
-// "What's new" summary — the three things a user comes back to act on. Each card
-// links to where the action happens. All-zero renders a calm "nothing new" line.
+// Dog names for the upcoming-events widget.
+const dogNameById: Record<string, string> = {};
+for (const d of dogs) dogNameById[d.id] = d.name;
+function fmtEventDate(iso: string): string {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString(locale === "pl" ? "pl-PL" : "en-GB", {
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  });
+}
+
+// "What's new" summary — only the things that actually have something waiting.
+// Zero-count items are dropped entirely (a wall of "0" tiles reads as noise), and
+// when nothing is pending the whole section is hidden rather than showing zeros.
 const updates = [
   { label: t(locale, "dashboard.newMessages"), count: unreadMessages, href: "/pack" },
   { label: t(locale, "dashboard.receivedBones"), count: pendingBones, href: "/pack" },
   { label: t(locale, "dashboard.invitations"), count: pendingInvites, href: "/meetings" },
-];
-const hasUpdates = unreadMessages + pendingBones + pendingInvites > 0;
+].filter((u) => u.count > 0);
+const updatesColsClass = updates.length === 1 ? "grid-cols-1" : updates.length === 2 ? "grid-cols-2" : "grid-cols-3";
 
 // Home quick-actions — the same sections (and labels) as the nav bars, so desktop home
 // mirrors the mobile BottomNav. Desktop-only: on mobile the fixed BottomNav already
@@ -50,6 +66,7 @@ const tiles = [
   { label: t(locale, "nav.map"), href: "/map", icon: "map-pin" },
   { label: t(locale, "nav.meetings"), href: "/meetings", icon: "calendar" },
   { label: t(locale, "nav.pack"), href: "/pack", icon: "pack" },
+  { label: t(locale, "nav.calendar"), href: "/calendar", icon: "cal" },
   { label: t(locale, "nav.settings"), href: "/settings", icon: "settings" },
 ];
 ---
@@ -64,28 +81,23 @@ const tiles = [
       </h1>
     </header>
 
-    <!-- What's new — messages, bones, invitations awaiting action -->
-    <section class="mb-5">
-      <h2 class="mb-2 text-sm font-semibold text-muted-foreground">{t(locale, "dashboard.whatsNew")}</h2>
-      {hasUpdates ? (
-        <div class="grid grid-cols-3 gap-3 md:max-w-md">
+    <!-- What's new — only non-zero items; the whole section is hidden when nothing waits -->
+    {updates.length > 0 && (
+      <section class="mb-5">
+        <h2 class="mb-2 text-sm font-semibold text-muted-foreground">{t(locale, "dashboard.whatsNew")}</h2>
+        <div class:list={["grid gap-3 md:max-w-md", updatesColsClass]}>
           {updates.map((u) => (
             <a
               href={u.href}
-              class:list={[
-                "card-interactive flex flex-col items-center justify-center gap-1 rounded-xl p-3 text-center shadow-card",
-                u.count > 0 ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground",
-              ]}
+              class="card-interactive flex flex-col items-center justify-center gap-1 rounded-xl bg-primary p-3 text-center text-primary-foreground shadow-card"
             >
               <span class="text-xl font-bold leading-none">{u.count}</span>
               <span class="text-[11px] font-medium leading-tight">{u.label}</span>
             </a>
           ))}
         </div>
-      ) : (
-        <p class="text-sm text-muted-foreground">{t(locale, "dashboard.nothingNew")}</p>
-      )}
-    </section>
+      </section>
+    )}
 
     <!-- DogCard or CTA -->
     {firstDog ? (
@@ -149,9 +161,36 @@ const tiles = [
       </a>
     )}
 
+    <!-- Upcoming dog-calendar events — the two soonest, or a calm empty line -->
+    <section class="mb-5 md:max-w-md">
+      <h2 class="mb-2 flex items-center justify-between text-sm font-semibold text-muted-foreground">
+        <span>{t(locale, "dogEvent.upcoming")}</span>
+        <a href="/calendar" class="text-primary hover:underline">
+          {t(locale, "dogEvent.openCalendar")}
+        </a>
+      </h2>
+      {upcoming.length === 0 ? (
+        <p class="text-sm text-muted-foreground">{t(locale, "dogEvent.noUpcoming")}</p>
+      ) : (
+        <ul class="divide-border border-border divide-y rounded-xl border">
+          {upcoming.map((u) => (
+            <li class="flex items-center justify-between gap-3 p-3">
+              <div class="min-w-0">
+                <p class="truncate font-medium text-foreground">{u.event.title}</p>
+                <p class="truncate text-xs text-muted-foreground">
+                  {t(locale, `dogEvent.type.${u.event.type}`)} · {dogNameById[u.event.dogId] ?? "—"}
+                </p>
+              </div>
+              <span class="shrink-0 text-sm font-medium text-primary">{fmtEventDate(u.nextDate)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+
     <!-- Quick-action grid — real destinations only. Desktop-only: the mobile BottomNav
          already links these, so the tiles are hidden on phones to avoid duplicate entries. -->
-    <div class="hidden gap-3 md:grid md:grid-cols-4">
+    <div class="hidden gap-3 md:grid md:grid-cols-5">
       {tiles.map((tile) => (
         <a
           href={tile.href}
@@ -201,6 +240,22 @@ const tiles = [
               stroke-linejoin="round"
             >
               <path d="M5.5 8a2.5 2.5 0 1 1 1.9-4.13A2.5 2.5 0 1 1 9 7.3l6 6a2.5 2.5 0 1 1 1.6 4.2 2.5 2.5 0 1 1-4.2-1.6l-6-6A2.5 2.5 0 0 1 5.5 8Z" />
+            </svg>
+          )}
+          {tile.icon === "cal" && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 12.75h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm-3-2.25h.008v.008H9v-.008ZM9 15h.008v.008H9V15Zm6-2.25h.008v.008H15v-.008ZM15 15h.008v.008H15V15Z" />
+              <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
             </svg>
           )}
           {tile.icon === "settings" && (

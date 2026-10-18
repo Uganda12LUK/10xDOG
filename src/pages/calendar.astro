@@ -1,0 +1,40 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import DogCalendar from "@/components/calendar/DogCalendar";
+import { createClient } from "@/lib/supabase";
+import { listDogs } from "@/lib/services/dog";
+import { listEventsForOwner } from "@/lib/services/dogEvents";
+import { buttonVariants } from "@/components/ui/button";
+import { t } from "@/lib/i18n";
+import type { Dog, DogEvent } from "@/types";
+
+const { user, locale } = Astro.locals;
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+
+let dogs: Dog[] = [];
+let events: DogEvent[] = [];
+if (supabase && user) {
+  [dogs, events] = await Promise.all([listDogs(supabase, user.id), listEventsForOwner(supabase, user.id)]);
+}
+const dogOptions = dogs.map((d) => ({ id: d.id, name: d.name }));
+---
+
+<Layout title={t(locale, "dogEvent.pageTitle")}>
+  <div class="mx-auto w-full max-w-2xl px-4 py-6">
+    <h1 class="mb-6 flex items-center gap-2 text-2xl font-bold text-foreground">
+      <span aria-hidden="true">📅</span>
+      {t(locale, "dogEvent.pageTitle")}
+    </h1>
+
+    {dogs.length === 0 ? (
+      <div class="rounded-xl border border-border bg-card p-8 text-center text-card-foreground">
+        <p class="mb-4 text-muted-foreground">{t(locale, "dogEvent.needDog")}</p>
+        <a href="/dogs/new" class:list={[buttonVariants({ size: "sm" })]}>
+          {t(locale, "dogs.add")}
+        </a>
+      </div>
+    ) : (
+      <DogCalendar dogs={dogOptions} initialEvents={events} locale={locale} client:load />
+    )}
+  </div>
+</Layout>

@@ -31,6 +31,11 @@ const tabs = [
     exact: false,
   },
   {
+    href: "/calendar",
+    label: t(locale, "nav.calendar"),
+    exact: false,
+  },
+  {
     href: "/settings",
     label: t(locale, "nav.settings"),
     exact: false,
@@ -137,6 +142,23 @@ function isActive(href: string, exact: boolean): boolean {
             aria-hidden="true"
           >
             <path d="M5.5 8a2.5 2.5 0 1 1 1.9-4.13A2.5 2.5 0 1 1 9 7.3l6 6a2.5 2.5 0 1 1 1.6 4.2 2.5 2.5 0 1 1-4.2-1.6l-6-6A2.5 2.5 0 0 1 5.5 8Z" />
+          </svg>
+        )}
+        {tab.href === "/calendar" && (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 12.75h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm-3-2.25h.008v.008H9v-.008ZM9 15h.008v.008H9V15Zm6-2.25h.008v.008H15v-.008ZM15 15h.008v.008H15V15Z" />
+            <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
           </svg>
         )}
         {tab.href === "/settings" && (

@@ -4,6 +4,7 @@ export const PROTECTED_ROUTES = [
   "/settings",
   "/profile",
   "/dogs",
+  "/calendar",
   "/map",
   "/meetings",
   "/pack",
