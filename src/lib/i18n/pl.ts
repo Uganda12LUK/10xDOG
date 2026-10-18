@@ -286,6 +286,7 @@ const pl: Record<string, string> = {
   "form.profile.name": "Imię",
   "form.profile.street": "Ulica",
   "form.profile.city": "Miasto",
+  "form.profile.cityRequired": "Miasto jest wymagane",
   "form.profile.photo": "Twoje zdjęcie (właściciela)",
   "form.profile.location": "Twoja lokalizacja",
   "form.profile.locationHint":

@@ -17,7 +17,7 @@ const optionalTrimmed = z
 const profileSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
   street: optionalTrimmed,
-  city: optionalTrimmed,
+  city: z.string().trim().min(1, "City is required"),
   location_lat: z.coerce.number().min(-90).max(90).nullish(),
   location_lng: z.coerce.number().min(-180).max(180).nullish(),
 });
