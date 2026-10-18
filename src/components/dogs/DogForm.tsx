@@ -22,7 +22,7 @@ export default function DogForm({ dog, serverError, locale }: Props) {
   const [weight, setWeight] = useState<string>(dog?.weightKg != null ? String(dog.weightKg) : "");
   const [traits, setTraits] = useState<string[]>(dog?.traits ?? []);
   const [birthdate, setBirthdate] = useState(dog?.birthdate ?? "");
-  const [errors, setErrors] = useState<{ name?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; breed?: string }>({});
 
   const today = new Date().toISOString().slice(0, 10);
 
@@ -31,6 +31,9 @@ export default function DogForm({ dog, serverError, locale }: Props) {
 
     if (!name.trim()) {
       next.name = t(locale, "form.dog.nameRequired");
+    }
+    if (!breed.trim()) {
+      next.breed = t(locale, "form.dog.breedRequired");
     }
 
     setErrors(next);
@@ -60,6 +63,7 @@ export default function DogForm({ dog, serverError, locale }: Props) {
         <div className="space-y-4">
           <FormField
             id="name"
+            required
             label={t(locale, "form.dog.name")}
             value={name}
             onChange={(v) => {
@@ -74,6 +78,7 @@ export default function DogForm({ dog, serverError, locale }: Props) {
           <div>
             <label htmlFor="breed" className="text-muted-foreground mb-1 block text-sm">
               {t(locale, "form.dog.breed")}
+              <span className="text-destructive ml-0.5">*</span>
             </label>
             {/* A datalist combobox: type to filter the suggestions, or enter a breed
                 that isn't listed (custom breed). Posts as a plain text field. */}
@@ -84,12 +89,13 @@ export default function DogForm({ dog, serverError, locale }: Props) {
               value={breed}
               onChange={(e) => {
                 setBreed(e.target.value);
+                clearError("breed");
               }}
               placeholder={t(locale, "form.dog.selectBreed")}
               autoComplete="off"
               className={cn(
-                "border-input bg-background text-foreground w-full rounded-lg border px-3 py-2 text-sm",
-                "focus:ring-ring focus:ring-2 focus:outline-none",
+                "bg-background text-foreground w-full rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:outline-none",
+                errors.breed ? "border-destructive focus:ring-destructive" : "border-input focus:ring-ring",
               )}
             />
             <datalist id="breed-options">
@@ -97,7 +103,11 @@ export default function DogForm({ dog, serverError, locale }: Props) {
                 <option key={b} value={b} />
               ))}
             </datalist>
-            <p className="text-muted-foreground mt-1 text-xs">{t(locale, "form.dog.breedHint")}</p>
+            {errors.breed ? (
+              <p className="text-destructive mt-1 text-xs">{errors.breed}</p>
+            ) : (
+              <p className="text-muted-foreground mt-1 text-xs">{t(locale, "form.dog.breedHint")}</p>
+            )}
           </div>
 
           <div>

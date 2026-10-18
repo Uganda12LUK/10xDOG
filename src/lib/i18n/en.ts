@@ -60,6 +60,9 @@ const en: Record<string, string> = {
   "onboarding.finish": "Save and finish",
   "onboarding.saving": "Saving…",
   "onboarding.saveError": "Couldn't save. Please try again.",
+  "onboarding.nameRequired": "Enter your name to continue.",
+  "onboarding.dogNameRequired": "Enter the dog's name to continue.",
+  "onboarding.breedRequired": "Pick or type a breed to continue.",
 
   // dog calendar
   "dogEvent.pageTitle": "Dog calendar",
@@ -88,6 +91,8 @@ const en: Record<string, string> = {
   "dogEvent.confirmNo": "Cancel",
   "dogEvent.savedOk": "Event saved ✓",
   "dogEvent.savedChangesOk": "Changes saved ✓",
+  "dogEvent.titleRequired": "Please enter an event title.",
+  "dogEvent.dogRequired": "Please choose a dog.",
   "dogEvent.empty": "No events yet. Add your first above.",
   "dogEvent.past": "Past",
   "dogEvent.delete": "Delete event",
@@ -240,6 +245,7 @@ const en: Record<string, string> = {
   "form.dog.name": "Name",
   "form.dog.namePlaceholder": "Your dog's name",
   "form.dog.nameRequired": "Name is required",
+  "form.dog.breedRequired": "Breed is required",
   "form.dog.breed": "Breed",
   "form.dog.selectBreed": "Type or pick a breed",
   "form.dog.breedHint": "Start typing to search — or enter your own breed if it's not listed.",

@@ -151,6 +151,7 @@ export default function ProfileForm({ profile, location, serverError, saved, onb
         <div className="space-y-4">
           <FormField
             id="name"
+            required
             label={t(locale, "form.profile.name")}
             value={name}
             onChange={(v) => {

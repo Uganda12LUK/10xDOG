@@ -59,6 +59,9 @@ const pl: Record<string, string> = {
   "onboarding.finish": "Zapisz i zakończ",
   "onboarding.saving": "Zapisuję…",
   "onboarding.saveError": "Nie udało się zapisać. Spróbuj ponownie.",
+  "onboarding.nameRequired": "Podaj swoje imię, aby przejść dalej.",
+  "onboarding.dogNameRequired": "Podaj imię psa, aby przejść dalej.",
+  "onboarding.breedRequired": "Wybierz lub wpisz rasę, aby przejść dalej.",
 
   // dog calendar
   "dogEvent.pageTitle": "Kalendarz psa",
@@ -87,6 +90,8 @@ const pl: Record<string, string> = {
   "dogEvent.confirmNo": "Anuluj",
   "dogEvent.savedOk": "Zapisano wydarzenie ✓",
   "dogEvent.savedChangesOk": "Zapisano zmiany ✓",
+  "dogEvent.titleRequired": "Podaj nazwę wydarzenia.",
+  "dogEvent.dogRequired": "Wybierz psa.",
   "dogEvent.empty": "Brak terminów. Dodaj pierwszy powyżej.",
   "dogEvent.past": "Minęło",
   "dogEvent.delete": "Usuń termin",
@@ -239,6 +244,7 @@ const pl: Record<string, string> = {
   "form.dog.name": "Imię",
   "form.dog.namePlaceholder": "Imię Twojego psa",
   "form.dog.nameRequired": "Imię jest wymagane",
+  "form.dog.breedRequired": "Rasa jest wymagana",
   "form.dog.breed": "Rasa",
   "form.dog.selectBreed": "Wpisz lub wybierz rasę",
   "form.dog.breedHint": "Zacznij pisać, aby wyszukać — albo wpisz własną rasę, jeśli nie ma jej na liście.",

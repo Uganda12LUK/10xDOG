@@ -45,6 +45,7 @@ export default function SignInForm({ serverError, locale }: Props) {
     <form method="POST" action="/api/auth/signin" className="space-y-4" onSubmit={handleSubmit} noValidate>
       <FormField
         id="email"
+        required
         type="email"
         label={t(locale, "auth.email")}
         value={email}
@@ -59,6 +60,7 @@ export default function SignInForm({ serverError, locale }: Props) {
 
       <FormField
         id="password"
+        required
         label={t(locale, "auth.password")}
         type={showPassword ? "text" : "password"}
         value={password}

@@ -81,11 +81,20 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
 
   async function submit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (busy || !dogId || title.trim().length === 0) return;
+    if (busy) return;
+    setOkMsg(null);
+    // Explicit, named validation instead of a silent no-op on empty required fields.
+    if (!dogId) {
+      setError(t(locale, "dogEvent.dogRequired"));
+      return;
+    }
+    if (title.trim().length === 0) {
+      setError(t(locale, "dogEvent.titleRequired"));
+      return;
+    }
     const wasEditing = editingId !== null;
     setBusy(true);
     setError(null);
-    setOkMsg(null);
     const payload = {
       dogId,
       title: title.trim(),
@@ -150,6 +159,7 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
           <div>
             <label htmlFor="c-dog" className="text-muted-foreground mb-1 block text-sm">
               {t(locale, "dogEvent.dog")}
+              <span className="text-destructive ml-0.5">*</span>
             </label>
             <select
               id="c-dog"
@@ -190,6 +200,7 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
         <div>
           <label htmlFor="c-title" className="text-muted-foreground mb-1 block text-sm">
             {t(locale, "dogEvent.titleLabel")}
+            <span className="text-destructive ml-0.5">*</span>
           </label>
           <input
             id="c-title"
@@ -206,6 +217,7 @@ export default function DogCalendar({ dogs, initialEvents, locale }: Props) {
           <div>
             <label htmlFor="c-date" className="text-muted-foreground mb-1 block text-sm">
               {t(locale, "dogEvent.date")}
+              <span className="text-destructive ml-0.5">*</span>
             </label>
             <input
               id="c-date"

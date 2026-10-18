@@ -36,10 +36,29 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
   const ownerPhotoUrl = useMemo(() => (ownerPhoto ? URL.createObjectURL(ownerPhoto) : null), [ownerPhoto]);
   const dogPhotoUrl = useMemo(() => (dogPhoto ? URL.createObjectURL(dogPhoto) : null), [dogPhoto]);
 
-  function canAdvance(): boolean {
-    if (steps[step] === "you") return name.trim().length > 0;
-    if (steps[step] === "dog") return dogName.trim().length > 0 && breed.trim().length > 0;
+  // Validate the current step; on a gap, name what's missing instead of silently
+  // disabling Next. Returns true when it's OK to advance.
+  function validateStep(): boolean {
+    if (steps[step] === "you" && name.trim().length === 0) {
+      setError(t(locale, "onboarding.nameRequired"));
+      return false;
+    }
+    if (steps[step] === "dog") {
+      if (dogName.trim().length === 0) {
+        setError(t(locale, "onboarding.dogNameRequired"));
+        return false;
+      }
+      if (breed.trim().length === 0) {
+        setError(t(locale, "onboarding.breedRequired"));
+        return false;
+      }
+    }
+    setError(null);
     return true;
+  }
+
+  function goNext() {
+    if (validateStep()) setStep((s) => s + 1);
   }
 
   async function post(url: string, fields: Record<string, string>, photo: File | null): Promise<void> {
@@ -105,6 +124,7 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
           <div>
             <label htmlFor="o-name" className="text-muted-foreground mb-1 block text-sm">
               {t(locale, "onboarding.yourName")}
+              <span className="text-destructive ml-0.5">*</span>
             </label>
             <input
               id="o-name"
@@ -161,6 +181,7 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
           <div>
             <label htmlFor="o-dogname" className="text-muted-foreground mb-1 block text-sm">
               {t(locale, "onboarding.dogName")}
+              <span className="text-destructive ml-0.5">*</span>
             </label>
             <input
               id="o-dogname"
@@ -174,6 +195,7 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
           <div>
             <label htmlFor="o-breed" className="text-muted-foreground mb-1 block text-sm">
               {t(locale, "form.dog.breed")}
+              <span className="text-destructive ml-0.5">*</span>
             </label>
             <input
               id="o-breed"
@@ -268,9 +290,11 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
             <Row label={t(locale, "form.dog.weight")} value={weight ? `${weight} kg` : "—"} />
             <Row label={t(locale, "onboarding.dogPhoto")} value={dogPhoto ? "✓" : "—"} />
           </dl>
-          {error ? <p className="text-destructive text-sm">{error}</p> : null}
         </section>
       )}
+
+      {/* Validation / save errors — shown on whatever step the user is on */}
+      {error ? <p className="text-destructive text-sm">{error}</p> : null}
 
       {/* Nav buttons */}
       <div className="flex items-center justify-between gap-3">
@@ -289,9 +313,8 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
           <button
             type="button"
             onClick={() => {
-              setStep((s) => s + 1);
+              goNext();
             }}
-            disabled={!canAdvance()}
             className={cn(buttonVariants({ size: "sm" }), "gap-1")}
           >
             {t(locale, "onboarding.next")} <ArrowRight className="size-4" />
