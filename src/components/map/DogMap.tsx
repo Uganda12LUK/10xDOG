@@ -3,19 +3,8 @@ import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { DogWithOwner } from "@/types";
-import { cityCenter } from "@/lib/geo";
+import { dogMapPosition } from "@/lib/dogFilter";
 import { userHomeIcon } from "./markerIcons";
-
-// A stable per-dog jitter so dogs in the same town don't stack on one point but
-// spread across the neighbourhood (~±2 km), as if on different streets. Purely
-// visual: the distance filter measures town-center to town-center (see dogFilter),
-// so widening this never changes which dogs a filter keeps.
-function deterministicOffset(id: string): [number, number] {
-  let h = 0;
-  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
-  // lat: 1° ≈ 111 km, lng: 1° ≈ 71 km at ~50°N → divisors tuned for ~±2 km each.
-  return [((h % 1001) - 500) / 28000, (((h >> 4) % 1001) - 500) / 18000];
-}
 
 // Escape a value before embedding it in divIcon HTML. The photo URL is derived
 // from a storage path that includes a user-supplied file extension, so treat it
@@ -38,15 +27,6 @@ function makeDogIcon(name: string, photoUrl: string | null) {
     iconSize: [36, 36],
     iconAnchor: [18, 18],
   });
-}
-
-// Each dog is anchored to its owner's town (CITY_CENTERS), with a small
-// deterministic offset so dogs in the same town don't overlap. Falls back to the
-// map's default center when the owner's city is unknown.
-function dogPosition(dog: DogWithOwner, fallback: [number, number]): [number, number] {
-  const base = cityCenter(dog.ownerCity) ?? fallback;
-  const [dlat, dlng] = deterministicOffset(dog.id);
-  return [base[0] + dlat, base[1] + dlng];
 }
 
 // Fit the viewport to the dog pins so towns spread across the region stay visible.
@@ -75,7 +55,12 @@ interface Props {
 }
 
 export default function DogMap({ dogs, center, onDogSelect, userCenter, onUserMove, radiusKm }: Props) {
-  const positioned = dogs.map((dog) => ({ dog, pos: dogPosition(dog, center) }));
+  // Pins share their coordinates with the distance filter (dogMapPosition), so the
+  // circle only ever contains pins the filter kept. A dog with no resolvable city
+  // has no pin — we drop it here rather than snap it onto the user's own location.
+  const positioned = dogs
+    .map((dog) => ({ dog, pos: dogMapPosition(dog) }))
+    .filter((p): p is { dog: DogWithOwner; pos: [number, number] } => p.pos !== null);
   const userMarkerRef = useRef<L.Marker>(null);
 
   return (
