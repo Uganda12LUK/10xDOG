@@ -95,6 +95,14 @@ Role: płaski model — wszyscy zalogowani użytkownicy mają te same możliwoś
 - Brak modułu weterynarzy i poleceń usług zwierzęcych w MVP — ekosystem (weterynarz, sklepy, grooming) to roadmap post-MVP.
 - Brak obsługi innych zwierząt niż psy w MVP — skupienie na psach; rozszerzenie na inne gatunki po weryfikacji hipotezy.
 
+## Kierunek po MVP (direction, nie MVP)
+
+Hierarchia produktu poza rdzeniem spacerowym:
+
+- **Grupy psów (pack)** — łączenie właścicieli w grupy; zbudowane po MVP (feature *pack*, `pack_connections`, consent-gated). Drugi filar obok spacerów.
+- **Miejsca przyjazne psom i ciekawe miejsca na spacer** — planowane; łączy się z OQ-003 (mapa miejsc spacerowych).
+- **Szukanie partnerów do rozmnażania** — daleki horyzont; w kodzie tylko scaffold `type='breeding'` (bez flow). Pełne wymagania hodowlane są w superseded `prd.md` (v1).
+
 ## Open Questions
 
 1. **Cold-start problem (FR-004)** — co pokazać użytkownikowi gdy lista właścicieli jest pusta? Potrzeba: empty state UX, seed data strategy, lub geolocation fallback na szerszy obszar. Owner: user. Block: no (MVP może wystartować z empty state; strategia cold-start wdrożona post-launch).

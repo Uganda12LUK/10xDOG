@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-**PawMeet** — a web app for dog owners to socialize their dogs (walk meetups) and find breeding partners. Scaffolded from the 10x Astro Starter. Product context lives in `context/foundation/`:
+**PawMeet** — a web app for dog owners to arrange dog walks together and build dog groups (packs). Planned next: dog-friendly places and interesting walk spots. Breeding-partner matching is a far-future idea — only a `type='breeding'` scaffold exists in code, no flow. Scaffolded from the 10x Astro Starter. Product context lives in `context/foundation/`:
 
-- `context/foundation/prd.md` — product requirements (features, user stories, business rules). Source of truth for *what* to build; note it also covers a breeding-partner flow not yet in `shape-notes.md`.
+- `context/foundation/prd-v2.md` — **current** product requirements (features, user stories, business rules). Source of truth for *what* to build: walk socialization core + dog groups (pack); breeding is a far-future direction only. `context/foundation/prd.md` is the **superseded v1** (breeding-as-must-have era), kept as decision history.
 - `context/foundation/tech-stack.md` — the stack decision and rationale.
 - `context/changes/bootstrap-verification/verification.md` — the scaffold's audit trail.
 - `CLAUDE.course.md` — the 10xDevs lesson toolkit instructions (the `/10x-*` skill chain). Kept for reference; not auto-loaded.
@@ -93,34 +93,26 @@ The active workflow triggers on `main` (both `push` and `pull_request`), so CI r
 
 <!-- BEGIN @przeprogramowani/10x-cli -->
 
-## 10xDevs AI Toolkit - Module 3, Lesson 5 (Debugging)
+## 10xDevs AI Toolkit - Module 4, Lesson 2 (Project Map)
 
-Turn a failure into a fix the agent can defend: evidence first, then a failing test, then the fix.
+Get up to speed in an unfamiliar or legacy repo from evidence, not from directory trees: **Wide Scan first, Deep Focus later.**
 
 ```
-signal (monitoring | log | flaky E2E | stack trace) -> gather evidence -> reproduce -> failing test -> fix -> verify
+git history + dependency graph + contributors -> context/map/repo-map.md -> focused /10x-research
 ```
 
 ### Task Router - Where to start
 
-| Skill | Use it when |
+| Skill / prompt | Use it when |
 | --- | --- |
-| `/10x-frame` | The report arrives as "bug + proposed fix". Check that the observed symptom and the stated cause actually match before anyone fixes anything. |
-| `/10x-new` -> `/10x-research` -> `/10x-plan` -> `/10x-implement` | The fix is more than a one-liner. Research collects the evidence; the plan starts with the failing regression test. |
-| `/10x-tdd` | Writing the regression test that reproduces the bug before the fix. |
-| `/10x-e2e` | The bug only shows up in the running app. Reproduce it in the browser and keep that test. |
-| `/10x-observability-audit` | Errors are missing, noisy or impossible to diagnose in production. It audits the critical flows for code that hides failures and writes a dated report under `context/audits/observability/`. Use `--verify <report>` to re-check an earlier report after fixes. |
+| `/10x-repo-map` | One-run Project Map. It ranks business capabilities by criticality × buzz, keeps its evidence in `context/map/evidence/`, and writes `context/map/repo-map.md` with risk zones, a first-day reading list and explicit unknowns. Use `--replace` to refresh; the previous run moves to `context/archive/`. |
+| `m4l2-1-territory-git-history` -> `m4l2-2-structure-dependency-cruiser` -> `m4l2-3-contributors-git` -> `m4l2-repo-map-synthesis` | The same map built step by step, one artifact at a time, so you can see what each evidence source adds. |
+| `/10x-research` | A question about one feature or area. The map covers breadth and takes no target; depth belongs to research. |
 
 ### Hard rules
 
-- **Evidence before a hypothesis.** Use what the error tracker, the logs, a reproduction and the code each show. Never guess a cause from the stack trace alone.
-- **The bug becomes a failing test first.** The fix is done when that test goes from red to green and stays in the suite.
-- **Never hide the evidence.** No empty `catch`, no ignored promise rejections, no failures turned into redirects or `200`s, no dropped error causes. If the fix needs a `catch`, it logs or reports the error with its cause.
-- **Fix the cause, not the test.** Don't edit an assertion to match the new behaviour unless the requirement itself changed.
-
-### Lesson boundaries
-
-- `/10x-observability-audit` reads code and writes a report. It never changes the audited code. Fixing what it finds goes through the change chain.
-- Choosing a monitoring vendor is `/10x-infra-research`, not this lesson.
+- **Let tools collect evidence outside the context window.** Use git, the forge and graph tools to gather data, then interpret only their condensed output. Never read the repo file by file.
+- **Exclude the noise.** Leave out lockfiles, generated code, bulk formatting commits, bot commits and agent-authored commits when ranking activity.
+- **Unknowns are part of the map.** Mark what the evidence can't show as unknown instead of filling the gap with a guess.
 
 <!-- END @przeprogramowani/10x-cli -->

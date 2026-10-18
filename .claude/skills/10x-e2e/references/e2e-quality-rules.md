@@ -72,37 +72,3 @@ each to your tool's idiom:
 
 If you work on a non-Playwright stack, write these mappings into your seed test
 and your E2E prompts so the agent produces idiomatic, stable tests for your tool.
-
-## Project conventions — PawMeet (added by /10x-e2e-setup)
-
-These are PawMeet-specific facts every generated spec must respect. They sit on
-top of the generic rules above, they do not replace them.
-
-- **Server, never `dev`.** The app is driven by `npm run e2e:preview` (build +
-  `astro preview`) on port **4321**; `astro dev` crashes under this toolchain.
-  The `webServer` already does this — tests never start their own server.
-- **i18n accessible names.** Default locale is **`en`** (`DEFAULT_LOCALE`), so an
-  anonymous visitor sees English names: `getByRole('heading', { name: 'Sign in' })`,
-  `getByLabel('Email')`, `getByLabel('Password')`. A few authed views are Polish
-  regardless of locale — the meetings tabs/actions: `getByRole('tab', { name: /zaproszenia/i })`,
-  `/nadchodzące/i`, and the `/akceptuj/i` button. Match what the view actually
-  renders; switch language by setting the `pawmeet_locale` cookie, never by
-  guessing a translation.
-- **Auth: no `storageState` here.** A logged-in session can't be minted locally
-  (local Supabase needs Docker, which is blocked on this machine), so there is no
-  `auth.setup.ts` / saved session. Prefer **signed-out** risks (auth-gate), which
-  need no backend. A spec that needs two real users (the invitation loop) signs in
-  through its own two-context UI flow against users seeded by
-  `tests/setup/playwright-global-setup.ts`, and must `test.skip()` when
-  `tests/setup/.e2e-users.json` is absent (local stack down) — skip, don't fail.
-- **Protected routes for auth-gate coverage** (from `src/lib/protected-routes.ts`):
-  `/dashboard`, `/profile`, `/dogs`, `/map`, `/meetings`. An unauthenticated GET to
-  any of them must redirect to `/auth/signin`.
-- **Cleanup for data-writing specs.** Rows written through the UI (e.g.
-  invitations) are cleaned via the Supabase **service-role** client in the global
-  setup's user re-seed; assert any direct cleanup call succeeded. Signed-out specs
-  write nothing and need no cleanup.
-- **Orphan preview listener.** `astro preview` (Cloudflare → wrangler/workerd) can
-  leave a listener on 4321 after a run. It's harmless for signed-out specs (stale
-  build still redirects), but kill stray `workerd.exe` if you need a guaranteed
-  cold build.
