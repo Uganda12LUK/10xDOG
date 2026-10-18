@@ -6,6 +6,16 @@
 export const DOG_SIZES = ["small", "medium", "large"] as const;
 export type DogSize = (typeof DOG_SIZES)[number];
 
+// Weight → size classification that connects the dog's recorded weight with the
+// map's size filter. Fixed, product-wide thresholds (kg) so the form, the filter,
+// and any hint agree: small ≤ 10, medium ≤ 25, large otherwise.
+export function sizeFromWeight(weightKg: number | null | undefined): DogSize | null {
+  if (weightKg == null || weightKg <= 0) return null;
+  if (weightKg <= 10) return "small";
+  if (weightKg <= 25) return "medium";
+  return "large";
+}
+
 export const DOG_TRAITS = [
   // positive / neutral
   "energetic",

@@ -156,6 +156,7 @@ interface DogRow {
   breed: string;
   birthdate: string | null;
   size: string | null;
+  weight_kg: number | string | null;
   traits: string[] | null;
   photo_path: string | null;
   created_at: string;
@@ -174,6 +175,7 @@ function mapDogRow(client: SupabaseClient, row: DogRow): Dog {
     breed: row.breed,
     birthdate: row.birthdate,
     size: (row.size as DogSize | null) ?? null,
+    weightKg: row.weight_kg == null ? null : Number(row.weight_kg),
     traits: row.traits ?? [],
     photoPath: row.photo_path,
     photoUrl,
@@ -232,6 +234,7 @@ export async function listDogsForMap(client: SupabaseClient): Promise<DogWithOwn
       ownerId: owner.profile.id,
       ownerName: owner.profile.name,
       ownerCity: owner.profile.city,
+      ownerAvatarUrl: owner.profile.avatarUrl,
     })),
   );
 }

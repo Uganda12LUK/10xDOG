@@ -1,9 +1,8 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase";
-import { BREEDS } from "@/lib/breeds";
 import { DOG_SIZES, DOG_TRAITS, type DogSize } from "@/lib/dogAttributes";
-import { createDog } from "@/lib/services/dog";
+import { createDog, listDogs } from "@/lib/services/dog";
 
 export const prerender = false;
 
@@ -12,9 +11,7 @@ const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
 
 const dogSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
-  breed: z.enum(BREEDS as unknown as [string, ...string[]], {
-    message: "Choose a breed from the list",
-  }),
+  breed: z.string().trim().min(1, "Breed is required").max(60, "Breed is too long"),
   birthdate: z
     .string()
     .trim()
@@ -37,6 +34,13 @@ const dogSchema = z.object({
     (value) => (typeof value === "string" && value.length > 0 ? value : null),
     z.enum(DOG_SIZES as unknown as [string, ...string[]], { message: "Invalid size" }).nullable(),
   ),
+  // Accept an empty field (null) or a positive number. Tolerate a comma decimal
+  // separator (pl-PL) by normalizing it to a dot before coercion.
+  weightKg: z.preprocess((value) => {
+    if (typeof value !== "string" || value.trim().length === 0) return null;
+    const n = Number(value.replace(",", "."));
+    return Number.isNaN(n) ? value : n;
+  }, z.number().positive("Weight must be a positive number").max(150, "Weight is too high").nullable()),
   traits: z.array(z.enum(DOG_TRAITS as unknown as [string, ...string[]], { message: "Invalid trait" })).default([]),
 });
 
@@ -64,6 +68,7 @@ export const POST: APIRoute = async (context) => {
     breed: form.get("breed"),
     birthdate: form.get("birthdate") ?? undefined,
     size: form.get("size"),
+    weightKg: form.get("weight_kg"),
     traits: form.getAll("traits"),
   });
   if (!parsed.success) {
@@ -82,12 +87,23 @@ export const POST: APIRoute = async (context) => {
     }
   }
 
+  // Is this the owner's first dog? If so, they're a new user finishing onboarding —
+  // send them to the home view afterwards instead of the dog list. Best-effort: on a
+  // count failure, fall back to the dog list (the safe, existing behaviour).
+  let isFirstDog = false;
+  try {
+    isFirstDog = (await listDogs(supabase, user.id)).length === 0;
+  } catch {
+    // on a count failure, isFirstDog stays false → fall back to the dog list
+  }
+
   try {
     await createDog(supabase, user.id, {
       name: parsed.data.name,
       breed: parsed.data.breed,
       birthdate: parsed.data.birthdate,
       size: parsed.data.size as DogSize | null,
+      weightKg: parsed.data.weightKg,
       traits: parsed.data.traits,
       photo: hasPhoto ? photo : null,
     });
@@ -96,5 +112,5 @@ export const POST: APIRoute = async (context) => {
     return redirectError(context, message);
   }
 
-  return context.redirect("/dogs?saved=1");
+  return context.redirect(isFirstDog ? "/dashboard" : "/dogs?saved=1");
 };

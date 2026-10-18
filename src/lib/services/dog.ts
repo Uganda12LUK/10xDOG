@@ -10,6 +10,7 @@ interface DogRow {
   breed: string;
   birthdate: string | null;
   size: string | null;
+  weight_kg: number | string | null;
   traits: string[] | null;
   photo_path: string | null;
   created_at: string;
@@ -28,6 +29,8 @@ function mapRow(client: SupabaseClient, row: DogRow): Dog {
     breed: row.breed,
     birthdate: row.birthdate,
     size: (row.size as Dog["size"]) ?? null,
+    // numeric comes back as a string from PostgREST; normalize to a number.
+    weightKg: row.weight_kg == null ? null : Number(row.weight_kg),
     traits: row.traits ?? [],
     photoPath: row.photo_path,
     photoUrl,
@@ -95,6 +98,7 @@ export async function createDog(client: SupabaseClient, ownerId: string, input: 
       breed: input.breed,
       birthdate: input.birthdate ?? null,
       size: input.size ?? null,
+      weight_kg: input.weightKg ?? null,
       traits: input.traits ?? [],
     })
     .select()
@@ -129,6 +133,7 @@ export async function updateDog(client: SupabaseClient, ownerId: string, id: str
     breed: string;
     birthdate: string | null;
     size: string | null;
+    weight_kg: number | null;
     traits: string[];
     photo_path?: string;
   } = {
@@ -136,6 +141,7 @@ export async function updateDog(client: SupabaseClient, ownerId: string, id: str
     breed: input.breed,
     birthdate: input.birthdate ?? null,
     size: input.size ?? null,
+    weight_kg: input.weightKg ?? null,
     traits: input.traits ?? [],
   };
 

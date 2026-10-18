@@ -68,6 +68,7 @@ export default function SignUpForm({ serverError, locale }: Props) {
     <form method="POST" action="/api/auth/signup" className="space-y-4" onSubmit={handleSubmit} noValidate>
       <FormField
         id="email"
+        required
         type="email"
         label={t(locale, "auth.email")}
         value={email}
@@ -82,6 +83,7 @@ export default function SignUpForm({ serverError, locale }: Props) {
 
       <FormField
         id="password"
+        required
         label={t(locale, "auth.password")}
         type={showPassword ? "text" : "password"}
         value={password}
@@ -106,6 +108,7 @@ export default function SignUpForm({ serverError, locale }: Props) {
       <FormField
         id="confirmPassword"
         name="confirmPassword"
+        required
         label={t(locale, "auth.confirmPassword")}
         type={showConfirmPassword ? "text" : "password"}
         value={confirmPassword}

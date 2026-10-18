@@ -1,9 +1,13 @@
 # Critical-Path Proof Report — PawMeet
 
 - **Status**: ✅ **CLOSED — fully proven end-to-end in a real browser.**
-- **Evidence commit**: `8285942` (main, post-merge); gate closed by `efe6d46`
-  (`test(critical-path-e2e-proof): browser E2E GREEN`).
-- **Last run**: 2026-10-16 · Playwright, 1 worker, port 4330.
+- **Evidence commit**: `0454bce` (current HEAD on `feat/discovery-location-tweaks`) — re-proven
+  2026-10-17. Originally closed on `8285942` (main, post-merge) by `efe6d46`
+  (`test(critical-path-e2e-proof): browser E2E GREEN`); re-run here confirms the critical path
+  still GREEN after the later profile/nav + private-location work.
+- **Last run**: 2026-10-17 · Playwright, 1 worker — **10/10 passed** (1.8m), on a fresh
+  `clean:dist && astro build && preview`. Alongside: `npm run test:rls` 17/17, unit 23/23,
+  `npm run lint` clean, `astro check` 0 errors / 0 warnings / 0 hints.
 - **Environment**: Node v22.14.0; Vitest 3.2.7 / Playwright. Remote throwaway Supabase
   **test** project wired via `.env.test` (`SUPABASE_TEST_URL` /
   `SUPABASE_TEST_SERVICE_ROLE_KEY` / `SUPABASE_TEST_ANON_KEY`), with BOTH hardening

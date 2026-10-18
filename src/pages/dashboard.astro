@@ -3,6 +3,10 @@ import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
 import { listDogs } from "@/lib/services/dog";
 import { getProfile } from "@/lib/services/profile";
+import { countUnread } from "@/lib/services/chat";
+import { countPendingReceived } from "@/lib/services/pack";
+import { countReceivedPending } from "@/lib/services/invitation";
+import { listUpcomingForOwner, type UpcomingEvent } from "@/lib/services/dogEvents";
 import { ageStringFromBirthdate } from "@/lib/age";
 import { t } from "@/lib/i18n";
 import type { Dog } from "@/types";
@@ -12,12 +16,53 @@ const { user, locale } = Astro.locals;
 const supabase = createClient(Astro.request.headers, Astro.cookies);
 let dogs: Dog[] = [];
 let displayName = user?.email?.split("@")[0] ?? "você";
+let unreadMessages = 0;
+let pendingBones = 0;
+let pendingInvites = 0;
+let upcoming: UpcomingEvent[] = [];
 if (supabase && user) {
-  const [fetchedDogs, profile] = await Promise.all([listDogs(supabase, user.id), getProfile(supabase, user.id)]);
+  const [fetchedDogs, profile, unread, bones, invites] = await Promise.all([
+    listDogs(supabase, user.id),
+    getProfile(supabase, user.id),
+    countUnread(supabase, user.id),
+    countPendingReceived(supabase, user.id),
+    countReceivedPending(supabase, user.id),
+  ]);
   dogs = fetchedDogs;
   if (profile?.name) displayName = profile.name;
+  unreadMessages = unread;
+  pendingBones = bones;
+  pendingInvites = invites;
+  // Upcoming events are best-effort: if the dog_events table isn't present yet
+  // (migration not applied), degrade to an empty widget rather than 500 the page.
+  try {
+    upcoming = await listUpcomingForOwner(supabase, user.id, 2);
+  } catch {
+    upcoming = [];
+  }
 }
 const firstDog: Dog | null = dogs.length > 0 ? dogs[0] : null;
+
+// Dog names for the upcoming-events widget.
+const dogNameById: Record<string, string> = {};
+for (const d of dogs) dogNameById[d.id] = d.name;
+function fmtEventDate(iso: string): string {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString(locale === "pl" ? "pl-PL" : "en-GB", {
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  });
+}
+
+// "What's new" summary — only the things that actually have something waiting.
+// Zero-count items are dropped entirely (a wall of "0" tiles reads as noise), and
+// when nothing is pending the whole section is hidden rather than showing zeros.
+const updates = [
+  { label: t(locale, "dashboard.newMessages"), count: unreadMessages, href: "/pack" },
+  { label: t(locale, "dashboard.receivedBones"), count: pendingBones, href: "/pack" },
+  { label: t(locale, "dashboard.invitations"), count: pendingInvites, href: "/meetings" },
+].filter((u) => u.count > 0);
+const updatesColsClass = updates.length === 1 ? "grid-cols-1" : updates.length === 2 ? "grid-cols-2" : "grid-cols-3";
 
 // Home quick-actions — the same sections (and labels) as the nav bars, so desktop home
 // mirrors the mobile BottomNav. Desktop-only: on mobile the fixed BottomNav already
@@ -26,8 +71,8 @@ const tiles = [
   { label: t(locale, "nav.map"), href: "/map", icon: "map-pin" },
   { label: t(locale, "nav.meetings"), href: "/meetings", icon: "calendar" },
   { label: t(locale, "nav.pack"), href: "/pack", icon: "pack" },
-  { label: t(locale, "nav.dogs"), href: "/dogs", icon: "dog" },
-  { label: t(locale, "nav.profile"), href: "/profile", icon: "user" },
+  { label: t(locale, "nav.calendar"), href: "/calendar", icon: "cal" },
+  { label: t(locale, "nav.settings"), href: "/settings", icon: "settings" },
 ];
 ---
 
@@ -40,6 +85,24 @@ const tiles = [
         {t(locale, "dashboard.greeting")}, {displayName}!
       </h1>
     </header>
+
+    <!-- What's new — only non-zero items; the whole section is hidden when nothing waits -->
+    {updates.length > 0 && (
+      <section class="mb-5">
+        <h2 class="mb-2 text-sm font-semibold text-muted-foreground">{t(locale, "dashboard.whatsNew")}</h2>
+        <div class:list={["grid gap-3 md:max-w-md", updatesColsClass]}>
+          {updates.map((u) => (
+            <a
+              href={u.href}
+              class="card-interactive flex flex-col items-center justify-center gap-1 rounded-xl bg-primary p-3 text-center text-primary-foreground shadow-card"
+            >
+              <span class="text-xl font-bold leading-none">{u.count}</span>
+              <span class="text-[11px] font-medium leading-tight">{u.label}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
 
     <!-- DogCard or CTA -->
     {firstDog ? (
@@ -81,7 +144,7 @@ const tiles = [
       </a>
     ) : (
       <a
-        href="/dogs/new"
+        href="/onboarding"
         class="card-interactive mb-4 flex items-center justify-center gap-3 rounded-xl border-2 border-dashed border-border bg-card p-6 text-center shadow-card md:max-w-md"
       >
         <!-- plus icon -->
@@ -102,6 +165,33 @@ const tiles = [
         <span class="font-medium text-foreground">{t(locale, "dashboard.addFirstDog")}</span>
       </a>
     )}
+
+    <!-- Upcoming dog-calendar events — the two soonest, or a calm empty line -->
+    <section class="mb-5 md:max-w-md">
+      <h2 class="mb-2 flex items-center justify-between text-sm font-semibold text-muted-foreground">
+        <span>{t(locale, "dogEvent.upcoming")}</span>
+        <a href="/calendar" class="text-primary hover:underline">
+          {t(locale, "dogEvent.openCalendar")}
+        </a>
+      </h2>
+      {upcoming.length === 0 ? (
+        <p class="text-sm text-muted-foreground">{t(locale, "dogEvent.noUpcoming")}</p>
+      ) : (
+        <ul class="divide-border border-border divide-y rounded-xl border">
+          {upcoming.map((u) => (
+            <li class="flex items-center justify-between gap-3 p-3">
+              <div class="min-w-0">
+                <p class="truncate font-medium text-foreground">{u.event.title}</p>
+                <p class="truncate text-xs text-muted-foreground">
+                  {t(locale, `dogEvent.type.${u.event.type}`)} · {dogNameById[u.event.dogId] ?? "—"}
+                </p>
+              </div>
+              <span class="shrink-0 text-sm font-medium text-primary">{fmtEventDate(u.nextDate)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
 
     <!-- Quick-action grid — real destinations only. Desktop-only: the mobile BottomNav
          already links these, so the tiles are hidden on phones to avoid duplicate entries. -->
@@ -157,7 +247,7 @@ const tiles = [
               <path d="M5.5 8a2.5 2.5 0 1 1 1.9-4.13A2.5 2.5 0 1 1 9 7.3l6 6a2.5 2.5 0 1 1 1.6 4.2 2.5 2.5 0 1 1-4.2-1.6l-6-6A2.5 2.5 0 0 1 5.5 8Z" />
             </svg>
           )}
-          {tile.icon === "dog" && (
+          {tile.icon === "cal" && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -169,14 +259,11 @@ const tiles = [
               stroke-linecap="round"
               stroke-linejoin="round"
             >
-              <path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5" />
-              <path d="M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5" />
-              <path d="M8 14v.5M16 14v.5" />
-              <path d="M11.25 16.25h1.5L12 17l-.75-.75Z" />
-              <path d="M4.42 11.247A13.152 13.152 0 0 0 4 14.556C4 18.728 7.582 21 12 21s8-2.272 8-6.444c0-1.061-.162-2.2-.493-3.309m-9.243-6.082A8.801 8.801 0 0 1 12 4c.78 0 1.5.108 2.161.306" />
+              <path d="M12 12.75h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm-3-2.25h.008v.008H9v-.008ZM9 15h.008v.008H9V15Zm6-2.25h.008v.008H15v-.008ZM15 15h.008v.008H15V15Z" />
+              <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
             </svg>
           )}
-          {tile.icon === "user" && (
+          {tile.icon === "settings" && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -188,7 +275,8 @@ const tiles = [
               stroke-linecap="round"
               stroke-linejoin="round"
             >
-              <path d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+              <path d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.281Z" />
+              <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
           )}
           <span class="text-[11px] font-medium leading-tight text-foreground">{tile.label}</span>

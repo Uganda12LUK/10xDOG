@@ -48,6 +48,7 @@ export interface Dog {
   breed: string;
   birthdate: string | null;
   size: DogSize | null;
+  weightKg: number | null;
   traits: string[];
   photoPath: string | null;
   photoUrl: string | null;
@@ -64,6 +65,7 @@ export type DogWithOwner = Dog & {
   ownerId: string;
   ownerName: string;
   ownerCity: string | null;
+  ownerAvatarUrl: string | null;
 };
 
 export interface Invitation {
@@ -85,8 +87,37 @@ export interface DogInput {
   breed: string;
   birthdate?: string | null;
   size?: DogSize | null;
+  weightKg?: number | null;
   traits?: string[];
   photo?: File | null;
+}
+
+export type DogEventType = "vaccination" | "vet_visit" | "exam" | "grooming" | "medication" | "other";
+export type DogEventRecurrence = "none" | "daily" | "weekly" | "monthly" | "yearly";
+
+export interface DogEvent {
+  id: string;
+  dogId: string;
+  ownerId: string;
+  title: string;
+  type: DogEventType;
+  eventDate: string; // yyyy-mm-dd — first (or only) occurrence
+  eventTime: string | null; // HH:MM, optional time of day
+  recurrence: DogEventRecurrence;
+  recurrenceInterval: number;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface DogEventInput {
+  dogId: string;
+  title: string;
+  type: DogEventType;
+  eventDate: string;
+  eventTime?: string | null;
+  recurrence: DogEventRecurrence;
+  recurrenceInterval: number;
+  notes?: string | null;
 }
 
 export interface PackConnection {
@@ -103,10 +134,13 @@ export interface PackConnection {
 export type PackStatus = "none" | "pending_out" | "pending_in" | "accepted";
 
 // A pack member paired with the connection row that links them to the viewer.
+// The pack is a pack of DOGS — `dogs` carries the member's dogs so the UI leads
+// with them; the owner (profile) is the human behind them.
 export interface PackMember {
   connectionId: string;
   ownerId: string;
   profile: PublicProfile;
+  dogs: { id: string; name: string; photoUrl: string | null }[];
 }
 
 export interface Message {

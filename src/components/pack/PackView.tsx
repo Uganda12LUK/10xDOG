@@ -7,6 +7,7 @@ import type { PackMember } from "@/types";
 interface Props {
   initialRequests: PackMember[];
   initialMembers: PackMember[];
+  unreadBySender?: Record<string, number>;
   locale: Locale;
 }
 
@@ -21,7 +22,16 @@ function Avatar({ url, name }: { url: string | null; name: string }) {
   );
 }
 
-export default function PackView({ initialRequests, initialMembers, locale }: Props) {
+// The pack is a pack of dogs: lead each row with the member's dog(s), with the
+// owner as the subtitle (the human behind the dog).
+function dogPhotoOf(m: PackMember): string | null {
+  return m.dogs[0]?.photoUrl ?? null;
+}
+function dogLabelOf(m: PackMember): string {
+  return m.dogs.length > 0 ? m.dogs.map((d) => d.name).join(", ") : m.profile.name;
+}
+
+export default function PackView({ initialRequests, initialMembers, unreadBySender = {}, locale }: Props) {
   const [requests, setRequests] = useState<PackMember[]>(initialRequests);
   const [members, setMembers] = useState<PackMember[]>(initialMembers);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -61,10 +71,12 @@ export default function PackView({ initialRequests, initialMembers, locale }: Pr
           <ul className="divide-border border-border divide-y rounded-xl border">
             {requests.map((req) => (
               <li key={req.connectionId} className="flex items-center gap-3 p-3">
-                <Avatar url={req.profile.avatarUrl} name={req.profile.name} />
+                <Avatar url={dogPhotoOf(req)} name={dogLabelOf(req)} />
                 <div className="min-w-0 flex-1">
-                  <p className="text-foreground truncate font-medium">{req.profile.name}</p>
-                  <p className="text-muted-foreground truncate text-xs">{t(locale, "pack.wantsToJoin")}</p>
+                  <p className="text-foreground truncate font-medium">{dogLabelOf(req)}</p>
+                  <p className="text-muted-foreground truncate text-xs">
+                    {req.profile.name} · {t(locale, "pack.wantsToJoin")}
+                  </p>
                 </div>
                 <div className="flex shrink-0 gap-2">
                   <button
@@ -98,24 +110,41 @@ export default function PackView({ initialRequests, initialMembers, locale }: Pr
           <p className="text-muted-foreground text-sm">{t(locale, "pack.empty")}</p>
         ) : (
           <ul className="divide-border border-border divide-y rounded-xl border">
-            {members.map((member) => (
-              <li key={member.connectionId} className="flex items-center gap-3 p-3">
-                <Avatar url={member.profile.avatarUrl} name={member.profile.name} />
-                <div className="min-w-0 flex-1">
-                  <p className="text-foreground truncate font-medium">{member.profile.name}</p>
-                  {member.profile.city ? (
-                    <p className="text-muted-foreground truncate text-xs">{member.profile.city}</p>
-                  ) : null}
-                </div>
-                <a
-                  href={`/messages/${member.ownerId}`}
-                  className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "shrink-0 gap-1")}
-                >
-                  <span aria-hidden="true">💬</span>
-                  {t(locale, "pack.message")}
-                </a>
-              </li>
-            ))}
+            {members.map((member) => {
+              const unread = unreadBySender[member.ownerId] ?? 0;
+              return (
+                <li key={member.connectionId} className="flex items-center gap-3 p-3">
+                  <Avatar url={dogPhotoOf(member)} name={dogLabelOf(member)} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-foreground truncate font-medium">{dogLabelOf(member)}</p>
+                      {unread > 0 ? (
+                        <span
+                          className="bg-primary text-primary-foreground flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full px-1.5 text-xs leading-none font-semibold"
+                          aria-label={t(locale, "nav.unreadAria")}
+                        >
+                          {unread}
+                        </span>
+                      ) : null}
+                    </div>
+                    <p className="text-muted-foreground truncate text-xs">
+                      {member.profile.name}
+                      {member.profile.city ? ` · ${member.profile.city}` : ""}
+                    </p>
+                  </div>
+                  <a
+                    href={`/messages/${member.ownerId}`}
+                    className={cn(
+                      buttonVariants({ variant: unread > 0 ? "default" : "secondary", size: "sm" }),
+                      "shrink-0 gap-1",
+                    )}
+                  >
+                    <span aria-hidden="true">💬</span>
+                    {t(locale, "pack.message")}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>

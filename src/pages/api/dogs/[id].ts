@@ -1,7 +1,6 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase";
-import { BREEDS } from "@/lib/breeds";
 import { DOG_SIZES, DOG_TRAITS, type DogSize } from "@/lib/dogAttributes";
 import { deleteDog, updateDog } from "@/lib/services/dog";
 
@@ -12,9 +11,7 @@ const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
 
 const dogSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
-  breed: z.enum(BREEDS as unknown as [string, ...string[]], {
-    message: "Choose a breed from the list",
-  }),
+  breed: z.string().trim().min(1, "Breed is required").max(60, "Breed is too long"),
   birthdate: z
     .string()
     .trim()
@@ -37,6 +34,11 @@ const dogSchema = z.object({
     (value) => (typeof value === "string" && value.length > 0 ? value : null),
     z.enum(DOG_SIZES as unknown as [string, ...string[]], { message: "Invalid size" }).nullable(),
   ),
+  weightKg: z.preprocess((value) => {
+    if (typeof value !== "string" || value.trim().length === 0) return null;
+    const n = Number(value.replace(",", "."));
+    return Number.isNaN(n) ? value : n;
+  }, z.number().positive("Weight must be a positive number").max(150, "Weight is too high").nullable()),
   traits: z.array(z.enum(DOG_TRAITS as unknown as [string, ...string[]], { message: "Invalid trait" })).default([]),
 });
 
@@ -75,6 +77,7 @@ export const POST: APIRoute = async (context) => {
     breed: form.get("breed"),
     birthdate: form.get("birthdate") ?? undefined,
     size: form.get("size"),
+    weightKg: form.get("weight_kg"),
     traits: form.getAll("traits"),
   });
   if (!parsed.success) {
@@ -99,6 +102,7 @@ export const POST: APIRoute = async (context) => {
       breed: parsed.data.breed,
       birthdate: parsed.data.birthdate,
       size: parsed.data.size as DogSize | null,
+      weightKg: parsed.data.weightKg,
       traits: parsed.data.traits,
       photo: hasPhoto ? photo : null,
     });

@@ -17,6 +17,7 @@ interface FormFieldProps {
   hint?: ReactNode;
   icon: ReactNode;
   endContent?: ReactNode;
+  required?: boolean;
 }
 
 export function FormField({
@@ -31,11 +32,13 @@ export function FormField({
   hint,
   icon,
   endContent,
+  required,
 }: FormFieldProps) {
   return (
     <div>
       <label htmlFor={id} className="text-muted-foreground mb-1 block text-sm">
         {label}
+        {required ? <span className="text-destructive ml-0.5">*</span> : null}
       </label>
       <div className="relative">
         <span className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2">{icon}</span>

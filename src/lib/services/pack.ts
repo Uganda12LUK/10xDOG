@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { PackConnection, PackMember, PackStatus } from "@/types";
 import { getPublicProfile } from "./profile";
+import { listDogs } from "./dog";
 
 interface PackConnectionRow {
   id: string;
@@ -149,6 +150,21 @@ export async function listPendingReceived(client: SupabaseClient, userId: string
 }
 
 // "Moje stado": accepted connections in either direction.
+// Count of incoming, still-pending bone requests (someone threw you a bone).
+// Cheap head count for the nav badge and the dashboard, no profile hydration.
+export async function countPendingReceived(client: SupabaseClient, userId: string): Promise<number> {
+  const result = await client
+    .from("pack_connections")
+    .select("id", { count: "exact", head: true })
+    .eq("addressee_id", userId)
+    .eq("status", "pending");
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+  return result.count ?? 0;
+}
+
 export async function listPack(client: SupabaseClient, userId: string): Promise<PackMember[]> {
   const result = await client
     .from("pack_connections")
@@ -171,8 +187,15 @@ async function hydrateMembers(client: SupabaseClient, rows: PackConnection[], us
   const members = await Promise.all(
     rows.map(async (row) => {
       const otherId = row.requesterId === userId ? row.addresseeId : row.requesterId;
-      const profile = await getPublicProfile(client, otherId);
-      return profile ? { connectionId: row.id, ownerId: otherId, profile } : null;
+      const [profile, dogs] = await Promise.all([getPublicProfile(client, otherId), listDogs(client, otherId)]);
+      return profile
+        ? {
+            connectionId: row.id,
+            ownerId: otherId,
+            profile,
+            dogs: dogs.map((d) => ({ id: d.id, name: d.name, photoUrl: d.photoUrl })),
+          }
+        : null;
     }),
   );
   return members.filter((m): m is PackMember => m !== null);
