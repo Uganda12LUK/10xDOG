@@ -19,6 +19,10 @@ if (supabase && user) {
 
 <Layout title={t(locale, "onboarding.title")}>
   <div class="mx-auto w-full max-w-lg px-4 py-6">
-    <OnboardingWizard defaultName={defaultName} locale={locale} client:load />
+    <OnboardingWizard defaultName={defaultName} locale={locale} client:only="react">
+      <p slot="fallback" class="text-muted-foreground text-sm">
+        {t(locale, "common.loading")}
+      </p>
+    </OnboardingWizard>
   </div>
 </Layout>

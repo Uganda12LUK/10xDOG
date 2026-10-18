@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PawPrint, User, Save, Plus, Trash2 } from "lucide-react";
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { t, type Locale } from "@/lib/i18n";
 import { BREEDS } from "@/lib/breeds";
-import { DOG_SIZES } from "@/lib/dogAttributes";
+import { DOG_SIZES, DOG_TRAITS } from "@/lib/dogAttributes";
+import { cityCenter } from "@/lib/geo";
+import { userHomeIcon } from "@/components/map/markerIcons";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -17,34 +22,84 @@ interface DogDraft {
   breed: string;
   size: string;
   weight: string;
+  birthdate: string;
+  traits: string[];
   photo: File | null;
 }
 
+const POLAND_CENTER: [number, number] = [52.0693, 19.4803];
+
 let dogKeySeq = 1;
 function emptyDog(): DogDraft {
-  return { key: dogKeySeq++, name: "", breed: "", size: "", weight: "", photo: null };
+  return { key: dogKeySeq++, name: "", breed: "", size: "", weight: "", birthdate: "", traits: [], photo: null };
 }
 
-// One-page onboarding: a clearly split "About you (owner)" section and a "Your dogs"
-// section where more dogs can be added. Owner name + city are required; each dog
-// needs a name + breed. Saves the profile then every dog via the existing endpoints.
+// Lets the user tap the map to drop the home pin (complements dragging it).
+function MapClickHandler({ onPick }: { onPick: (pos: [number, number]) => void }) {
+  useMapEvents({
+    click: (e) => {
+      onPick([e.latlng.lat, e.latlng.lng]);
+    },
+  });
+  return null;
+}
+
+// MapContainer reads `center` once at mount; recenter imperatively on change.
+function Recenter({ position }: { position: [number, number] }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(position);
+  }, [map, position]);
+  return null;
+}
+
+// One-page onboarding that merges the full "my profile" and "my dog" views: owner
+// (name, city, street, home-location pin, photo) + one or more dogs (name, breed,
+// size, weight, traits, birthdate, photo). One Save posts the profile then each dog.
 export default function OnboardingWizard({ defaultName, locale }: Props) {
   const [name, setName] = useState(defaultName);
   const [city, setCity] = useState("");
+  const [street, setStreet] = useState("");
   const [ownerPhoto, setOwnerPhoto] = useState<File | null>(null);
+  const [position, setPosition] = useState<[number, number]>(POLAND_CENTER);
+  const [movedPin, setMovedPin] = useState(false);
   const [dogs, setDogs] = useState<DogDraft[]>([emptyDog()]);
   const [submitting, setSubmitting] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const markerRef = useRef<L.Marker>(null);
 
+  const today = new Date().toISOString().slice(0, 10);
   const inputClass = cn(
     "border-input bg-background text-foreground w-full rounded-lg border px-3 py-2 text-sm",
     "focus:ring-ring focus:ring-2 focus:outline-none",
   );
   const req = <span className="text-destructive ml-0.5">*</span>;
 
+  // A manual pin move (drag/tap) wins over city-driven auto-placement.
+  function moveTo(pos: [number, number]) {
+    setMovedPin(true);
+    setPosition(pos);
+  }
+  function onCity(v: string) {
+    setCity(v);
+    if (!movedPin) {
+      const c = cityCenter(v);
+      if (c) setPosition(c);
+    }
+  }
+
   function patchDog(key: number, patch: Partial<DogDraft>) {
     setDogs((prev) => prev.map((d) => (d.key === key ? { ...d, ...patch } : d)));
+  }
+  function toggleTrait(key: number, trait: string) {
+    setDogs((prev) =>
+      prev.map((d) =>
+        d.key === key
+          ? { ...d, traits: d.traits.includes(trait) ? d.traits.filter((x) => x !== trait) : [...d.traits, trait] }
+          : d,
+      ),
+    );
   }
   function addDog() {
     setDogs((prev) => [...prev, emptyDog()]);
@@ -53,12 +108,17 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
     setDogs((prev) => (prev.length > 1 ? prev.filter((d) => d.key !== key) : prev));
   }
 
-  async function post(url: string, fields: Record<string, string>, photo: File | null): Promise<void> {
+  async function post(
+    url: string,
+    fields: Record<string, string>,
+    traits: string[],
+    photo: File | null,
+  ): Promise<void> {
     const body = new FormData();
     for (const [k, v] of Object.entries(fields)) body.append(k, v);
+    for (const tr of traits) body.append("traits", tr);
     if (photo) body.append("photo", photo);
     const res = await fetch(url, { method: "POST", body });
-    // Endpoints redirect on both success and failure; a failure carries ?error=.
     const failed = !res.ok || new URL(res.url).searchParams.has("error");
     if (failed) {
       throw new Error(new URL(res.url).searchParams.get("error") ?? t(locale, "onboarding.saveError"));
@@ -95,15 +155,32 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
     if (!validate()) return;
     setSubmitting(true);
     try {
-      await post("/api/profile", { name: name.trim(), city: city.trim() }, ownerPhoto);
+      await post(
+        "/api/profile",
+        {
+          name: name.trim(),
+          city: city.trim(),
+          street: street.trim(),
+          location_lat: String(position[0]),
+          location_lng: String(position[1]),
+        },
+        [],
+        ownerPhoto,
+      );
       for (const d of dogs) {
         await post(
           "/api/dogs",
-          { name: d.name.trim(), breed: d.breed.trim(), size: d.size, weight_kg: d.weight },
+          {
+            name: d.name.trim(),
+            breed: d.breed.trim(),
+            size: d.size,
+            weight_kg: d.weight,
+            birthdate: d.birthdate,
+          },
+          d.traits,
           d.photo,
         );
       }
-      // Confirm success before leaving, then hand off to the dashboard.
       setSaved(true);
       window.setTimeout(() => {
         window.location.href = "/dashboard";
@@ -151,7 +228,20 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
             id="o-city"
             value={city}
             onChange={(e) => {
-              setCity(e.target.value);
+              onCity(e.target.value);
+            }}
+            className={inputClass}
+          />
+        </div>
+        <div>
+          <label htmlFor="o-street" className="text-muted-foreground mb-1 block text-sm">
+            {t(locale, "form.profile.street")}
+          </label>
+          <input
+            id="o-street"
+            value={street}
+            onChange={(e) => {
+              setStreet(e.target.value);
             }}
             className={inputClass}
           />
@@ -171,6 +261,38 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
             className={inputClass}
           />
           {ownerPhoto ? <p className="text-success mt-1 text-xs">{t(locale, "onboarding.photoChosen")}</p> : null}
+        </div>
+        <div>
+          <label className="text-muted-foreground mb-1 block text-sm">{t(locale, "form.profile.location")}</label>
+          <p className="text-muted-foreground mb-2 text-xs">{t(locale, "form.profile.locationHint")}</p>
+          {movedPin ? (
+            <p className="text-success mb-2 text-xs font-medium">{t(locale, "form.profile.locationPinned")}</p>
+          ) : null}
+          <div className="border-border h-[220px] overflow-hidden rounded-lg border">
+            <MapContainer center={position} zoom={12} style={{ height: "100%", width: "100%" }}>
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <MapClickHandler onPick={moveTo} />
+              <Recenter position={position} />
+              <Marker
+                position={position}
+                icon={userHomeIcon}
+                draggable
+                ref={markerRef}
+                eventHandlers={{
+                  dragend: () => {
+                    const marker = markerRef.current;
+                    if (marker) {
+                      const { lat, lng } = marker.getLatLng();
+                      moveTo([lat, lng]);
+                    }
+                  },
+                }}
+              />
+            </MapContainer>
+          </div>
         </div>
       </section>
 
@@ -265,6 +387,45 @@ export default function OnboardingWizard({ defaultName, locale }: Props) {
                   placeholder={t(locale, "form.dog.weightPlaceholder")}
                   className={inputClass}
                 />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-muted-foreground mb-1 block text-sm">{t(locale, "form.dog.birthdate")}</label>
+              <input
+                type="date"
+                max={today}
+                value={d.birthdate}
+                onChange={(e) => {
+                  patchDog(d.key, { birthdate: e.target.value });
+                }}
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <span className="text-muted-foreground mb-1 block text-sm">{t(locale, "form.dog.traits")}</span>
+              <div className="flex flex-wrap gap-2">
+                {DOG_TRAITS.map((tr) => {
+                  const checked = d.traits.includes(tr);
+                  return (
+                    <button
+                      key={tr}
+                      type="button"
+                      onClick={() => {
+                        toggleTrait(d.key, tr);
+                      }}
+                      className={cn(
+                        "rounded-full border px-3 py-1 text-sm transition-colors",
+                        checked
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-border text-foreground hover:bg-accent",
+                      )}
+                    >
+                      {t(locale, `trait.${tr}`)}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
