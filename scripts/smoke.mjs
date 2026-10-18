@@ -58,7 +58,8 @@ const steps = [
   // profile first so the next step actually exercises a rendered dashboard.
   [
     "signed-in user completes onboarding profile",
-    () => request("/api/profile", { method: "POST", form: { name: "Smoke Test" } }),
+    // name + city are both required by /api/profile (owners need a city).
+    () => request("/api/profile", { method: "POST", form: { name: "Smoke Test", city: "Rzeszów" } }),
     { status: 302, location: "/profile" },
   ],
   ["dashboard renders for signed-in user", () => request("/dashboard"), { status: 200 }],
