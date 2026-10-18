@@ -177,6 +177,7 @@ const pl: Record<string, string> = {
   "ownerProfile.catchBone": "Złap kość",
   "ownerProfile.inPack": "W Twoim stadzie",
   "ownerProfile.message": "Napisz",
+  "ownerProfile.view": "Zobacz profil",
 
   // pack ("moje stado")
   "pack.title": "Moje stado",

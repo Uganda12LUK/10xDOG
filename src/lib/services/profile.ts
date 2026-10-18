@@ -234,6 +234,7 @@ export async function listDogsForMap(client: SupabaseClient): Promise<DogWithOwn
       ownerId: owner.profile.id,
       ownerName: owner.profile.name,
       ownerCity: owner.profile.city,
+      ownerAvatarUrl: owner.profile.avatarUrl,
     })),
   );
 }

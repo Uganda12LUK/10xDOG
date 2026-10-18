@@ -28,6 +28,7 @@ function makeDog(overrides: Partial<DogWithOwner>): DogWithOwner {
     updatedAt: "2026-01-01T00:00:00Z",
     ownerName: overrides.ownerName ?? "Ala",
     ownerCity: overrides.ownerCity ?? "Rzeszów",
+    ownerAvatarUrl: overrides.ownerAvatarUrl ?? null,
   };
 }
 

@@ -178,6 +178,7 @@ const en: Record<string, string> = {
   "ownerProfile.catchBone": "Catch the bone",
   "ownerProfile.inPack": "In your pack",
   "ownerProfile.message": "Message",
+  "ownerProfile.view": "View profile",
 
   // pack ("moje stado")
   "pack.title": "My pack",

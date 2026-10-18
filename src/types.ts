@@ -65,6 +65,7 @@ export type DogWithOwner = Dog & {
   ownerId: string;
   ownerName: string;
   ownerCity: string | null;
+  ownerAvatarUrl: string | null;
 };
 
 export interface Invitation {
@@ -131,10 +132,13 @@ export interface PackConnection {
 export type PackStatus = "none" | "pending_out" | "pending_in" | "accepted";
 
 // A pack member paired with the connection row that links them to the viewer.
+// The pack is a pack of DOGS — `dogs` carries the member's dogs so the UI leads
+// with them; the owner (profile) is the human behind them.
 export interface PackMember {
   connectionId: string;
   ownerId: string;
   profile: PublicProfile;
+  dogs: { id: string; name: string; photoUrl: string | null }[];
 }
 
 export interface Message {
