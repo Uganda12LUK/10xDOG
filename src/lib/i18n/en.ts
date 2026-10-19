@@ -264,7 +264,7 @@ const en: Record<string, string> = {
   "form.dog.traits": "Character",
   "form.dog.birthdate": "Birth date",
   "form.dog.photo": "Photo",
-  "form.dog.submit": "Save dog",
+  "form.dog.submit": "Save profile",
   "form.dog.saving": "Saving…",
 
   // dog sizes
@@ -329,7 +329,7 @@ const en: Record<string, string> = {
   "landing.step3.desc": "Send a walk invite, pick a spot and time, and let the dogs make friends.",
   "landing.cta.title": "Ready to find your dog's next walking buddy?",
   "landing.cta.subtitle": "Join PawMeet and meet the dog owners around the corner.",
-  "landing.footer": "PawMeet — walks, together.",
+  "landing.footer": "PawMeet — walks together.",
 };
 
 export default en;

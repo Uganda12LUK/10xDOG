@@ -263,7 +263,7 @@ const pl: Record<string, string> = {
   "form.dog.traits": "Charakter",
   "form.dog.birthdate": "Data urodzenia",
   "form.dog.photo": "Zdjęcie",
-  "form.dog.submit": "Zapisz psa",
+  "form.dog.submit": "Zapisz profil",
   "form.dog.saving": "Zapisywanie…",
 
   // dog sizes
@@ -332,7 +332,7 @@ const pl: Record<string, string> = {
   "landing.step3.desc": "Wyślij zaproszenie na spacer, wybierz miejsce i czas, a psy same się zaprzyjaźnią.",
   "landing.cta.title": "Gotowy, żeby znaleźć psu kompana na spacer?",
   "landing.cta.subtitle": "Dołącz do PawMeet i poznaj właścicieli psów zza rogu.",
-  "landing.footer": "PawMeet — spacery, razem.",
+  "landing.footer": "PawMeet — spacery razem.",
 };
 
 export default pl;
