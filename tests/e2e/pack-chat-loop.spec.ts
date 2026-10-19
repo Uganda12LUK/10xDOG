@@ -84,7 +84,10 @@ test("pack+chat loop: A throws a bone, B catches it, both chat in their pack", a
   // PackView is a client:load island — wait for the Catch control to hydrate.
   const catchBtn = pageB.getByRole("button", { name: "Catch" });
   await expect(catchBtn).toBeVisible({ timeout: 20_000 });
-  await expect(pageB.getByText(userAName, { exact: false })).toBeVisible();
+  // The bone-notification UI now renders a "<name> · threw you a bone" subtitle
+  // alongside the plain name, so a non-exact match resolves to 2 nodes. Assert the
+  // exact name node — the intent is only "B sees who threw the bone".
+  await expect(pageB.getByText(userAName, { exact: true })).toBeVisible();
 
   // Wait for the respond API to actually commit before asserting the UI moved
   // the member into the accepted pack list.
