@@ -1,13 +1,16 @@
 # Critical-Path Proof Report — PawMeet
 
 - **Status**: ✅ **CLOSED — fully proven end-to-end in a real browser.**
-- **Evidence commit**: `0454bce` (current HEAD on `feat/discovery-location-tweaks`) — re-proven
-  2026-10-17. Originally closed on `8285942` (main, post-merge) by `efe6d46`
-  (`test(critical-path-e2e-proof): browser E2E GREEN`); re-run here confirms the critical path
-  still GREEN after the later profile/nav + private-location work.
-- **Last run**: 2026-10-17 · Playwright, 1 worker — **10/10 passed** (1.8m), on a fresh
-  `clean:dist && astro build && preview`. Alongside: `npm run test:rls` 17/17, unit 23/23,
-  `npm run lint` clean, `astro check` 0 errors / 0 warnings / 0 hints.
+- **Evidence commit**: `0243965` (current HEAD on `feat/discovery-location-tweaks`) — re-proven
+  2026-10-19 after the onboarding-wizard, calendar/dog-events and required-city work (and the
+  e2e/smoke test updates those drove) landed on top of the 2026-10-17 proof (`0454bce`).
+  Originally closed on `8285942` (main, post-merge) by `efe6d46`
+  (`test(critical-path-e2e-proof): browser E2E GREEN`); each re-run re-drives the full journey,
+  so the SHA tracks a real pass, never a bumped label.
+- **Last run**: 2026-10-19 · Playwright, 1 worker, port 4330 — **13/13 passed** (2.6m), on a fresh
+  `clean:dist && astro build && preview`. Alongside: `npm run test:rls` 17/17,
+  `vitest run tests/integration` 39/39, unit 35/35, `npm run lint` clean,
+  `astro check` 0 errors / 0 warnings / 0 hints (121 files).
 - **Environment**: Node v22.14.0; Vitest 3.2.7 / Playwright. Remote throwaway Supabase
   **test** project wired via `.env.test` (`SUPABASE_TEST_URL` /
   `SUPABASE_TEST_SERVICE_ROLE_KEY` / `SUPABASE_TEST_ANON_KEY`), with BOTH hardening
@@ -41,6 +44,25 @@ unit/service/integration level.
 | 6 | Accept by the second person | `invitation-state-machine.test.ts`; `invitation-loop.spec.ts` | integration / browser | ✅ GREEN |
 | 7 | **Meeting visible to both** | `invitation-state-machine.test.ts › "Both parties see exactly 1 meeting after accepting"`; `invitation-loop.spec.ts` | integration / browser | ✅ GREEN |
 | 8 | Pack consent / chat unlock | `tests/integration/consent-rls.test.ts`; `tests/e2e/pack-chat-loop.spec.ts` | integration / browser | ✅ GREEN |
+
+## Tests RUN (2026-10-19 · commit `0243965`, current HEAD)
+
+Full green re-drive after the onboarding/calendar/required-city work. Playwright, 1 worker,
+port 4330, remote test Supabase, production-like `clean:dist && astro build && preview`:
+
+**13 passed (2.6m), 0 failed, 0 skipped** — 10× `auth-gate` route-protection specs (now incl.
+`/onboarding`, `/settings`, `/calendar`), `invitation-loop` (invite→accept→meeting visible to
+both), `pack-chat-loop` (bone→catch→pack chat), `seed`.
+
+Non-browser layers, same commit:
+
+| Suite | Result |
+|-------|--------|
+| `tests/unit/*` (dogEvents 8, locationPrivacy 2, publicProfile 2, discovery 10, dogFilter 13) | 35/35 ✅ |
+| `vitest run tests/integration` (auth-gating 11, invitation-state-machine 4, dog-crud 5, profile-location-privacy 4, dog-events 3, messages-unread 4, consent-rls 8) | 39/39 ✅ |
+| `npm run test:rls` (consent-rls, dog-crud, profile-location-privacy) | 17/17 ✅ |
+| `npm run lint` | clean ✅ |
+| `astro check` | 0 errors / 0 warnings / 0 hints (121 files) ✅ |
 
 ## Tests RUN (browser gate, 2026-10-16 · commit `8285942`)
 

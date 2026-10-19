@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-09-28 (Phase 1 change opened)
+> Last updated: 2026-10-19 (Phase 2 delivered, Phase 4 partially wired — see §3)
 
 ---
 
@@ -74,9 +74,22 @@ orchestrator updates Status as artifacts appear on disk.
 | # | Phase name | Goal (one line) | Risks covered | Test types | Status | Change folder |
 |---|------------|-----------------|---------------|------------|--------|---------------|
 | 1 | Bootstrap + critical-path integration | Stand up vitest + Supabase test client; prove the north star invitation flow and auth gating regress automatically | #1, #2, #3 | integration | implementing | context/changes/testing-bootstrap-critical-path/ |
-| 2 | Security integration layer | Prove RLS, invitation IDOR protection, and location/PII guardrail hold under automated verification | #4, #5, #6 | integration | not started | — |
+| 2 | Security integration layer | Prove RLS, invitation IDOR protection, and location/PII guardrail hold under automated verification | #4, #5, #6 | integration | complete¹ | pack-consent-rls, owner-location-privacy, profile-private-location |
 | 3 | Breeding track coverage | When S-06..S-08 lands, lock breeding filter correctness before merge | #7 | integration | not started | — |
-| 4 | Quality-gates wiring | Wire the full suite into CI on every push; formalize smoke gate | cross-cutting | gates | not started | — |
+| 4 | Quality-gates wiring | Wire the full suite into CI on every push; formalize smoke gate | cross-cutting | gates | implementing² | `.github/workflows/ci.yml` |
+
+¹ Phase 2 was delivered across three feature change folders rather than one phase-named
+folder, so it does not map to the change-folder status vocabulary below. Coverage is real and
+green: RLS (#4) via `consent-rls.test.ts` + `dog-crud.test.ts`; invitation IDOR (#5) via
+`invitation-state-machine.test.ts` + `consent-rls.test.ts`; location/PII (#6) via
+`profile-location-privacy.test.ts` (DB boundary) + unit `publicProfile`/`locationPrivacy`.
+`npm run test:rls` (17/17) runs these in CI's `smoke` job against a local Supabase.
+
+² Phase 4 is partly wired: `ci.yml` gates lint + `astro check` + `test:unit` + build on every
+push/PR to `main`, and a `smoke` job runs `test:rls` + the `npm run smoke` auth flow against a
+production preview. Still open before `complete`: the broader `tests/integration` suite
+(auth-gating, invitation-state-machine, dog-events, messages-unread) and the Playwright E2E
+suite are **not** CI-gated yet — they are proven locally (see the critical-path proof report).
 
 **Status vocabulary** (parser literals — do not rename):
 
@@ -167,6 +180,9 @@ TBD — see §3 Phase 3 (activates when S-06..S-08 lands; will cover the breed-f
 - Strategy (§1–§5) last reviewed: 2026-09-28
 - Stack versions last verified: 2026-09-28
 - AI-native tool references last verified: 2026-09-28 (none recommended)
+- Rollout status (§3) last reconciled against disk + a full local test run: 2026-10-19
+  (Phase 2 → complete, Phase 4 → implementing; evidence: unit 35/35, integration 39/39,
+  test:rls 17/17, E2E 13/13, lint clean, astro check 0/0/0 at commit `0243965`)
 
 Refresh (`/10x-test-plan --refresh`) when:
 

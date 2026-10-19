@@ -15,6 +15,19 @@ findings: { critical: 1, high: 1, medium: 1, low: 0 }
 
 # Observability audit — walk-invitation-loop (2026-10-09)
 
+> **Addendum (2026-10-19) — superseded in part.** This is a point-in-time snapshot taken at
+> commit `f3188b6`, *before* error monitoring existed. Since then the `sentry-monitoring`
+> change (status `impl_reviewed`, 2026-10-13) wired Sentry across server and client:
+> `sentry.server.config.ts`, `sentry.client.config.ts`, `src/lib/sentry-env.ts`, plus a dev
+> probe (`src/pages/dev/sentry-check.astro`, `src/pages/api/dev/sentry-error.ts`). So the
+> front-matter `error_tracker: none` and the §1 "no error tracker is wired in code at all"
+> finding **no longer hold**. The non-code setup that remains (production DSN secret,
+> build-time client DSN, optional CI source-map token) is tracked in
+> `context/changes/sentry-monitoring/SETUP-TODO.md`. Root causes A/B below (failure flattened
+> into a redirect; empty `catch` dropping the cause) should be re-checked against the current
+> invitation routes before this report is considered closed — a fresh `/10x-observability-audit`
+> run would supersede it with a new dated report rather than editing this one.
+
 ## 1. TL;DR
 
 - **No error tracker is wired in code at all.** The only monitoring boundary
