@@ -1,7 +1,8 @@
 ---
 project: PawMeet (working title)
 version: 1
-status: draft
+status: superseded
+superseded_by: prd-v2.md
 created: 2026-09-15
 context_type: greenfield
 product_type: web-app
@@ -14,6 +15,11 @@ timeline_budget:
   hard_deadline: null
   after_hours_only: true
 ---
+
+> **SUPERSEDED (v1).** Ten PRD stawiał rozmnażanie (US-02, FR-009/010/011) jako
+> współrzędny filar must-have. Aktualne źródło prawdy to **`prd-v2.md`**, które
+> skupia produkt na spacerach socjalizacyjnych (rdzeń) i grupach psów (pack),
+> a rozmnażanie traktuje jako daleki horyzont. Zachowane jako historia decyzji.
 
 ## Vision & Problem Statement
 

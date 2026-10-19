@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { filterDogs, ageInBucket, EMPTY_CRITERIA, type DogFilterCriteria } from "@/lib/dogFilter";
+import { filterDogs, ageInBucket, dogMapPosition, EMPTY_CRITERIA, type DogFilterCriteria } from "@/lib/dogFilter";
+import { distanceKm } from "@/lib/geo";
 import type { DogWithOwner } from "@/types";
 
 // User sits in Rzeszów; Warszawa is ~250 km away (far), Tyczyn is a Rzeszów satellite (near).
@@ -114,6 +115,35 @@ describe("filterDogs", () => {
     expect(result.map((d) => d.id)).toEqual(["near"]);
     // without a distance limit everyone shows
     expect(filterDogs(pool, EMPTY_CRITERIA, RZESZOW_CENTER)).toHaveLength(3);
+  });
+
+  it("measures distance from each dog's map pin (jitter included), not the bare city center", () => {
+    // Regression: the circle the user sees is drawn around the dog *pins*, which
+    // carry a stable per-dog jitter (~1–2.5 km) on top of the city center. The old
+    // filter measured the bare city center, so two dogs in the SAME city both read
+    // 0 km and were kept (or dropped) together — pins could sit inside the circle
+    // yet be filtered out. The filter must measure the same jittered pin position.
+    const nearPin = makeDog({ id: "beta", ownerCity: "Rzeszów" }); // pin ~1.02 km from center
+    const farPin = makeDog({ id: "alpha", ownerCity: "Rzeszów" }); // pin ~2.33 km from center
+    const result = filterDogs([nearPin, farPin], criteria({ maxKm: 1.5 }), RZESZOW_CENTER);
+    expect(result.map((d) => d.id)).toEqual(["beta"]);
+  });
+
+  it("keeps exactly the dogs whose map pin falls within the radius (filter == pins)", () => {
+    const pool = [
+      makeDog({ id: "beta", ownerCity: "Rzeszów" }),
+      makeDog({ id: "alpha", ownerCity: "Rzeszów" }),
+      makeDog({ id: "near", ownerCity: "Tyczyn" }),
+      makeDog({ id: "far", ownerCity: "Warszawa" }),
+      makeDog({ id: "unknown", ownerCity: "Atlantyda" }),
+    ];
+    const maxKm = 12;
+    const kept = filterDogs(pool, criteria({ maxKm }), RZESZOW_CENTER);
+    for (const dog of pool) {
+      const pos = dogMapPosition(dog);
+      const insideCircle = pos !== null && distanceKm(RZESZOW_CENTER, pos) <= maxKm;
+      expect(kept.includes(dog)).toBe(insideCircle);
+    }
   });
 
   it("resolves owner-city variants (case/diacritics) the same as the dictionary key", () => {

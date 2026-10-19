@@ -264,7 +264,7 @@ const en: Record<string, string> = {
   "form.dog.traits": "Character",
   "form.dog.birthdate": "Birth date",
   "form.dog.photo": "Photo",
-  "form.dog.submit": "Save dog",
+  "form.dog.submit": "Save profile",
   "form.dog.saving": "Saving…",
 
   // dog sizes
@@ -314,6 +314,22 @@ const en: Record<string, string> = {
   "landing.feature2.desc": "Send walk invitations and coordinate outings. Your dogs deserve good company.",
   "landing.feature3.title": "Dog Profiles",
   "landing.feature3.desc": "Add your dogs with breed and photo. Browse other dogs before suggesting a meetup.",
+  "landing.badge": "For dog owners",
+  "landing.heroTitle": "Every walk is better with a friend",
+  "landing.heroLede":
+    "PawMeet connects you with dog owners nearby so your dog always has good company — and so do you. Create a free account and plan your first shared walk today.",
+  "landing.heroNote": "Free to join · Takes a minute · Visible only to signed-in owners",
+  "landing.how.title": "How it works",
+  "landing.how.subtitle": "Three steps from lonely laps around the block to a real walking crew.",
+  "landing.step1.title": "Create your account",
+  "landing.step1.desc": "Sign up and add your dog — name, breed and a photo. It takes about a minute.",
+  "landing.step2.title": "Find owners nearby",
+  "landing.step2.desc": "See who walks in your district and browse their dogs before you reach out.",
+  "landing.step3.title": "Arrange a walk",
+  "landing.step3.desc": "Send a walk invite, pick a spot and time, and let the dogs make friends.",
+  "landing.cta.title": "Ready to find your dog's next walking buddy?",
+  "landing.cta.subtitle": "Join PawMeet and meet the dog owners around the corner.",
+  "landing.footer": "PawMeet — walks together.",
 };
 
 export default en;

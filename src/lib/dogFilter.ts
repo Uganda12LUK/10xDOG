@@ -35,6 +35,30 @@ export function ageInBucket(age: number, bucket: AgeBucket): boolean {
   }
 }
 
+// A stable per-dog jitter so dogs in the same town don't stack on one point but
+// spread across the neighbourhood (~±2 km), as if on different streets.
+// lat: 1° ≈ 111 km, lng: 1° ≈ 71 km at ~50°N → divisors tuned for ~±2 km each.
+function deterministicOffset(id: string): [number, number] {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return [((h % 1001) - 500) / 28000, (((h >> 4) % 1001) - 500) / 18000];
+}
+
+/**
+ * The single source of truth for where a dog sits on the map: its owner-city
+ * center (CITY_CENTERS) plus a stable per-dog jitter. Returns null when the
+ * owner's city isn't a known center — such a dog has no resolvable position, so
+ * it can neither be pinned nor measured by distance. The map (pin placement) and
+ * the distance filter both call this, so the circle the user sees and the dogs
+ * the filter keeps are the same geometry.
+ */
+export function dogMapPosition(dog: Pick<DogWithOwner, "id" | "ownerCity">): [number, number] | null {
+  const base = cityCenter(dog.ownerCity);
+  if (!base) return null;
+  const [dlat, dlng] = deterministicOffset(dog.id);
+  return [base[0] + dlat, base[1] + dlng];
+}
+
 export interface DogFilterCriteria {
   breed: string | null;
   size: DogSize | null;
@@ -58,9 +82,10 @@ export const EMPTY_CRITERIA: DogFilterCriteria = {
  * - traits: dog must include ALL selected traits (AND).
  * - ageBucket: dog's age (from birthdate) must fall in the bucket; a dog with no/invalid
  *   birthdate is excluded only when the age filter is active.
- * - maxKm: distance between the user's center and the dog's owner-city center must be
- *   within the limit; a dog whose ownerCity is absent from CITY_CENTERS is excluded only
- *   when a distance limit is active.
+ * - maxKm: distance between the user's center and the dog's map pin (city center +
+ *   per-dog jitter, via `dogMapPosition`) must be within the limit — the same point the
+ *   map draws — so a pin inside the circle is never filtered out. A dog whose ownerCity
+ *   is absent from CITY_CENTERS has no pin and is excluded only when a limit is active.
  */
 export function filterDogs(
   dogs: DogWithOwner[],
@@ -80,8 +105,8 @@ export function filterDogs(
     }
 
     if (maxKm !== null) {
-      const center = cityCenter(dog.ownerCity);
-      if (!center || distanceKm(userCenter, center) > maxKm) return false;
+      const pos = dogMapPosition(dog);
+      if (!pos || distanceKm(userCenter, pos) > maxKm) return false;
     }
 
     return true;
