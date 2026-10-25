@@ -1,10 +1,10 @@
 name: Claude Code Review
 
 # Runs an AI code-review agent on every pull request. The agent reads the PR
-# diff and posts its findings as PR comments (summary + inline). Authenticated
-# with a Claude subscription OAuth token (no API key / billing) stored in the
-# repo secret CLAUDE_CODE_OAUTH_TOKEN. You can also re-trigger a review by
-# commenting `@claude` on a PR.
+# diff and posts its findings as PR comments (summary + inline). Routed through
+# OpenRouter's Anthropic-compatible endpoint, authenticated with the repo secret
+# OPENROUTER_API_KEY; the model is the OpenRouter model id passed via --model.
+# You can also re-trigger a review by commenting `@claude` on a PR.
 
 on:
   pull_request:
@@ -39,8 +39,12 @@ jobs:
 
       - name: Claude review
         uses: anthropics/claude-code-action@v1
+        env:
+          # OpenRouter "Anthropic skin" — no /v1 suffix.
+          ANTHROPIC_BASE_URL: https://openrouter.ai/api
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.OPENROUTER_API_KEY }}
         with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          anthropic_api_key: ${{ secrets.OPENROUTER_API_KEY }}
           # TEMP diagnostic: surface the model output/errors in the run log.
           show_full_output: true
           prompt: |
@@ -74,5 +78,5 @@ jobs:
             for specific line-level issues. Only post GitHub comments — do not emit
             the review as plain messages.
           claude_args: |
-            --model claude-sonnet-4-6
+            --model anthropic/claude-sonnet-4.6
             --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
