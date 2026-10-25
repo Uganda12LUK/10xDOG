@@ -13,8 +13,10 @@ on:
     types: [created]
 
 # Keep only the latest review per PR; a new push cancels an in-flight review.
+# Grouped per event type, so the agent's own PR comment (an issue_comment
+# event) cannot cancel the pull_request run that is posting it.
 concurrency:
-  group: claude-review-${{ github.event.pull_request.number || github.event.issue.number }}
+  group: claude-review-${{ github.event_name }}-${{ github.event.pull_request.number || github.event.issue.number }}
   cancel-in-progress: true
 
 jobs:
